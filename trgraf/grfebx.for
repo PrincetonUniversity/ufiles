@@ -1,0 +1,39 @@
+C-------------------------------------------------------------
+C GRFEBX - PLOT HORIZONTAL (X) ERROR BAR
+C
+      SUBROUTINE GRFEBX(X0,Y0,XEB,ZDY,zdname)
+C
+C  (X0,Y0) PT ABOUT WHICH ERROR BAR IS DRAWN
+C  XEB  X ERROR (UNCERTAINTY) +/- XEB ABOUT X0
+C  ZDY  HALF-HEIGHT OF "T" END OF ERROR BAR TO DRAW
+C
+C    |----X----|
+C
+      REAL XPERR(2),YPERR(2)
+      character*(*) zdname
+C
+      ILINE=1
+C
+      XPERR(1)=X0-XEB
+      XPERR(2)=X0+XEB
+C
+      YPERR(1)=Y0
+      YPERR(2)=Y0
+C
+      CALL DPLOT1(XPERR,YPERR,2,ILINE)
+C
+      XPERR(1)=X0-XEB
+      XPERR(2)=X0-XEB
+C
+      YPERR(1)=Y0-ZDY
+      YPERR(2)=Y0+ZDY
+C
+      CALL DPLOT1(XPERR,YPERR,2,ILINE)
+C
+      XPERR(1)=X0+XEB
+      XPERR(2)=X0+XEB
+C
+      CALL DPLOT1(XPERR,YPERR,2,ILINE)
+C
+      RETURN
+      END

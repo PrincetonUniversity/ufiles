@@ -1,0 +1,69 @@
+C******************** START FILE DPSYST.FOR ; GROUP DPLOTT *************
+C-----------------------------------------------------------
+C  SET SYMBOL TYPE AND SIZE FOR DPLOT1 OR DPLOTK
+C
+      SUBROUTINE DPSYST(M,ISYM,SIZE)
+C
+      use gftic
+C
+      if(.not.init_gftic) call gftic0
+C
+      CALL LINE(-4)
+C
+C  INPUT M SHOULD BE BTW. 13 AND 17 DUE TO HISTORY OF SGLIB/GFLIB!
+C
+      IM=MAX0(13,MIN0(17,M))-13
+C
+C  COMMON CONTROL KSYMTP EXERTS MODULO CONTROL ON SYMBOL SELECTION
+C
+      IMM=IM+KSYMTP
+      IF(IMM.GT.4) IMM=IMM-5
+C
+      INDX=IMM+1
+      ISYM=LSYSTL(INDX)
+C
+C  COMMON USER CONTROL SGSYSZ * SYMBOL SPECIFIC FUDGE FACTOR
+C
+      ISI=MAX(1,MIN(IGFTSYMS,IABS(ISYM)))
+      SIZE=SYSZVC(ISI)*SGSYSZ
+C
+      CALL SIZES(SIZE)
+      CALL SYMBL(ISYM)
+C
+      RETURN
+      END
+C******************** END FILE DPSYST.FOR ; GROUP DPLOTT ***************
+C
+      SUBROUTINE DPSYST0(M,ISYM,SIZE)
+C set small size symbol for individual points
+C
+      use gftic
+C
+      if(.not.init_gftic) call gftic0
+C
+      CALL LINE(-4)
+C
+C  INPUT M SHOULD BE BTW. 13 AND 17 DUE TO HISTORY OF SGLIB/GFLIB!
+C
+      IM=MAX0(13,MIN0(17,M))-13
+C
+C  COMMON CONTROL KSYMTP EXERTS MODULO CONTROL ON SYMBOL SELECTION
+C
+      IMM=IM+KSYMTP
+      IF(IMM.GT.4) IMM=IMM-5
+C
+      INDX=IMM+1
+      ISYM=LSYSTL(INDX)
+C
+C  COMMON USER CONTROL SGSYSZ * SYMBOL SPECIFIC FUDGE FACTOR
+C
+      ISI=MAX(1,MIN(IGFTSYMS,IABS(ISYM)))
+! this line differ from DPSYST
+      SIZE=SYSZVC(ISI)*SGSYSZ/100.
+C
+      CALL SIZES(SIZE)
+      CALL SYMBL(ISYM)
+C
+      RETURN
+      END
+C******************** END FILE DPSYST.FOR ; GROUP DPLOTT ***************

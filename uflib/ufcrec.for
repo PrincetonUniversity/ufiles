@@ -1,0 +1,24 @@
+C----------------------------------------------------------------
+C  UFCREC - SET COMPRESSED UFILES RECORD SIZE
+C
+      SUBROUTINE UFCREC(ISIZE)
+C
+      USE UFILES
+C
+      DATA IMIN/64/
+C
+      CALL UFINIT
+      IF((ISIZE.LT.IMIN).OR.(ISIZE.GT.UFMAXR)) GO TO 900
+C
+      UFRSIZ=ISIZE
+      RETURN
+C
+ 900  CONTINUE
+      IMAX=UFMAXR
+      WRITE(UFELUN,9001) ISIZE,IMIN,IMAX
+ 9001 FORMAT(
+     >' ?UFCREC - ILLEGAL COMPRESSED UFILE RECORD SIZE  ISIZE=',I8/
+     >'  MINIMUM=',I8,'  MAXIMUM=',I8)
+C
+      call ufbad_exit
+      END

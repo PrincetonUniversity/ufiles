@@ -1,0 +1,102 @@
+C******************** START FILE URDEOF.FOR ; GROUP UREAD5 ******************
+C------------------------------------------------------
+C&  URDEOF-- PROCESS END-OF-FILE ON UREAD INDIRECT INPUT FILE
+C
+      SUBROUTINE URDEOF(IEOFL)
+      USE USERIO
+C
+C  FORMERLY PART OF UREAD SUBROUTINE
+C
+C  END OF UREAD INDIRECT INPUT OR OUTPUT FILE --
+C  IF E-O-F DURING MARKER SEARCH, ALLOW ONE REWIND TO SEARCH TOP
+C  HALF OF FILE
+C
+      IF(NLSKIP.AND.(LMARKN.GT.0)) THEN
+C
+        ieofl=ieofl+1
+        if(ieofl.gt.2) THEN
+C  END-OF-FILE WITHOUT FINDING MARKER; PRINT WARNING
+          WRITE(LUNTRM,9310) URMARK(1:LMARKN)
+ 9310 FORMAT(' % END OF FILE WITHOUT FINDING "SKIPTO" MARKER:  ',A)
+          LMARKN=0
+          NLSKIP=.FALSE.
+          GO TO 600
+        ENDIF
+C
+c  try closing file and reopening, reading from the top,
+c  before giving up.
+C  REWIND FIRST THE BUFFER THEN THE WHOLE FILE
+C
+        if(ieofl.eq.1) call ufiget(urfile,4,ier,ieof)
+        if(ieofl.eq.2) call ufiget(urfile,5,ier,ieof)
+        RETURN
+      ENDIF
+C
+ 600  CONTINUE
+C  CLOSE I/O FILE
+      JLEV=MAX0(NLUNIN,NLUNIO)
+      JLM1=JLEV-1
+      IF(JLEV.EQ.NLUNIN) THEN
+C  CLOSING AN INPUT FILE
+        IF(NLECHO.OR.((IBATCH.EQ.0).AND.(JLM1.EQ.1)))
+     >      WRITE(LUNTRM,7001) XFILE(NLUNIN)
+ 7001 FORMAT(' % END OF INPUT FILE:  ',A)
+        call ufiget(urfile,3,ier,ieof)
+        NLUNIN=NLUNIN-1
+        IF(NLUNIN.EQ.MAX0(1,NLUNIO)) THEN
+C  RETURN CONTROL TO SYS$INPUT
+          NLUNIN=1
+          NLINDI=.FALSE.
+          NLSKIP=.FALSE.
+        ENDIF
+      ELSE
+C  CLOSING AN OUTPUT FILE
+        CLOSE(UNIT=LUNTIN(NLUNIO))
+        ILFILN=INDEX(XFILE(NLUNIO),' ')
+        IF(ILFILN.LE.0) ILFILN=LFILN
+        WRITE(LUNTRM,7004) XFILE(NLUNIO)(1:ILFILN)
+ 7004 FORMAT(' % OUTPUT FILE "',A,'" CLOSED')
+        IF(JLM1.EQ.1) WRITE(LUNTRM,7003)
+ 7003 FORMAT(' % NO MORE OUTPUT FILES OPEN')
+        NLUNIO=NLUNIO-1
+        IF(NLUNIO.EQ.1) THEN
+C  NO MORE OUTPUT FILES
+          NLUNIO=0
+          LUNIDO=0
+          NLINDO=.FALSE.
+        ELSE
+          LUNIDO=LUNTIN(NLUNIO)
+        ENDIF
+      ENDIF
+C  DELETE LOCAL PARMS
+      IF(NPLC(JLEV).EQ.0) GO TO 607
+      DO 603 I=1,NPLC(JLEV)
+          PLCNAM(I,JLEV)='                '
+          PLCVAL(I,JLEV)=
+     >         '                                                '
+ 603  CONTINUE
+      NPLC(JLEV)=0
+ 607  CONTINUE
+C
+C  POP TYPEAHEAD BUFFER STACK
+      CBUFF=AHDBUF(JLM1)
+      CALL UDECOD
+      IF(NCHARC.EQ.0) THEN
+C  NO SAVED TYPEAHEAD...
+        IF(.NOT.NLINDI) THEN
+CXX	    CALL UPROMR
+          CALL CHXOUT
+        ENDIF
+C  RECORD PROMPT IN OUTPUT FILE IF THERE IS ONE
+        CALL UREADY(0)
+        CALL UPROMX
+      ELSE
+C  PROCESS SAVED TYPEAHEAD FROM PREVIOUS INPUT LEVEL...
+        IF(NLECHO) WRITE(LUNTRM,7005) CBUFF(1:NCHARC)
+ 7005 FORMAT(' %PREVIOUS TYPEAHEAD RESTORED FROM STACK:'/1X,A)
+        CALL UREADY(1)
+      ENDIF
+C  EXIT
+      RETURN
+      END
+C******************** END FILE URDEOF.FOR ; GROUP UREAD5 ******************

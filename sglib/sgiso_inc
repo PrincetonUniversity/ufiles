@@ -1,0 +1,29 @@
+c  common block for sgiso
+c
+	logical contx, conty, refx, refy, zclip, hidden, lzmjmn
+c
+	real
+     >	dxmin,  dxmax,  dymin,  dymax, dzmin,  dzmax,
+     >	agisxm, agisxb, agiszm, agiszb, agicth, agisth,
+     >	xslope, zslope, steep,  cont, vztics
+C
+	integer
+     >	kxtype, ksxmin, ksxmax, kytype, thetad, klengy,
+     >	kztype, kszmin, kszmax, kxstep, kystep, kyrond,
+     >	ksymxx, ksymxz, khside, 
+     >	ncont,  nztics, kfac,
+     >	upper,  lower,  i4105
+
+	common /sgiso/
+C					!reals
+     >	dxmin,  dxmax,  dymin,  dymax, dzmin,  dzmax,
+     >	agisxm, agisxb, agiszm, agiszb, agicth, agisth,
+     >	xslope, zslope, steep,  cont(41), vztics(41),
+C					!integers/logicals
+     >	kxtype, ksxmin, ksxmax, kytype, thetad, klengy,
+     >	kztype, kszmin, kszmax, kxstep, kystep, kyrond,
+     >	ksymxx, ksymxz, hidden, khside, contx,  conty,
+     >	refx,   refy,   zclip,  ncont,  nztics, kfac,
+     >	lzmjmn(41), upper(1024), lower(1024),  i4105
+c
+

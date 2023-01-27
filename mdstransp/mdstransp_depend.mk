@@ -1,0 +1,24 @@
+$(OBJDIR)/f_mdscacheconnect.o : f_mdscacheconnect.f90 
+$(OBJDIR)/lmds_errstat.o : lmds_errstat.f90 
+$(OBJDIR)/find_image_symbol.o : find_image_symbol.for 
+$(OBJDIR)/mds_close.o : mds_close.for 
+$(OBJDIR)/mds_addblanks.o : mds_addblanks.for 
+$(OBJDIR)/mds_errstr.o : mds_errstr.for 
+$(OBJDIR)/mds_value.o : mds_value.for mdslib.inc 
+$(OBJDIR)/idescr_short.o : idescr_short.for 
+$(OBJDIR)/mdserr.o : mdserr.for 
+$(OBJDIR)/mds_remove_tag.o : mds_remove_tag.for 
+$(OBJDIR)/mds_delete_node.o : mds_delete_node.for 
+$(OBJDIR)/mds_put.o : mds_put.for 
+$(OBJDIR)/mds_put1d.o : mds_put1d.for 
+$(OBJDIR)/mds_put2d.o : mds_put2d.for 
+$(OBJDIR)/mds__copywnull.o : mds__copywnull.for 
+$(OBJDIR)/mds_create_node.o : mds_create_node.for 
+$(OBJDIR)/trmds_parse.o : trmds_parse.for 
+$(OBJDIR)/mds_put3d.o : mds_put3d.for 
+$(OBJDIR)/mds_add_node.o : mds_add_node.for 
+$(OBJDIR)/mds__leniftrim.o : mds__leniftrim.for 
+$(OBJDIR)/mds_open.o : mds_open.for 
+$(OBJDIR)/mds_setserver.o : mds_setserver.for 
+$(OBJDIR)/mds_str_length.o : mds_str_length.for 
+$(OBJDIR)/mds_add_tag.o : mds_add_tag.for 

@@ -1,0 +1,55 @@
+C******************** START FILE UPAUST.FOR ; GROUP UPAUST *************
+C---------------------------------------------------------------
+C&  UPAUST UREAD TTY DEPENDENT PAUSE AFTER ERROR MESSAGE OR GRAPH
+C
+C  USER INTERFACE - UPAUST
+C  WITH HHT TERMINAL ROUTINES INBETWEEN
+C
+      SUBROUTINE UPAUST(ICALL0)
+C
+C  ICALL=0  ACCEPT CARRIAGE RETURN AFTER ERROR MESSAGE
+C  ICALL=1  DITTO - THEN CLEAR SCREEN(S)
+C  ICALL=2  CALL UPAUST TO ACCEPT CHAR. AFTER GRAPH AND CLEAR PAGE
+C
+C
+      USE USERIO
+C
+      ICALL=ICALL0
+      IF(NTTYP.LT.0) ICALL=0
+C
+      IF(.NOT.NLUINI) CALL USINIT
+      IF(ICALL.GE.2) THEN
+C
+C  AFTER A GRAPH DISPLAY ...
+C
+        CALL UPAUSE(0)       ! get user input
+        CALL UPAUCH(IUCHAR)  ! get the character the user typed...
+C
+        UPCHAR=CHAR(IUCHAR)
+        CALL USPCAP(UPCHAR)
+C
+        CALL FINITT(0,0)
+C
+        NCLEAR=0
+        CALL NEUPAG
+C
+        call f90_delay_r4(0.2,zflops)  ! avoid problems with some XTERMs...
+C
+      ELSE
+C
+C  ... AFTER AN ERROR MESSAGE ...
+C  HHT PAGE CLEAR AFTER USER HITS CR (INTERACTIVE MODE)
+C  OR DO NOTHING - BATCH MODE
+C
+        IF((IBATCH.EQ.0).and.(.NOT.NLJAVA)) THEN
+          CALL UACKNL
+          IF(ICALL.EQ.1) THEN
+            NCLEAR=0
+            CALL NEUPAG
+          ENDIF
+        ENDIF
+      ENDIF
+C
+      RETURN
+      END
+C******************** END FILE UPAUST.FOR ; GROUP UPAUST ***************

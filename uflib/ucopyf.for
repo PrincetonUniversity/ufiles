@@ -1,0 +1,14 @@
+C******************** START FILE UCOPYF.FOR ; GROUP UFSWXY ******************
+C----
+C  UCOPYF
+C  COPY ARRAY 1 INTO ARRAY 2
+C
+      SUBROUTINE UCOPYF(ARRAY1,ARRAY2,ISIZ)
+      DIMENSION ARRAY1(ISIZ),ARRAY2(ISIZ)
+C
+      DO 10 I=1,ISIZ
+      ARRAY2(I)=ARRAY1(I)
+ 10   CONTINUE
+      RETURN
+      END
+C******************** END FILE UCOPYF.FOR ; GROUP UFSWXY ******************

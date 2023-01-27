@@ -1,0 +1,40 @@
+C******************** START FILE UFSNMD.FOR ; GROUP UFILES *************
+C------------------------------------------------------------
+C  UFGETR  -- RETURN THE PARTS OF A UFILES FILENAME
+C
+      SUBROUTINE UFGETR(LUNF,ZPRE,ZEXT,ZDEVI,ZFDIR,ILSHOT,IER)
+C
+      USE UFILES
+C
+C  INPUT:
+      INTEGER LUNF
+C  LUNF -- UFILES LOGICAL UNIT NUMBER-- UFSETR NEEDS TO HAVE BEEN CALLED
+C    also, UFNSHO should have been called first
+C
+C  OUTPUT (READ FROM UFILES COMMON):
+      CHARACTER*(*) ZPRE  ! FILENAME PREFIX
+      CHARACTER*(*) ZEXT  ! FILENAME .EXT SUFFIX
+      CHARACTER*(*) ZDEVI ! ASSOCIATED DISK DEVICE
+      CHARACTER*(*) ZFDIR ! ASSOCIATED DIRECTORY NAME
+      LOGICAL ILSHOT      ! .TRUE. IF SHOT NO. IS EXPECTED TO COMPLETE
+C                           ! THE FILENAME
+C  OUTPUT (ERROR SIGNAL):
+      INTEGER IER         ! =0 MEANS SUCCESS
+C
+C-----------------------------------------------------------------------
+C
+      CALL UFINIT
+      IER=0
+      CALL UFLCHK(LUNF,'UFGETR    ',ICHAN,IER)
+      IF(IER.NE.0) RETURN
+C
+      ILSHOT=LSHOTN(ICHAN)
+C
+      ZPRE=UPRFIX(ICHAN)
+      ZEXT=UEXTND(ICHAN)
+      ZDEVI=UDEV(ICHAN)
+      ZFDIR=UFDIR(ICHAN)
+C
+      RETURN
+      END
+C******************** END FILE UFSNMD.FOR ; GROUP UFILES ***************

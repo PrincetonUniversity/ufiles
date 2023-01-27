@@ -1,0 +1,31 @@
+C---------------------------------------------------------------
+C  GRFNEX - FIND NEXT PT. .GT. SPECIFIED INPUT VALUE
+C
+      SUBROUTINE GRFNEX(X,NX,XNEXT,ISTART)
+C
+C  X(NX)  DATA ARRAY TO CHECK  *DATA IN ASCENDING ORDER*
+C
+C  MODIFIED ON OUTPUT--
+C   XNEXT - ON INPUT - FIND FIRST X(J) .GT. XNEXT
+C           ON OUTPUT - X(J) FOUND
+C   ISTART - ON INPUT PT *AFTER* WHICH TO START SEARCH
+C           ON OUTPUT - J= INDEX TO PT X(J) FOUND
+C
+      REAL X(NX)
+C
+      I0=ISTART+1
+      IF((I0.GT.NX).OR.(XNEXT.GT.X(NX))) THEN
+        ISTART=NX+1
+        XNEXT=X(NX)
+      ELSE
+        DO 10 IX=I0,NX
+          IF(X(IX).GE.XNEXT) GO TO 15
+ 10     CONTINUE
+        IX=NX
+ 15     CONTINUE
+        XNEXT=X(IX)
+        ISTART=IX
+      ENDIF
+C
+      RETURN
+      END

@@ -1,0 +1,29 @@
+        SUBROUTINE USET_TTY(ZTTYP)
+C
+C  UREAD SET TTY TYPE
+C
+      USE USERIO
+C
+        CHARACTER*8 ZBLANK
+        CHARACTER*(*) ZTTYP
+C
+        INTEGER IL
+C
+      DATA ZBLANK/'        '/
+C
+      IL=MIN0(8,LEN(ZTTYP))
+      UTTYP(1:IL)=ZTTYP(1:IL)
+      IF(IL.LT.8) UTTYP(IL+1:8)=ZBLANK(IL+1:8)
+C
+      CALL USPCAP(UTTYP)
+C
+      IF(UTTYP.NE.'NONE    ') THEN
+        CALL GET_TERM_INT(UTTYP,NTTYP)
+        IF(UTTYP(1:4).EQ.'TK40') NTTYP=0
+      ELSE
+        NTTYP=-1
+      ENDIF
+C
+      RETURN
+      END
+ 

@@ -1,0 +1,30 @@
+c  common blocks for xplot/vplot
+c
+	integer   mfbuf,maxfn  
+	parameter (mfbuf = 512)
+	parameter (maxfn=50)
+	character*1 fbuf(mfbuf)
+	integer     fnlist(maxfn)
+	logical li4105,lo4105,ldiff
+	integer kescm,kalfm,kvecm,kpntm,knull
+	parameter (kescm=0,kalfm=1,kvecm=2,kpntm=3,knull=4)
+	integer kmode		!graphics mode
+	common /buffer/ fbuf,li4105,lo4105,ldiff,kmode
+c
+	integer    maxtx
+	parameter (maxtx=1)
+	character*16 txlist(maxtx)
+	logical lstop,lttyo,ltemp,lkeep,lwait
+	integer iosave,nfn,nftop,ntx
+	integer lwid
+c
+	common /search/ iosave,fnlist,nfn,nftop,txlist,ntx,
+     >		lstop,lttyo,ltemp,lkeep,lwait,lwid
+c
+	integer kskip,lskip,kpage,lpage
+        integer	incnt,inblk,inptr
+	integer maxpage
+	parameter (maxpage=3200)
+	integer spage(2,maxpage)
+	common /skips/ kskip,lskip,kpage,lpage,spage,
+     >		incnt,inblk,inptr

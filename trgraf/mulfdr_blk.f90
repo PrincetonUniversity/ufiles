@@ -1,0 +1,60 @@
+module mulfdr_blk
+  !  INCLUDE BLOCK FOR MULFDR AND RELATED PLOTTING ROUTINES.
+  !  ... CONTROL SIZE, LOCATION OF PLOT DISPLAY
+  !
+  ! LOCAL VARIABLES-- DETERMINE LOCATION OF LABELS, LINE STYLES,
+  !   SIZE OF GRAPH, ETC.
+  !
+  INTEGER :: IXRG(3)
+  INTEGER :: IYRG(2)
+  !
+  INTEGER :: IYRMN(3)
+  INTEGER :: IYRKY(5)
+  !
+  INTEGER :: IXRKSL(2)
+  !
+  integer :: ixrmn,ixrky,ixrfu,iyrfu,ixrxu,iyrxu
+  integer :: iyrksl,ixrkla,iyrkla,idrky,idy0d
+
+contains
+
+  subroutine mulfdr_init
+    implicit none
+
+    !  X RASTER LOCATION OF:  LHS OF GRAPH, RHS OF GRAPH=LHS OF KEY,
+    !   AND RHS OF KEY
+    IXRG = (/150,730,1000/)
+    !  Y RASTER LOCATIONS OF:  BOTTOM, TOP OF GRAPH + KEY BOX
+    IYRG = (/135,700/)
+    !  X RASTER LOCATION OF LHS OF MAIN LABELS
+    IXRMN = 150
+    !  Y RASTER LOCATIONS OF MAIN LABELS
+    IYRMN = (/750,727,20/)
+    !  X RASTER LOCATION OF LHS OF KEY HDR LABELS
+    IXRKY = 740
+    !  Y RASTER LOCATIONS OF KEY HDR LABELS  TOP DOWN
+    IYRKY = (/673,651,187,165,143/)
+    !  F UNITS LABEL
+    IXRFU = 20
+    IYRFU = 680
+    !  X UNITS LABEL
+    IXRXU = 760
+    IYRXU = 66
+
+    !
+    !  KEY BOX SAMPLE LINES LOCNS
+    !
+    IXRKSL = (/750,830/)
+    IYRKSL = 628
+    !  SAMPLE LINE LABEL (LBSEL) (FUNCTION ID LABEL)
+    !
+    IXRKLA = 844
+    IYRKLA = 622
+    !  SPACING BETWEEN KEY BOX SAMPLE LINES AND LINE LABELS
+    IDRKY = 23
+    !  SPACING BETWEEN LINES OF TEXT IN SINGLE PTS DISPLAY MODE
+    IDY0D = 23
+
+  end subroutine mulfdr_init
+
+end module mulfdr_blk

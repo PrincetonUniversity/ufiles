@@ -1,0 +1,44 @@
+C----------------------------------------------------------------
+C  GFTICX - SET SG TIC OPTIONS CONTROLLED FROM GFTIC BLOCK
+C
+      SUBROUTINE GFTICX
+C
+C  EXECUTE AFTER BINITT CALL; AFTER CHECK/DISPLAY OR INITIAL GRID CALL
+C  DRAW THE AXES AND TICS ON THE FAR SIDE OF THE GRAPH
+C
+      use gftic
+C
+C  SUPPRESS FARSIDE TIC LABELING
+C
+      if(.not.init_gftic) call gftic0
+C
+      IF(KFRACX.GT.0) THEN
+C
+        CALL XLAB(0)
+C
+        CALL XLOCTP(0)  ! TOP HORIZ. LINE
+C
+        CALL XFRM(KFRACX)
+C
+        CALL XMFRM(KFRMCX)
+C
+      ENDIF
+C
+C-------------
+C
+      IF(KFRACY.GT.0) THEN
+C
+        CALL YLAB(0)
+C
+        CALL YLOCRT(0)  ! RIGHTSIDE VERT. LINE
+C
+        CALL YFRM(KFRACY)
+C
+        CALL YMFRM(KFRMCY)
+C
+      ENDIF
+C
+      IF((KFRACX.GT.0).OR.(KFRACY.GT.0)) CALL GRID
+C
+      RETURN
+      END

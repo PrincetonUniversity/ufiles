@@ -1,0 +1,57 @@
+C-----------------------------------------------------------------------
+C  GFTCLS -- SET SG LINE STYLE CODES
+C
+      SUBROUTINE GFTCLS
+C
+      use gftic
+C
+      LOGICAL, EXTERNAL :: LCHAR,LXOUT,LYES,LYESC
+C
+C------------------------------
+C
+      if(.not.init_gftic) call gftic0
+C
+      LUNTRM=LNOUT(0)
+C
+      IMAXI=IGFTMAXL  ! MAXIMUM LINE STYLE CODE INDEX
+C
+      CALL NEUPAG
+ 10   CONTINUE
+      IF(LXOUT(0)) THEN
+        WRITE(LUNTRM,1000)
+ 1000   FORMAT(/' LINE STYLE CODES CURRENTLY IN EFFECT:')
+        WRITE(LUNTRM,1001) (I,LNSTYL(I),I=1,IMAXI)
+ 1001   FORMAT(5(1X,I2,':  ',I6))
+        WRITE(LUNTRM,1002) IMAXI
+ 1002   FORMAT(
+     >    ' THE MEANING OF LINE STYLE CODES ARE DESCRIBED IN THE'/
+     >    ' SGLIB HELP FILE.  LEGAL CODE VALUES RANGE FROM 0 ON UP'//
+     >    ' OPTIONS:'/
+     >    '  >ENTER A NUMBER BTW 1 AND ',I2,' TO MODIFY CORRESPONDING'/
+     >    '      LINE STYLE CODE'/
+     >    '  >ENTER "Q" TO QUIT (NO MORE CHANGES)'/)
+      ENDIF
+      CALL UREAD(
+     >    'GFTCLS:  ENTER LINE STYLE CODE MODIFICATION OPTION:$')
+      IF(LCHAR('Q')) RETURN
+C
+      INDX=IDCOD(IERT)
+      IF(IERT.NE.0) GO TO 10
+C
+      IF((INDX.LT.1).OR.(INDX.GT.IMAXI)) THEN
+        CALL UERMSI(' LINE STYLE CODE INDEX OUT OF RANGE',INDX,1)
+        GO TO 10
+      ENDIF
+C
+      ICOD=LNSTYL(INDX)
+      CALL UREADI(' ENTER NEW LINE STYLE CODE:$',ICOD)
+C
+      IF(ICOD.LT.0) THEN
+        CALL UERMSI(' LINE STYLE CODE VALUE OUT OF RANGE',ICOD,1)
+        GO TO 10
+      ENDIF
+C
+      LNSTYL(INDX)=ICOD
+C
+      GO TO 10
+      END

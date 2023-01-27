@@ -1,0 +1,22 @@
+C******************** START FILE EXCHED.FOR ; GROUP EXSUBS ******************
+C---------------------------------------------------------------------
+C  EXSUBS
+C  COLLECTION OF SUBROUTINES-- FOR EXTRACTING SLICE PROFILES OUT OF
+C  2D DATA ARRAYS
+C
+C---------------------------------------------------------------------
+C  EXCHED
+C
+C  WRITE COMMENT HEADER FOR EXTRACTED 1D UFILES DATA FILES
+C
+      SUBROUTINE EXCHED(ILUNI,ILUNT)
+C
+      WRITE(ILUNT,8001)
+ 8001 FORMAT(/
+     >' THIS FILE CONTAINS DATA EXTRACTED FROM A 2D UFILES FILE'/
+     >' WITH THE SAME SHOT NUMBER, BY UTILITY PROGRAM EXTRAC'/)
+      CALL UFSNMD(ILUNT,'2D UFILES INPUT FILE',ILUNI)
+C
+      RETURN
+      END
+C******************** END FILE EXCHED.FOR ; GROUP EXSUBS ******************

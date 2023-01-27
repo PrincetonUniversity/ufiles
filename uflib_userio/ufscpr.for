@@ -1,0 +1,82 @@
+C******************** START FILE UFSCPR.FOR ; GROUP UFSCLK *************
+C---------------------------------------------------------------
+C  UFSCPR
+C  PRINT SCALARS ON PLOT DEVICE
+C
+      SUBROUTINE UFSCPR(ZFILE,SCLAB,SCVAL,IORDER,NSC,ICONT)
+C
+      CHARACTER*80 ZLINE
+      CHARACTER*40 ZFILE
+      CHARACTER*10 SCLAB(3,NSC)
+      REAL SCVAL(NSC)
+      INTEGER IORDER(NSC)
+C
+C  DRAW FRAME
+      JCONT=MAX0(0,ICONT)
+C  STARTING NEW OR CONTINUING OLD PAGE?
+      IF(JCONT.EQ.0) GO TO 100
+      IY=IY+IDY
+      ILINE=ILINE+1
+      IPT=0
+      GO TO 115
+ 100  CONTINUE
+C
+      IPAGE=0
+      IPT=0
+ 110  CONTINUE
+      IPAGE=IPAGE+1
+      CALL UBINIT(0)
+      CALL DPLOFR(20,1020,20,760,0)
+      IX=30
+      IY=730
+      IDY=-23
+      IMAX=27
+ 115  CONTINUE
+ 3001 FORMAT(' SCALARS IN "',A40,'"     PAGE ',I2,'$')
+      WRITE(ZLINE,3001) ZFILE,IPAGE
+      IDOLLR=INDEX(ZLINE,'$')-1
+      CALL AGTMHS(IX,IY,ZLINE,IDOLLR)
+      IY=IY+2*IDY
+ 3002 FORMAT(
+     >  '     KEYWORD     VALUE         LABEL       PHYSICAL UNITS$')
+ 3003 FORMAT(
+     >  '     ----------  ------------  ----------  ----------$')
+ 3004 FORMAT(
+     >  '     ',A10,   '  ',1PE12.5, '  ',A10,   '  ',A10,'$')
+      WRITE(ZLINE,3002)
+      IDOLLR=INDEX(ZLINE,'$')-1
+      CALL AGTMHS(IX,IY,ZLINE,IDOLLR)
+      IY=IY+IDY
+      WRITE(ZLINE,3003)
+      IDOLLR=INDEX(ZLINE,'$')-1
+      CALL AGTMHS(IX,IY,ZLINE,IDOLLR)
+      IY=IY+IDY
+C  FETCH NEXT SCALAR
+      IF(JCONT.EQ.0) ILINE=0
+      JCONT=0
+ 120  CONTINUE
+      IPT=IPT+1
+      IF(IPT.GT.NSC) GO TO 190
+      ILINE=ILINE+1
+      IF(ILINE.LT.IMAX) GO TO 125
+      IPT=IPT-1
+      GO TO 130
+ 125  CONTINUE
+      ISC=IORDER(IPT)
+      WRITE(ZLINE,3004) SCLAB(1,ISC),SCVAL(ISC),SCLAB(2,ISC),
+     >     SCLAB(3,ISC)
+      IDOLLR=INDEX(ZLINE,'$')-1
+      CALL AGTMHS(IX,IY,ZLINE,IDOLLR)
+      IY=IY+IDY
+      GO TO 120
+C  END OF PAGE
+ 130  CONTINUE
+      CALL UPAUST(2)
+      GO TO 110
+C  END OF LIST
+ 190  CONTINUE
+      IF(ICONT.GT.-1)  CALL UPAUST(2)
+      RETURN
+C---------
+      END
+C******************** END FILE UFSCPR.FOR ; GROUP UFSCLK ***************

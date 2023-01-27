@@ -1,0 +1,59 @@
+C******************** START FILE JIDCOD.FOR ; GROUP URDUTS *************
+C------------------------------------------------------------
+C& JIDCOD  UREAD CHARACTER STRING TO INTEGER DECODE
+C
+      INTEGER FUNCTION JIDCOD(STR,LENW,LENR,ICOD)
+C
+C  1ST THREE ARGUMENTS-- SEE URWORD
+C   ICOD-- COMPLETION CODE
+C    =0 NORMAL DECODE SUCCESSFUL
+C    =-1 NULL WORD
+C    =1 DECODE ERROR
+C
+      IMPLICIT NONE
+      CHARACTER*(*) STR
+C
+C  DECODE BUFFER
+C
+      CHARACTER*20 ZDCOD,ZDCODL
+C
+C  LIMITS OF WORD, PRESUMED INTEGER
+C
+C
+      integer :: LENW,LENR,ICOD,ILW,I
+      ZDCOD='                    '
+      ZDCODL='                    '
+C
+      CALL URWORD(STR,1,LENW,LENR)
+C
+      ILW=LENW
+      IF(ILW.GT.0) CALL URWRDL(STR(1:ILW),ZDCODL,LENW)
+C
+      IF(LENW.EQ.0) THEN
+        ICOD=-1
+        JIDCOD=0
+        RETURN
+      ELSE IF(LENW.GT.20) THEN
+        ICOD=1
+        JIDCOD=0
+        RETURN
+      ENDIF
+C
+      ILW=20-LENW+1
+      ZDCOD(ILW:20)=ZDCODL(1:LENW)
+C  ATTEMPT DECODE
+      READ(ZDCOD,1000,ERR=900) I
+ 1000 FORMAT(I20)
+C
+C  SUCCESS
+      JIDCOD=I
+      ICOD=0
+      RETURN
+C
+ 900  CONTINUE
+C  ERROR
+      ICOD=1
+      JIDCOD=0
+      RETURN
+      END
+C******************** END FILE JIDCOD.FOR ; GROUP URDUTS ***************

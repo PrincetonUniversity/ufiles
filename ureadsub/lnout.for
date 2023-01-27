@@ -1,0 +1,15 @@
+C******************** START FILE LNOUT.FOR ; GROUP URDUTS ******************
+C----------------------
+C&  LNOUT  RETURN UREAD TERMINAL OUTPUT L.U.N. (FETCH FROM COMMON)
+C
+      INTEGER FUNCTION LNOUT(IDUM)
+C
+      USE USERIO
+C
+C  CHECK THAT COMMON BLOCKS ARE INITIALIZED
+      CALL USICHK
+C
+      LNOUT=LUNTRM
+      RETURN
+      END
+C******************** END FILE LNOUT.FOR ; GROUP URDUTS ******************

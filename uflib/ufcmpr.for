@@ -1,0 +1,64 @@
+C******************** START FILE UFCMPR.FOR ; GROUP UFILES ******************
+C--------------------------------------------------------------
+C  UFCMPR
+C
+C  SET FLAG TO WRITE DATA IN COMPRESSED (NON-TRANSPORTABLE)
+C  FORM ON SPECIFIED CHANNEL
+C
+C  EFFECTIVE ONLY IF THE CHANNEL IS USED TO WRITE DATA
+C
+      SUBROUTINE UFCMPR(ILUN,ICMPR)
+C
+      USE UFILES
+C
+C  ARGUMENTS-- ILUN - UFILES ASSIGNED UNIT NUMBER
+C   ICMPR-- WRITE CODE
+C    0 FOR STANDARD (UNCOMPRESSED FORMATTED ASCII)
+C    1 FOR COMPRESSED (BINARY 16 BIT INTEGERIZED COMPRESSED)
+C    2 FOR PORTABLE LOSS FREE COMPRESSED BINARY UFILE FORMAT
+C    3 for HDF format
+C    4 for NetCDF format
+C
+C
+C  ** CALLING SEQUENCE **
+C   UFCMPR MUST BE CALLED AFTER UFSETR, BEFORE UFOPWR
+C
+C    UFSETR AND UFCLOS ROUTINES CLEAR THE COMPRESSION FLAG--
+C  SO THIS ROUTINE MUST BE CALLED PRIOR TO EACH UFOPWR CALL FOR
+C  WHICH COMPRESSED DATA WRITE IS EXPECTED TO FOLLOW-- NOT JUST ONCE
+C  FOR A UFSETR CHANNEL.
+C
+C  CHECK CALLING SEQUENCE
+C
+      CALL UFINIT
+      CALL UFLCHK(ILUN,'UFCMPR    ',ICHAN,IER)
+      IF(IER.NE.0) RETURN
+      IF(UFSTAT(ICHAN).NE.0) THEN
+        WRITE(UFELUN,9001)
+ 9001 FORMAT(
+     >' ? UFCMPR - SET COMPRESSION FLAG *PRIOR* TO UFOPWR CALL')
+        CALL UERSTA(ICHAN,'UFCMPR    ')
+        RETURN
+      ENDIF
+C
+C  SET FLAG
+C
+      if (UFCPRS(ICHAN) .eq. -1) then
+         write(ufelun,'('' %UFCMPR -- can not reset MDSplus  '')')
+         ier=0
+         return
+      endif
+      IF(ICMPR .ge. 0 .and. ICMPR .le. 4) then
+         ier=0
+         UFCPRS(ICHAN) = ICMPR
+      else
+         write(ufelun,'('' %UFCMPR -- invalid argument:  '',i4)')
+     1	icmpr
+         ier=1
+      ENDIF
+C
+      if(ier.eq.1) call uersta(ichan,'UFCMPR    ')
+C
+      RETURN
+      END
+C******************** END FILE UFCMPR.FOR ; GROUP UFILES ******************

@@ -1,0 +1,66 @@
+C******************** START FILE GFPAKS.FOR ; GROUP GRFLBL ******************
+C--------------------------------------------------------------
+C  GFPAKS - PACK A LABEL STRING
+C
+      SUBROUTINE GFPAKS(STR1,STR2,ILEN,IFLAG)
+      implicit none
+C
+      CHARACTER*(*) STR1,STR2
+      integer       ILEN,IFLAG
+      integer       IL1, IL2, ic1, ic2, idir, iblank
+C
+C  STR1 - INPUT STRING
+C  STR2 - OUTPUT "PACKED, JUSTIFIED" STRING
+C   ILEN - LENGTH IN STR2 TO USE; IF DEFAULTED USE ALL OF STR2
+C
+C  IFLAG = -1:  LEFT JUSTIFY
+C  IFLAG = 0     CENTER
+C  IFLAG = 1    RIGHT JUSTIFY ... THE OUTPUT STRING
+C
+C  PACKING HERE JUST MEANS REMOVAL OF "EXTRA" BLANKS; I.E. NO MORE
+C  THAN ONE BLANK CHAR ALLOWED BETWEEN NON-BLANK CHARACTERS.
+C
+      IL1=LEN(STR1)
+C
+      IF(ILEN.LE.0) THEN
+        IL2=LEN(STR2)
+      ELSE
+        IL2=MIN0(LEN(STR2),ILEN)
+      ENDIF
+C
+      IF(IFLAG.EQ.-1) THEN
+        IC2=0
+        IC1=0
+        IDIR=1
+      ELSE
+        IC2=IL2+1
+        IC1=IL1+1
+        IDIR=-1
+      ENDIF
+C
+      IBLANK=1
+ 10   CONTINUE
+C      print*,'ic..',ic1,ic2
+      IC1=IC1+IDIR
+C  CHECK FOR EXIT
+      IF((IC1.LE.0).OR.(IC1.GT.IL1)) GO TO 100
+C  CHECK NEXT CHAR; IGNORE BLANKS WHEN IBLANK=1 IS SET
+      IF(STR1(IC1:IC1).EQ.' ') THEN
+        IF(IBLANK.EQ.1) GO TO 10
+        IBLANK=1
+      ELSE
+        IBLANK=0
+      ENDIF
+      IC2=IC2+IDIR
+      IF((IC2.LE.0).OR.(IC2.GT.IL2)) GO TO 100
+      STR2(IC2:IC2)=STR1(IC1:IC1)
+      GO TO 10
+C
+C  EXIT
+C
+ 100  CONTINUE
+C  CTR THE PACKED STRING
+      IF(IFLAG.EQ.0) CALL GFCTRS(STR2,IL2)
+      RETURN
+      END
+C******************** END FILE GFPAKS.FOR ; GROUP GRFLBL ******************

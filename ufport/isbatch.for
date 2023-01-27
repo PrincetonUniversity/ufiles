@@ -1,0 +1,18 @@
+      subroutine ufisbatch(iret)
+C
+C  DMC 9 SEP 1991
+C
+c
+c  this fortran routine replaces the old macro "isbatch".  This routine
+c  returns IRET=1 if the current process is a batch job or spawned
+c  subprocess not receiving input from a terminal; it returns IRET=0
+c  if an interactive terminal is in control.
+C
+      IF(ISATTY(0)) THEN
+        IRET = 0
+      ELSE
+        IRET = 1
+      ENDIF
+C
+      return
+      end

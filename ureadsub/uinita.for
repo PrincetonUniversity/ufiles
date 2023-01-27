@@ -1,0 +1,26 @@
+C******************** START FILE UINITA.FOR ; GROUP USINIT *************
+C
+C=============================================
+C&  UINITA  COMBINED UREAD/SG INITIALIZATION ROUTINE
+C
+C  INITIALIZE A PROGRAM TO USE SG AND GF LIBRARIES WITH TYPE-AHEAD
+C  ENABLED
+C
+      SUBROUTINE UINITA(ILUN)
+C
+      USE USERIO
+C
+C-------------------------------------------
+C
+      IF(NLUINI) RETURN
+C
+C  CONTROL UREAD I/O LUNS (OPTIONAL - ZERO RESULTS IN DEFAULT)
+      CALL ULUN00(ILUN)
+C
+      CALL USINIT
+C
+      CALL NEUPAG
+C
+      RETURN
+      END
+C******************** END FILE UINITA.FOR ; GROUP USINIT ***************

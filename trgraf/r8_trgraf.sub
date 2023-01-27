@@ -1,0 +1,33 @@
+# ...in /transp/users/dmccune/troot/codesys/source/trgraf
+# csh -f r8igen.csh r8_trgraf.for r8_trgraf.sub
+gmmsel   r8_gmmsel
+gmmselb   r8_gmmselb
+grafc2   r8_grafc2
+grafc3   r8_grafc3
+grafwc   r8_grafwc
+grafx1   r8_grafx1
+grafx2   r8_grafx2
+grafx3   r8_grafx3
+grafx4   r8_grafx4
+grafxe   r8_grafxe
+grafxf   r8_grafxf
+grf3   r8_grf3
+grf4f1   r8_grf4f1
+grf3f1   r8_grf3f1
+grf3f2   r8_grf3f2
+grf3x2   r8_grf3x2
+grfah0   r8_grfah0
+grfasym   r8_grfasym
+grfasym2   r8_grfasym2
+grffit   r8_grffit
+grfmf1   r8_grfmf1
+grfmm1   r8_grfmm1
+grfmm1b   r8_grfmm1b
+grfssym   r8_grfssym
+grfssym2   r8_grfssym2
+grfuf1   r8_grfuf1
+gscgdf   r8_gscgdf
+gscgt1   r8_gscgt1
+gscspc   r8_gscspc
+limplotr   r8_limplotr
+tgrf3d   r8_tgrf3d

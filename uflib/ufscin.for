@@ -1,0 +1,22 @@
+C******************** START FILE UFSCIN.FOR ; GROUP UFILS0 ******************
+C------------------------------------------------------------------
+C  UFSCIN
+C  INSERT NEW ENTRY IN ORDER ARRAY
+C
+      SUBROUTINE UFSCIN(ILOC,IPREV,NDIM,IORDER)
+C
+      INTEGER IORDER(NDIM)
+C
+C  IPREV- PREVIOUS DEFINED NUMBER OF ENTRIES IN IORDER
+C  ILOC-- LOCATION TO INSERT NEW ENTRY
+C
+      INS=IPREV+1
+C
+      DO 10 I=IPREV,ILOC,-1
+        IORDER(I+1)=IORDER(I)
+ 10   CONTINUE
+C
+      IORDER(ILOC)=INS
+      RETURN
+      END
+C******************** END FILE UFSCIN.FOR ; GROUP UFILS0 ******************

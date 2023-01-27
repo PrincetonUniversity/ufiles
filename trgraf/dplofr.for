@@ -1,0 +1,61 @@
+C******************** START FILE DPLOFR.FOR ; GROUP DPLOTT *************
+C=========================================================
+C  DPLOFR   DRAW FRAME; RASTER LOCATION OF CORNERS PASSED
+C           D. MC CUNE   21 MAY 80
+C
+C  INIT-- =1==> CLEAR SCREEN AND CALL UBINIT
+C
+      SUBROUTINE DPLOFR(IX1,IX2,IY1,IY2,INIT)
+C
+      use plot1mmxb
+      DIMENSION ZHOLD(4),ZMMAX(4),XBOX(5),YBOX(5),XMMAX(4)
+C
+      !EQUIVALENCE (XMMAX(1),XBND1)
+C
+      DATA ZMMAX/0.0,1.0,0.0,1.0/
+      DATA XBOX/0.0,1.0,1.0,0.0,0.0/
+      DATA YBOX/0.0,0.0,1.0,1.0,0.0/
+C
+      XMMAX(1) = XBND1
+      XMMAX(2) = XBND2
+      XMMAX(3) = YBND1
+      XMMAX(4) = YBND2
+C
+C  SAVE AND RESET XMIN,XMAX FOR DRAWING FRAME
+      DO 4 I=1,4
+        ZHOLD(I)=XMMAX(I)
+        XMMAX(I)=ZMMAX(I)
+ 4    CONTINUE
+C  INITIALIZE IF INIT=1
+      IF(INIT.EQ.1) THEN
+        CALL UBINIT
+      ENDIF
+C
+      CALL SLIMX(IX1,IX2)
+      CALL SLIMY(IY1,IY2)
+      CALL XTYPE(1)
+      CALL YTYPE(1)
+      CALL DLIMX(XBND1,XBND2)
+      CALL DLIMY(YBND1,YBND2)
+      CALL XFRM(2)
+      CALL YFRM(2)
+C  DRAW FRAME
+      CALL NPTS(5)
+       CALL LINE(0)
+      CALL CHECK(XBOX,YBOX)
+      CALL SETWIN
+      CALL CPLOT(XBOX,YBOX)
+C  RESTORE XMIN,XMAX,YMIN,YMAX
+      DO 5 I=1,4
+      XMMAX(I)=ZHOLD(I)
+ 5    CONTINUE
+      XBND1 = XMMAX(1)
+      XBND2 = XMMAX(2)
+      YBND1 = XMMAX(3)
+      YBND2 = XMMAX(4)
+      CALL DLIMX(XBND1,XBND2)
+      CALL DLIMY(YBND1,YBND2)
+C
+      RETURN
+      	END
+C******************** END FILE DPLOFR.FOR ; GROUP DPLOTT ******************

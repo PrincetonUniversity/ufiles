@@ -1,0 +1,26 @@
+C******************** START FILE UACKNL.FOR ; GROUP UPAUST *************
+C& UACKNL (UREAD/UPAUST) REQUEST USER ACKNOWLEDGEMENT AFTER ERROR
+C
+      SUBROUTINE UACKNL
+C
+C  REQUEST USER ACKNOWLEDGEMENT
+C
+      USE USERIO
+C
+      CHARACTER*1 ZDUM,ZBELL
+C
+C--------------------------------------
+C
+      ZBELL=char(7)
+C
+      IF(IBATCH.EQ.1) RETURN
+      IF(NLJAVA) RETURN
+C
+      WRITE(LUNTRM,9001) ZBELL,ZBELL
+ 9001 FORMAT(1X,A1,'[USER ACKNOWLEDGE - HIT ANY KEY]',A1)
+C
+      CALL ufterm_char_in(ZDUM)
+C
+      RETURN
+      END
+C******************** END FILE UACKNL.FOR ; GROUP UPAUST ***************

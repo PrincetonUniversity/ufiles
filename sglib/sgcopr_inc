@@ -1,0 +1,43 @@
+c* ************************************************************************
+c*
+c* All of the files in this directory and its subdirectories are part of
+c* "SGLIB: The Scientific Graphics Library, A collection of routines for
+c* computer generated graphics", and are
+c*
+c*         Copyright 1983, 1997 Marilee Thompson
+c*
+c* All rights reserved.  Permission to use these files must be obtained from
+c* Marilee Thompson, either by email at
+c*
+c*         mthompson@pppl.gov
+c*
+c* or by regular mail at
+c*
+c*         Marilee Thompson
+c*         Princeton University Plasma Physics Laboratory
+c*         P.O. Box 4513
+c*         Princeton NJ 08543 USA
+c*
+c* This program is a research tool and is under continued modification and
+c* development, and therefore it comes with absolutely no warranty.
+c*
+c* THERE IS NO WARRANTY FOR THIS LIBRARY, TO THE EXTENT PERMITTED BY
+c* APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+c* HOLDERS AND/OR OTHER PARTIES PROVIDE THE LIBRARY "AS IS" WITHOUT WARRANTY
+c* OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
+c* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+c* PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE LIBRARY
+c* IS WITH YOU.  SHOULD THE LIBRARY PROVE DEFECTIVE, YOU ASSUME THE COST OF
+c* ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+c*
+c* IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL
+c* ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE
+c* THE LIBRARY AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
+c* GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE
+c* USE OR INABILITY TO USE THE LIBRARY (INCLUDING BUT NOT LIMITED TO LOSS OF
+c* DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD
+c* PARTIES OR A FAILURE OF THE LIBRARY TO OPERATE WITH ANY PROGRAMS),
+c* EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+c* SUCH DAMAGES.
+c*
+c* ************************************************************************

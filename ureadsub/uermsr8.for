@@ -1,0 +1,20 @@
+C******************** START FILE UERMSF.FOR ; GROUP URDUTS ******************
+C
+C& UERMSF UREAD ERROR MESSAGE WITH FLOATING PT VALUE ECHO
+      SUBROUTINE UERMSR8(MSG,FNUM,ICOD)
+C
+      CHARACTER*(*) MSG
+      real*8 fnum
+      CHARACTER*20 FBUF
+C
+      WRITE(FBUF,1001,ERR=10) FNUM
+ 1001 FORMAT(1PE20.13)
+      GO TO 20
+C
+ 10   CONTINUE
+      FBUF='**.GT.E20******'
+C
+ 20   CALL UERMSG(MSG,FBUF,ICOD)
+      RETURN
+      END
+C******************** END FILE UERMSF.FOR ; GROUP URDUTS ******************

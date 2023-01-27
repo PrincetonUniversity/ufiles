@@ -1,0 +1,31 @@
+module purge
+
+module load intel/2021.1.2
+export FLIBROOT=/opt/intel/oneapi/compiler/2021.1.2/linux/compiler/lib/intel64
+
+export FC=ifort
+export CC=icc
+export CX=icpc
+
+export FTN_MAIN=$FLIBROOT/for_main.o
+export FTN_TRAILER="-L$FLIBROOT -lifport -lintlc -limf -lifcore -ldl -lm -lirc -lsvml"
+#GCC_PATH=$(gcc -print-file-name=libstdc++.a)
+#GCC_DIR=$(dirname $GCC_PATH)
+export CPP_TRAILER=" -L/usr/lib64 -lstdc++"
+
+export LOADER_TRAILER=" -L$LOCAL/other -lreadline -lhistory -ltermcap -ldl"
+
+module load netcdf/intel-2021.1/hdf5-1.10.6/4.7.4
+export NETCDF_DIR=/usr/local/netcdf/intel-2021.1/hdf5-1.10.6/4.7.4
+export L_NETCDF=" -L$NETCDF_DIR/lib64 -lnetcdf -lnetcdff"
+#export NETCDF_CCOPTS=" -DNO_NETCDF_2"
+
+# ... not available on stellar
+#export L_MDSPLUS=" -L$LOCAL/lib -lmds_dummy"
+#export TRANSPGRID_SERVER=transpgrid.pppl.gov
+#export MDS_TRANSP_SERVER=transpgrid.pppl.gov
+
+
+
+
+

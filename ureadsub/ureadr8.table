@@ -1,0 +1,5 @@
+#  convert UREAD program: REAL to REAL*8
+
+uermsf    uermsr8
+fdcod     r8dcod
+ureadf    ureadr8

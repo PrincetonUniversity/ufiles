@@ -1,0 +1,41 @@
+C---------------------------------------------------------------------
+C  UPSINX  FIND NEXT INLINE SUBSTITUTION CHARACTER
+C
+C  NOT COUNTED IF INSIDE ""-DELIMITERS
+C
+      SUBROUTINE UPSINX(ZBUFF,ISC,IEVEN)
+C
+C  ZBUFF -- INPUT STRING
+C  ISC -- PTS TO SEARCH START PT. -1
+C         ON OUTPUT PTS TO FOUND CHARACTER IF FOUND
+C         OTHERWISE NOT MODIFIED
+C  IEVEN-- =1 IF OUTSIDE, =0 IF INSIDE "" PAIR
+C         MODIFIED BY ENCOUNTER OF " CHARACTER
+C
+      USE USERIO
+C
+      CHARACTER*(*) ZBUFF
+C
+C---------------------
+C
+      IL=LEN(ZBUFF)
+      IC=ISC
+C
+ 10   CONTINUE
+      IC=IC+1
+      IF(IC.GT.IL) GO TO 100
+C
+      IF(ZBUFF(IC:IC).EQ.'"') THEN
+        IEVEN=1-IEVEN
+      ELSE IF(ZBUFF(IC:IC).EQ.MSUB2(1)) THEN
+        IF(IEVEN.EQ.1) THEN
+          ISC=IC
+          GO TO 100
+        ENDIF
+      ENDIF
+C
+      GO TO 10
+C
+ 100  CONTINUE
+      RETURN
+      END
