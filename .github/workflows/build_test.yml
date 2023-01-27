@@ -1,0 +1,19 @@
+name: Build and Test
+
+on: [push]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: configure
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install gfortran
+        sudo apt-get -y install libnetcdf-dev libnetcdff-dev
+    - name: build
+      run: source environ && make -f makefile.mk
+    - name: test1
+      run: |
+        echo "Need to add tests"

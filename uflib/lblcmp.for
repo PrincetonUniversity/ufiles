@@ -1,0 +1,16 @@
+C******************** START FILE LBLCMP.FOR ; GROUP UFILES ******************
+C-----------------------------------------------------------
+C  LBLCMP
+C  LOGICAL FUNCTION
+C  COMPARE TWO 30 CHARACTER LABELS
+C  RETURN .TRUE. IF THEY ARE THE SAME
+C
+      LOGICAL FUNCTION LBLCMP(ZLAB1,ZLAB2)
+      CHARACTER*30 ZLAB1,ZLAB2
+C
+CX	LBLCMP=.FALSE.
+CX	IF(ZLAB1.EQ.ZLAB2) LBLCMP=.TRUE.
+      LBLCMP=(ZLAB1.EQ.ZLAB2)
+      RETURN
+      END
+C******************** END FILE LBLCMP.FOR ; GROUP UFILES ******************

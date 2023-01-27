@@ -1,0 +1,15 @@
+c common for jc tic routines
+	integer   ll, level, ip(8), iun(8)
+	parameter (ll=160)		     !length of line(*)
+	character(ll), dimension(8) :: line  !Allow 8 level indirection
+	character ofile*32
+	character cfeed*32
+	logical ltext		!only text terminator is CR
+	logical lcrok		!CR same as comma
+	logical lechi		!echo input
+	integer lmacro			!level macro called from
+	logical lhelp			!help enabled
+	logical lmenu			!menu enabled
+
+	common /atcom/ line,level,ip,iun,ofile,cfeed,
+     >	  ltext,lcrok,lechi,lmacro,lhelp,lmenu

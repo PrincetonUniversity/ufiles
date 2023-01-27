@@ -1,0 +1,32 @@
+C******************** START FILE LMVRTI.FOR ; GROUP CONCTR ******************
+C---------------------
+C  LMVRTI  MAP SERIES OF REALS TO SERIES OF INTEGERS
+C          LINEARLY
+C
+C  X1,X2   LIMITS OF 'FROM' INTERVAL
+C   J1,J2  LIMITS OF 'TO' INTERVAL
+C    XIN   SERIES TO MAP
+C    JOUT  OUTPUT OF MAP
+C     N    NUMBER TO MAP
+C
+      SUBROUTINE LMVRTI(X1,X2,J1,J2,XIN,JOUT,N)
+      DIMENSION XIN(N)
+      DIMENSION JOUT(N)
+C
+      YJ1=J1
+      YJ2=J2
+      DELX=X2-X1
+      IF(DELX.EQ.0.0) GO TO 900
+      DELY=YJ2-YJ1
+      S=DELY/DELX
+      DO 10 J=1,N
+      JOUT(J)=IFIXR((YJ1+S*(XIN(J)-X1)+0.5))
+ 10   CONTINUE
+      RETURN
+ 900  CONTINUE
+      DO 20 J=1,N
+      JOUT(J)=J1
+ 20   CONTINUE
+      RETURN
+      	END
+C******************** END FILE LMVRTI.FOR ; GROUP CONCTR ******************

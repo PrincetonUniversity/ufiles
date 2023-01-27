@@ -1,0 +1,205 @@
+      PROGRAM TEST3D
+C  3D UFILES TEST
+      REAL F1(100,80,7)
+      REAL F2(100,80,7)
+      REAL F3(100,80,7)
+C
+      REAL X1(100)
+      REAL X2(100)
+      REAL X3(100)
+C
+      REAL Y1(80)
+      REAL Y2(80)
+      REAL Y3(80)
+C
+      REAL Z1(7)
+      REAL Z2(7)
+      REAL Z3(7)
+C
+      REAL WK(100)
+C
+      REAL SC1(2)
+      REAL SC2(2)
+      REAL SC3(2)
+C
+      CHARACTER*30 XLAB1,YLAB1,ZLAB1,FLAB1,SCLAB1(2)
+      CHARACTER*30 XLAB2,YLAB2,ZLAB2,FLAB2,SCLAB2(2)
+      CHARACTER*30 XLAB3,YLAB3,ZLAB3,FLAB3,SCLAB3(2)
+C
+      CHARACTER*10 ZDATE
+      CHARACTER*4 IDEV
+C
+      DATA XLAB1/'X axis label 100 ptsNO UNITS  '/
+      DATA YLAB1/'Y axis label  80 PTSNO UNITS  '/
+      DATA ZLAB1/'Z axis label   3 PTSNO UNITS  '/
+C
+      DATA FLAB1/'TEST3D Ufile DATA  TNO UNITS  '/
+C
+      DATA SCLAB1/'PI:       PI        NO UNITS  ',
+     >             'THREE:    3         INTEGER   '/
+C
+      DATA SC1/3.14159,3.0/
+C
+      DATA IDEV/'IDEV'/
+C
+C-------------------
+C
+      PI=SC1(1)
+C
+      CALL C9DATE(ZDATE)
+C
+      CALL UINITG("TEST3D")
+C
+C  MAKE DATA
+C
+      CALL FDEFIN(X1,100,Y1,80,Z1,7,F1,PI)
+C
+      CALL FPLOT('1',IDEV,X1,100,Y1,80,Z1,7,F1,SC1,2,
+     >             XLAB1,YLAB1,ZLAB1,FLAB1,SCLAB1,WK)
+C
+C  WRITE 3D UFILE
+C
+      CALL UFSETR(99,'Test3D16chars',
+     1                 'ZTest3d16chars',' ',' ')
+C
+      CALL UFCMPR(99,2)  ! binary
+      CALL UFOPWR(99,1000,IER)
+C
+      IPROC=0
+      CALL UF3DWR(99,'TEST',ZDATE,
+     >     F1,100,80,X1,100,Y1,80,Z1,7,IPROC,
+     >     FLAB1,XLAB1,YLAB1,ZLAB1,
+     >     2,SC1,SCLAB1,IER)
+C
+      CALL UFCLOS(99)
+C
+C  READ BACK IN TOO NEW ARRAYS
+C
+      CALL UFOPRD(99,1000,IER)
+      CALL UF3DRD(99,IDEV,ZDATE,
+     >     F2,100,80,X2,100,Y2,80,Z2,7,IPROC,
+     >     NXACT,NYACT,NZACT,0,
+     >     FLAB2,XLAB2,YLAB2,ZLAB2,
+     >     2,NSCACT,SC2,SCLAB2,IER)
+C
+      CALL UFCLOS(99)
+C
+      CALL FPLOT('2',IDEV,X2,NXACT,Y2,NYACT,Z2,NZACT,F2,SC2,NSCACT,
+     >             XLAB2,YLAB2,ZLAB2,FLAB2,SCLAB2,WK)
+C
+C  READ BACK IN TOO NEW ARRAYS
+C
+      CALL UFOPRD(99,1000,IER)
+      CALL UF3DRD(99,IDEV,ZDATE,
+     >     F3,100,80,X3,100,Y3,80,Z3,7,IPROC,
+     >     NXACT,NYACT,NZACT,1,
+     >     FLAB3,XLAB3,YLAB3,ZLAB3,
+     >     2,NSCACT,SC3,SCLAB3,IER)
+C
+      CALL UFCLOS(99)
+C
+      CALL FPLOT('3',IDEV,X3,NXACT,Y3,NYACT,Z3,NZACT,F3,SC3,NSCACT,
+     >             XLAB3,YLAB3,ZLAB3,FLAB3,SCLAB3,WK)
+C
+      STOP
+      END
+C-------------------------------------------------------------
+C
+      SUBROUTINE FDEFIN(X,NX,Y,NY,Z,NZ,F,PI)
+C
+      REAL X(NX),Y(NY),Z(NZ),F(NX,NY,NZ)
+C
+      REAL ZZ(2,7)
+C
+      ZZ(1,1)=1.0
+      ZZ(2,1)=0.0
+C
+      ZZ(1,2)=SQRT(3.0)/2.0
+      ZZ(2,2)=0.5
+C
+      ZZ(1,3)=ZZ(2,2)
+      ZZ(2,3)=ZZ(1,2)
+C
+      ZZ(1,4)=0.0
+      ZZ(2,4)=1.0
+C
+      ZZ(1,5)=-0.5
+      ZZ(2,5)=SQRT(3.0)/2.0
+C
+      ZZ(1,6)=-ZZ(2,5)
+      ZZ(2,6)=-ZZ(1,5)
+C
+      ZZ(1,7)=-1.0
+      ZZ(2,7)=0.0
+C
+      DO 10 IZ=1,NZ
+        Z(IZ)=FLOAT(IZ)
+ 10   CONTINUE
+C
+      DO 20 IX=1,NX
+        X(IX)=-1.0+2.0*(IX-1)/FLOAT(NX-1)
+ 20   CONTINUE
+C
+      DO 30 IY=1,NY
+        Y(IY)=-1.0+2.0*(IY-1)/FLOAT(NY-1)
+ 30   CONTINUE
+C
+      DO 100 IZ=1,7
+        ZC=ZZ(1,IZ)
+        ZD=ZZ(2,IZ)
+        DO 90 IY=1,NY
+          ZB=Y(IY)
+          DO 80 IX=1,NX
+            ZA=X(IX)
+C
+            ZAA=ZA*ZC-ZB*ZD
+            ZAB=ZB*ZC+ZA*ZD
+C
+C	      F(IX,IY,IZ)=EXP(ZAA)*COS(PI*ZAB)
+            F(IX,IY,IZ)=Iz   ! tbt
+C
+ 80       CONTINUE
+ 90     CONTINUE
+ 100  CONTINUE
+C
+      RETURN
+      END
+C
+C----------------------
+C
+      SUBROUTINE FPLOT(CHAR,IDEV,X,NX,Y,NY,Z,NZ,F,SC,NSC,
+     >              XLAB,YLAB,ZLAB,FLAB,SCLAB,WK)
+C
+      CHARACTER*1 CHAR
+      CHARACTER*4 IDEV
+C
+      CHARACTER*30 XLAB,YLAB,ZLAB,FLAB,SCLAB(NSC)
+C
+      REAL X(NX),Y(NY),Z(NZ),F(NX,NY,NZ),SC(NSC),WK(NX)
+C
+      CHARACTER*30 ZTITL
+C
+ 10   CONTINUE
+      CALL NEUPAG
+      WRITE(LNOUT(0),1001) CHAR
+      WRITE(LNOUT(0),1002) (SCLAB(ISC),SC(ISC),ISC=1,NSC)
+      WRITE(LNOUT(0),1003) NZ
+ 1001 FORMAT(' FUNCTION ID ',A/
+     >' SCALAR LABELS, VALUES:')
+ 1002 FORMAT(1X,A,1X,1PE12.5)
+ 1003 FORMAT(' NUMBER OF PTS IN Z AXIS:  ',I3)
+C
+      IZ=0
+      CALL UREADI(' ENTER Z INDEX, 0 TO QUIT:$$',IZ)
+      IF(IZ.EQ.0) RETURN
+      IZ=MIN0(NZ,MAX0(1,IZ))
+C
+      WRITE(ZTITL,1005) Z(IZ)
+ 1005 FORMAT(' FIXED Z=',1PE12.5,' NO UNITS')
+C
+      CALL GRF3(X,F(1,1,IZ),Y,WK,NX,NY,NX,XLAB,YLAB,FLAB,
+     >     XLAB(21:30),YLAB(21:30),FLAB(21:30),
+     >     ZTITL,1,1,1,IDEV,1000,0,1000,1,0)
+C
+      GO TO 10
+      END

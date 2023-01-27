@@ -1,0 +1,25 @@
+C-------------------------------------------------------------------
+C  URDCMC  SET UREAD INDIRECT INPUT FILE COMMENT CHARACTER
+C
+C  UREAD SYSTEM SUBROUTINE
+C
+C  **BIZARRE SYMPTOMS COULD RESULT IF A BAD CHOICE OF ZCHAR IS MADE
+C  BY THE CALLER**
+C
+C  THE VALUE OF ZCHAR IS NOT CHECKED
+C
+C--------------------
+C
+      SUBROUTINE URDCMC(ZCHAR)
+C
+      USE USERIO
+C
+      CHARACTER*1 ZCHAR
+C
+C--------------------
+C
+      MCOMMT=ZCHAR
+      MSEMI=ZCHAR
+C
+      RETURN
+      END

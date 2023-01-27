@@ -1,0 +1,20 @@
+# ...in /home/tshare/scratch/tshare/work/tmp/ufiles/src
+# csh -f r8igen.csh r8_ufiles.for r8_ufiles.sub
+larcmp   r8_larcmp
+uf0drd   r8_uf0drd
+uf0dwr   r8_uf0dwr
+uf1drd   r8_uf1drd
+uf1dre   r8_uf1dre
+uf1dwr   r8_uf1dwr
+uf1xtr   r8_uf1xtr
+extr_x   r8_extr_x
+extr_y   r8_extr_y
+uf2drd   r8_uf2drd
+ufmds_fmov   r8_ufmds_fmov
+uf2dre   r8_uf2dre
+uf2dwr   r8_uf2dwr
+uf3drd   r8_uf3drd
+uf3dre   r8_uf3dre
+uf3dwr   r8_uf3dwr
+ufswxy2   r8_ufswxy2
+ufswxy   r8_ufswxy

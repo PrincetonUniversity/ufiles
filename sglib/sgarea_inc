@@ -1,0 +1,45 @@
+c
+c implementation of fortran version.
+c -------------  -- ------- -------
+c
+c    $lc$    -  largest coordinate.  x and y point coordinates are kept
+c               in the area map as integers in the range from 0 to $lc$.
+c               the value of $lc$ obviously must not be larger than the
+c               largest integer on the target machine; it must also not
+c               be larger than the largest exactly-representable real
+c               on the target machine and its square must not be larger
+c               than the largest exactly-representable real or double
+c               (depending on what you use to replace $rd$, below) on
+c               the target machine.  on a cray, one may use 1000000.
+c
+	real      lc
+	parameter (lc=1000.)
+c
+c    $pi$    -  the value pi (3.14159265358979323846264338328...).
+	real      pi
+	parameter (pi=3.141593)
+c
+c    $tp$    -  the value two pi (6.28318530717958647692528676656...).
+	real      tp
+	parameter (tp=6.283185)
+c
+c    $0.$    -  the value zero (0. or 0.d0).
+	real      zero
+	parameter (zero=0.)
+c
+c    $.1$    -  the value one tenth (.1 or .1d0).
+	real      tenth
+	parameter (tenth=.1)
+c
+c    $.5$    -  the value one half (.5 or .5d0).
+	real      half
+	parameter (half=.5)
+c      
+c    $1.$    -  the value one (1. or 1.d0).
+	real      one
+	parameter (one=1.)
+c
+c    $ba$    -  the value ten to the tenth (1.e10 or 1.d10).
+	real      tenten
+	parameter (tenten=1.e10)
+c

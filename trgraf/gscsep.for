@@ -1,0 +1,46 @@
+C******************** START FILE GSCSEP.FOR ; GROUP GSCSEP *************
+C---------------------------------------------------------------
+C  GSCSEP
+C
+C  MAKE SURE THAT TWO NUMBERS ZMIN AND ZMAX, (PRESUMED TO BE
+C  THE HORIZ. OR VERTICAL REAL SCALE ON AN UPCOMING GRAPH) ARE
+C  IN PROPER ORDER AND NOT EQUAL
+C
+      SUBROUTINE GSCSEP(ZMIN,ZMAX)
+C
+C  MOD DMC 17 JUNE 1991 -- "EQUAL" REDEFINED IN TERMS OF SMALL NUMBERS
+C  ON OUR MACHINES
+C
+      REAL ZEPS
+      DATA ZEPS/1.0E-30/
+C
+C----------------------------------------------------------------
+C
+      ZZMIN=ZMIN
+      ZZMAX=ZMAX
+C
+      ZMIN=AMIN1(ZZMIN,ZZMAX)
+      ZMAX=AMAX1(ZZMIN,ZZMAX)
+C
+C
+C  EQUALITY DISALLOWED
+C
+      IF((ZMAX-ZMIN).LT.ZEPS) THEN
+        ZAVG=0.5*(ZMAX+ZMIN)
+        ZSS=SIGN(1.0,ZMAX)*SIGN(1.0,ZMIN)
+        IF((ZMIN.EQ.0.0).OR.(ZMAX.EQ.0.0)) ZSS=0.0
+        IF(ZSS.LE.0.0) THEN
+          ZMIN=-0.1
+          ZMAX=0.1
+        ELSE IF(ZMAX.LT.0.0) THEN
+          ZMIN=AMIN1(1.01*ZMIN,(ZAVG-0.5*ZEPS))
+          ZMAX=AMAX1(0.99*ZMAX,(ZAVG+0.5*ZEPS))
+        ELSE IF(ZMIN.GT.0.0) THEN
+          ZMIN=AMIN1(0.99*ZMIN,(ZAVG-0.5*ZEPS))
+          ZMAX=AMAX1(1.01*ZMAX,(ZAVG+0.5*ZEPS))
+        ENDIF
+      ENDIF
+C
+      RETURN
+      END
+C******************** END FILE GSCSEP.FOR ; GROUP GSCSEP ***************

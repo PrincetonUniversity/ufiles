@@ -1,0 +1,25 @@
+C******************** START FILE INTUSP.FOR ; GROUP USPARM ******************
+C------------------------------------------------------------
+C& INTUSP   DECODE UREAD STRING PARAMETER AS INTEGER VALUE
+C  RETURN IER=1 IF DECODE ATTEMPT FAILS
+C
+      INTEGER FUNCTION INTUSP(ZVAL,IER)
+C
+      CHARACTER*96 ZVAL
+C
+      I=JIDCOD(ZVAL,IC,ID,ICOD)
+C
+      IF(ICOD.EQ.1) GO TO 90
+C  SUCCESSFULLY DECODED
+      IER=0
+      INTUSP=I
+      RETURN
+C  ERROR
+ 90   CONTINUE
+      CALL UERMSG('? ATTEMPTED ARITHMETIC WITH NON-INTEGER PARAMETER',
+     >     trim(ZVAL),1)
+      IER=1
+      INTUSP=0
+      RETURN
+      END
+C******************** END FILE INTUSP.FOR ; GROUP USPARM ******************

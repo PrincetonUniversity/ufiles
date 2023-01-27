@@ -1,0 +1,14 @@
+C------------------------------------------------------------
+C  GAXCUR - SET 2D GRAPH AXES TYPE CONTROL CODE FOR NEXT PLOT...
+C   4 VALUES SPECIFYING VARIOUS COMBINATIONS OF LOG/LIN
+C   X AND Y AXES
+C
+      SUBROUTINE GAXCUR(ISEL)
+C
+      use gaxes_blk
+C
+      IF(IGXINI.EQ.0) CALL GAXES0
+      IAXCUR=ISEL
+C
+      RETURN
+      END

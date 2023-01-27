@@ -1,0 +1,69 @@
+C******************** START FILE GRFLBL.FOR ; GROUP GRFLBL ******************
+C--------------------------------------------------------------
+C  GRFLBL - PUT A LABEL ON THE GRAPH SCREEN
+C
+      SUBROUTINE GRFLBL(IX,IY,STR,ILEN,IFLAG,IVERT)
+C
+      implicit none
+      CHARACTER*(*) STR
+      integer       IX,IY,ILEN,IFLAG,IVERT,inb
+C
+C  IX,IY - RASTER COORDS AT WHICH TO START STRING
+C          THE LOWER LEFT HAND CORNER OF THE FIRST CHARACTER OF
+C          THE OUTPUT STRING IS AT (IX,IY)
+C
+C  STR - THE TEXT STRING TO DISPLAY
+C
+C  ILEN - (OPTIONAL) NOMINAL LENGTH OF STR.  IF DEFAULTED THE
+C        ACTUAL LENGTH OF STR IS USED
+C
+C  IFLAG - -1 TO LEFT JUSTIFY, 0 TO CTR, 1 TO RIGHT JUSTIFY THE
+C        LABEL IN ITS FIELD (FIELD LENGTH SPECIFIED VIA ILEN)
+C
+C  IVERT = 1 FOR VERTICAL TEXT STRING OUTPUT
+C
+C  LOCAL BUFFERS
+C
+      CHARACTER*256 BUF1,BUF2
+      integer       ils, il
+C
+C------------------------
+C
+      ILS=min(LEN(STR),LEN(BUF1))
+C
+      IF(ILEN.LE.0) THEN
+        IL=ILS
+      ELSE
+        IL=min(ILEN,len(buf1))
+      ENDIF
+C
+      BUF1=STR(1:min(len(str),il))
+      BUF2=' '
+C
+      CALL GRFMBC(BUF1(1:IL))
+C
+      CALL GFPAKS(BUF1,BUF2,IL,IFLAG)
+C
+C  FIND LAST NONBLANK
+C
+      DO 10 INB=IL,1,-1
+        IF(BUF2(INB:INB).NE.' ') GO TO 20
+ 10   CONTINUE
+C
+C  NO NONBLANKS - EXIT W/O OUTPUT
+C
+      RETURN
+C
+C  OUTPUT THE LABEL
+C
+ 20   CONTINUE
+C
+      IF(IVERT.EQ.1) THEN
+        CALL AGTMVS(IX,IY,BUF2,INB)
+      ELSE
+        CALL AGTMHS(IX,IY,BUF2,INB)
+      ENDIF
+C
+      RETURN
+      END
+C******************** END FILE GRFLBL.FOR ; GROUP GRFLBL ******************

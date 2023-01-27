@@ -1,0 +1,93 @@
+C******************** START FILE UF0DWR.FOR ; GROUP UFILS0 ******************
+C--------------------------------------------------------------
+C  UF0DWR
+C  WRITE 0-DIMENSIONAL (SCALAR) DATA TO ASCII FILE
+C
+      SUBROUTINE UF0DWR(ILUN,IDEV_I,ZSDATE_I,
+     >     SCVAL,SCLAB_I,NSC,IER)
+C
+C  ILUN-- LOGICAL UNIT NUMBER ON WHICH TO WRITE
+C  IDEV-- TOKAMAK DEVICE -- (4 LETTERS) "PDX ","PLT ", ETC.
+C  ZSDATE-- SHOT DATE (10 CHARS, E.G. "10-AUG-81 ")
+C  SCVAL-- A SERIES OF NSC SCALAR NUMBERS - DATA TO BE WRITTEN
+C  SCLAB-- 30 CHARACTER LABEL FOR EACH ELEMENT OF SCVAL
+C    E.G. SCVAL = A TIME IN SECONDS, AND
+C         SCLAB = "T0:       LASER TIME SECONDS  "
+C     THE FIRST 10 CHARS ARE RESERVED FOR THE KEYWORD
+C  WHICH IS TERMINATED BY A ":"; THE SECOND 10 CHARACTERS ARE
+C  A LABEL; THE FINAL 10 CHARS ARE A UNITS LABEL
+C  NSC-- THE NUMBER OF SCALAR ELEMENTS (AND ASSOCIATED LABELS)
+C
+C*  IER=0 ON RETURN IF WRITE WAS SUCCESSFUL
+C
+C* DENOTES OUTPUT VARIABLE
+      USE UFILES
+C
+      character*(*) IDEV_I,ZSDATE_I
+      CHARACTER*30 SCLAB_I(*)
+C
+      CHARACTER*10 ZSDATE,ZDATE
+      REAL SCVAL(*)
+      character*30 sclab(max(1,nsc))
+      CHARACTER*4 IDEV
+C
+C$r8real_input: scval
+C
+C  CHECK CHANNEL STATUS
+C
+      call ufsc_lbck(zsdate_i,zsdate,idev_i,idev,sclab_i,sclab,nsc)
+C
+      CALL UFINIT
+      CALL UFLCHK(ILUN,'UF0CWR ',ICHAN,IER)
+      IF(IER.NE.0) GO TO 9000
+      IF(UFSTAT(ICHAN).NE.1) THEN
+        CALL UERSTA(ICHAN,'UF0CWR    ')
+        GO TO 9000
+      ENDIF
+C
+C  CHANNEL STATUS OK
+C
+      IDIM=0
+      ZDATE=''
+      CALL C9DATE(ZDATE)
+C
+C  MOD APR 1984 - SUPPORT BINARY WRITE
+C
+      KMPRS=UFCPRS(ICHAN)
+      if(kmprs.eq.-1) then
+         write(ufelun,'('' ?UF0DWR:  MDS+ write not supported.'')')
+         go to 9000
+      endif
+C
+      IF(KMPRS.EQ.0) THEN
+        CALL UFAHED2(ILUN,UFSHOT(ICHAN),IDEV,IDIM,KMPRS,ZDATE,ZSDATE,
+     >      1,iformat,IERH)
+      ELSE IF(KMPRS.EQ.1) THEN
+        WRITE(ILUN) UFSHOT(ICHAN),IDEV,IDIM,KMPRS,ZDATE,ZSDATE
+      else if(kmprs.eq.2) then
+         ishot=ufshot(ichan)
+         call ufbhed(ilun,ishot,idev,idim,ikmprs,zdate,zsdate,1,ierh)
+      ENDIF
+C
+C  WRITE OUT THE NUMBER OF SCALARS TO BE WRITTEN IN THE FILE
+C  WRITE OUT THE SCALARS AND ASSOCIATED LABELS
+C
+      CALL UF0WRT(ILUN,SCVAL,SCLAB,NSC,IER)
+      IF(IER.NE.0) GO TO 9000
+C
+      IF(KMPRS.EQ.0) WRITE(ILUN,3010)
+ 3010 FORMAT(' ;----END-OF-DATA-----------------COMMENTS:-----------')
+C
+      IER=0
+      UFSTAT(ICHAN)=2
+      RETURN
+C
+ 9000 CONTINUE
+      WRITE(UFELUN,9900)
+ 9900 FORMAT(' ? DATA NOT WRITTEN DUE TO ERROR - HIT RETURN')
+      CALL UFPAUS(1)
+      IER=1
+      UFSTAT(ICHAN)=2
+      RETURN
+      	END
+C******************** END FILE UF0DWR.FOR ; GROUP UFILS0 ******************

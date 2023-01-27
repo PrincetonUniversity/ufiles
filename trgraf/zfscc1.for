@@ -1,0 +1,38 @@
+C******************** START FILE ZFSCC1.FOR ; GROUP CONCTR ******************
+C-----------------
+C  REAL FUNCTION ZFSCC1
+C   NEXT CONTOUR MANTISSA GIVEN CURRENT ONE, AND N= # OF
+C   CONTOURS PER DECADE
+C
+      REAL FUNCTION ZFSCC1(ZCUR,N)
+C
+      IF(ZCUR.LT.10.0) GO TO 10
+      ZFSCC1=10.0
+      RETURN
+C
+ 10   CONTINUE
+      IF(ZCUR.GE.1.0) GO TO 20
+      ZFSCC1=1.0
+      RETURN
+C
+ 20   CONTINUE
+      DATA NLIM/3/
+      IF(N.GT.NLIM) N=NLIM
+      IF(N.LT.1) N=1
+      IF(ZCUR.NE.1.0) GO TO 30
+      GO TO (21,22,23) N
+ 21   CONTINUE
+      ZFSCC1=10.0
+      RETURN
+ 22   ZFSCC1=3.0
+      RETURN
+ 23   ZFSCC1=2.0
+      RETURN
+ 30   CONTINUE
+      IF(ZCUR.GT.3.0) GO TO 21
+      GO TO (21,21,31) N
+ 31   CONTINUE
+      ZFSCC1=5.0
+      RETURN
+      	END
+C******************** END FILE ZFSCC1.FOR ; GROUP CONCTR ******************

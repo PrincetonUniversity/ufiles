@@ -1,0 +1,26 @@
+C******************** START FILE USPDLO.FOR ; GROUP USPARM ******************
+C================================================================
+C&  USPDLO    DELETE LOCAL UREAD PARAMETER BY NUMBER
+C
+      SUBROUTINE USPDLO(NP)
+C
+      USE USERIO
+C
+      NPT=NPLC(MAX0(NLUNIN,NLUNIO))
+      IF(NP.EQ.NPT) GO TO 20
+      NPTM1=NPT-1
+C
+      DO 10 J=NP,NPTM1
+      JP1=J+1
+      PLCNAM(J,MAX0(NLUNIN,NLUNIO))=PLCNAM(JP1,MAX0(NLUNIN,NLUNIO))
+      PLCVAL(J,MAX0(NLUNIN,NLUNIO))=PLCVAL(JP1,MAX0(NLUNIN,NLUNIO))
+ 10   CONTINUE
+C
+ 20   CONTINUE
+      NPLC(MAX0(NLUNIN,NLUNIO))=NPT-1
+      PLCNAM(NPT,MAX0(NLUNIN,NLUNIO))=' '
+      PLCVAL(NPT,MAX0(NLUNIN,NLUNIO))=' '
+C
+      RETURN
+      END
+C******************** END FILE USPDLO.FOR ; GROUP USPARM ******************

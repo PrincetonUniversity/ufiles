@@ -1,0 +1,32 @@
+c============================================================/sgtcs.inc
+c sg tcs common
+c
+cdec$   psect  /sgtcsc/ noshr
+	character*6 model
+	character*1 comchr
+	integer 
+     >	kterm,  kmxscr, ksizef, kfactr, khorsz, kversz,
+     >	kminsx, kmaxsx, kminsy, kmaxsy, kbeamx, kbeamy,
+     >	kxtype, kytype, kmovef, kkmode, krealx, krealy,
+     >  k4105,  kclip,  kdasht, kdashs, tdashr,
+     >  kdash(0:3), kmdash(0:3), kpchar(4),
+     >  kscrn,  ksres,  klcolr, ktcolr, kpcolr
+
+	real 
+     >	tminvx, tmaxvx, tminvy, tmaxvy, trealx, trealy,
+     >	tvsmx,  tvsbx,  tvsmy,  tvsby,  tmintx, tminty
+
+	common /sgtcsc/
+     >	kterm,  kmxscr, ksizef, kfactr, khorsz, kversz,
+     >	kminsx, kmaxsx, kminsy, kmaxsy, kbeamx, kbeamy,
+     >	tminvx, tmaxvx, tminvy, tmaxvy, trealx, trealy,
+     >	tvsmx,  tvsbx,  tvsmy,  tvsby,  tmintx, tminty,
+     >	kxtype, kytype, kmovef, kkmode, krealx, krealy,
+     >  k4105,  kclip,  kdasht, kdashs, tdashr,
+     >  kdash,  kmdash, kpchar,
+     >  kscrn,  ksres,  klcolr, ktcolr, kpcolr,
+     >  model,  comchr
+c
+
+
+

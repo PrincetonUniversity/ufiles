@@ -1,0 +1,88 @@
+C******************** START FILE UNAMF.FOR ; GROUP UREAD5 ******************
+ 
+      SUBROUTINE UNAMF(ZFILE)
+ 
+ 
+C  Modifications:
+C  05/15/95 tbt Made Zfile C*(*) to be compatible with lisfile.
+C               this is only called by source/lismak_sub/lisfile.for
+ 
+C--------------------------------------------------------------
+C&  UNAMF CONSTRUCT UREAD FILENAME (W/ DEFAULT EXTENSION OPTION)
+C          ...      D. MC CUNE 3 FEB 1981
+C  ROUTINE TO CONSTRUCT FILENAME FROM UNPACKED USER SPECIFICATION
+C  IN CHAR*1 ARRAY DBUFF*** WHICH IS ASSUMED TO BE PRESENT;
+C  I.E. THIS ROUTINE IS CALLED AFTER
+C  "CALL UREAD('SUB:  ENTER FILENAME (MAX 30 CHARS):$')"
+C  TO PACK USER ANSWER IN 30 CHAR VARIABLE SUITABLE FOR USE
+C  AS ARGUMENT IN OPEN COMMAND
+ 
+      USE USERIO
+ 
+CCC	CHARACTER*64  ZFILE    ! tbt
+      Character*(*) ZFILE
+C
+      CHARACTER*16 ZPUNCT
+C
+      IPUNCT=0
+C  TEMPORARILY REMOVE ANY USER PUNCTUATION THAT MIGHT BE PART OF
+C  A FILENAME
+      IF(LPUNCT.GT.0) THEN
+        IPUNCT=LPUNCT
+        CALL URPUNC(ZPUNCT)
+        ICC=0
+        DO 5 IC=1,LPUNCT
+          IF(INDEX(':[]<>.;',ZPUNCT(IC:IC)).EQ.0) THEN
+            ICC=ICC+1
+            IF(ICC.LT.IC) UPUNCT(ICC:ICC)=ZPUNCT(IC:IC)
+          ENDIF
+ 5      CONTINUE
+        LPUNCT=ICC
+      ENDIF
+C
+      ILFILN=LEN(ZFILE)
+C
+      IBLANK=0
+      IJ=0
+      ZFILE = ' '     ! Initialize tbt 5/95
+C
+      DO 110 J=1,LBUFF-1
+          CALL UDELIM(DBUFF(J),IDELIM)
+          IF((IBLANK.EQ.1).AND.((IDELIM.EQ.1).OR.
+     >	       (IDELIM.EQ.2))) GO TO 120
+          IF((IBLANK.EQ.0).AND.((IDELIM.LT.1)
+     >	       .OR.(IDELIM.GT.2))) IBLANK=1
+          IF(IBLANK.EQ.0) GO TO 110
+          IJ=IJ+1
+          ZFILE(IJ:IJ)=DBUFF(J)
+          IF(IJ.GE.ILFILN) GO TO 120
+ 110  CONTINUE
+C
+      J=LBUFF-1
+ 120  CONTINUE
+      JP1=J+1
+      IEFLG=0
+      CALL UDELIM(DBUFF(JP1),IDELIM)
+      IF((IJ.GE.ILFILN).AND.((IDELIM.LT.1).AND.
+     >     (IDELIM.GT.2))) THEN
+         CALL UERMSG('% UNAMF: FILENAME TOO LONG',CBUFF(1:JP1),2)
+         IEFLG=1
+      ENDIF
+C
+      IF(IJ.GE.ILFILN) GO TO 140
+C
+      IJP1=IJ+1
+      DO 130 JJ=IJP1,ILFILN
+          ZFILE(JJ:JJ)=' '
+ 130  CONTINUE
+C
+ 140  CONTINUE
+C
+C  FOR TYPEAHEAD, ROTATE NAME OUT OF BUFFER
+      IF(IEFLG.EQ.0) CALL UROTOR(J)
+C
+C  RESTORE APPLICATION PUNCTUATION
+      IF(IPUNCT.GT.0) CALL USPUNC(ZPUNCT(1:IPUNCT))
+      RETURN
+      END
+C******************** END FILE UNAMF.FOR ; GROUP UREAD5 ******************

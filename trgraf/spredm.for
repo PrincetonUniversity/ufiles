@@ -1,0 +1,28 @@
+C-----------------------------------------------------------------------
+C  SPREDM  -- SORT AND SEPARATE MIN,MAX INPUT PAIR
+C
+      SUBROUTINE SPREDM(XMIN0,XMAX0,XMIN,XMAX)
+C
+C  INPUT XMIN0,XMAX0 -- USER INPUT PAIR
+C  OUTPUT XMIN,XMAX  -- XMIN=MIN(XMIN0,XMAX0)
+C                       XMAX=MAX(XMIN0,XMAX0)
+C
+C    BUT THEN IF XMIN=XMAX, SEPARATE THEM SLIGHTLY SO THAT XMAX.GT.XMIN
+C  GUARANTEED ON OUTPUT
+C
+        ZMIN=AMIN1(XMIN0,XMAX0)
+        ZMAX=AMAX1(XMIN0,XMAX0)
+        XMIN=ZMIN
+        XMAX=ZMAX
+        IF(XMIN.EQ.XMAX) THEN
+          XMIN=XMIN-1.E-5*XMAX
+          XMAX=XMAX+1.E-5*XMAX
+          IF(XMIN.EQ.XMAX) THEN
+C  MUST BE EQUAL AND ZERO ...
+            XMIN=-0.1
+            XMAX=+0.1
+          ENDIF
+        ENDIF
+C
+      RETURN
+      END

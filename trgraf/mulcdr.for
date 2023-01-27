@@ -1,0 +1,226 @@
+C****************** START FILE MULCDR.FOR ; GROUP MULCDR **************
+C------------------------------------------------------------
+C  MULCDR
+C
+C  DRAW MULTIPLE (R,Y) CONTOURS  - BASED ON MULFDR - DMC 9/84
+C
+C  DRAW A MULTIPLOT WITH KEY.
+C  CALLER SETS SCALE AND AXIS TYPE
+C
+C  DATA TO BE PLOTTED IS PASSED IN 2D ARRAYS
+C
+C  NO USER I/O OR CONTROL IS PROVIDED EXCEPT TO CALL UPAUST AFTER
+C  THE MULTIPLOT IS COMPLETE
+C
+      SUBROUTINE MULCDR(R,Y,ND1,NC,NNC,Z,NZ,ISELF,NSEL,IAXSEL,
+     >     RUN,YUN,MNLAB,KYLAB,LBSEL)
+C
+      use bottoms_up
+      use mulfdr_blk
+      use plot1mmx
+C
+C  # SYMBOLS PER LINE (MAX)
+      PARAMETER (NSYMBS=5)
+C
+C  ARGUMENTS -- ALL MUST BE SUPPLIED BY CALLER (OUTPUT IS GRAPH)
+C
+C  IN COMMON/DPLOT1/  XMIN,XMAX,YMIN,YMAX -- THE SCALE OF THE GRAPH
+C
+C  PASSED:
+C   R(ND1,NZ)  DATA BUFFER OF INDICATED DIMENSIONS-- HORIZONTAL CONTOUR
+C              PARAMETRIZATION
+C   Y(ND1,NZ)  DATA BUFFER OF INDICATED DIMENSIONS-- VERTICAL CONTOUR
+C              PARAMETRIZATION
+C
+C     the i'th point in the j'th contour is at (R(i,j),Y(i,j))
+C
+C  **NC** IS THE ACTUAL NUMBER OF PTS IN EACH CONTOUR (.LE.ND1)
+C   NC(NNC) -- NC(1) IS THE NO. OF PTS IN THE 1ST CONTOUR ...
+C              NC(MIN(NZ,NNC)) IS THE NO. OF PTS IN THE NZ'TH CONTOUR
+C              NOTE THAT BY PASSING NNC=1 ONE MAY SPECIFY THE SAME
+C              NO. OF POINTS IN ALL CONTOURS, OR BY SETTING NNC=NZ
+C              AND FILLING THE NC INTEGER ARRAY ONE MAY HAVE A DIFFERENT
+C              NO. OF POINTS FOR EACH CONTOUR.  HOWEVER,
+C                  2 .LE. NC(J) .LE. ND1
+C              MUST BE MAINTAINED FOR ALL J BTW 1 AND MIN(NZ,NNC)
+C
+C   Z(NZ)      CONTOUR INDEXING
+C
+C   ISELF(NSEL) SELECTS WHICH CONTOURS ARE TO APPEAR
+C     ON THE MULTIPLOT.
+C   **NSEL** IS THE NUMBER OF CURVES TO APPEAR ON THE MULTIPLOT
+C     the contours that appear correspond to
+C       Z(iself(1)), Z(iself(2)), ..., Z(iself(NSEL)).
+C
+C   IAXSEL      SELECTS THE AXIS TYPE:
+C     =-11 FOR LINEAR-LINEAR
+C     =-15 FOR LINEAR-LOG(Y)
+C     =-30 FOR LOG(X)-LOG(Y)
+C     =-40 FOR LOG(X)-LINEAR
+C   -----------
+C   CHARACTER LABELS:
+C   ------------
+C    RUN        10 CHAR HORIZONTAL AXIS PHYSICAL UNITS LABEL
+C    YUN        10 CHAR VERTICAL AXIS PHYSICAL UNITS LABEL
+C
+C   MNLAB       3 60 CHARACTER "MAIN LABELS"-- 1ST TWO APPEAR
+C               ABOVE GRAPH, LAST ONE BELOW
+C   KYLAB       5 17 CHARACTER KEY LABELS -- 1ST TWO APPEAR
+C               AT TOP OF KEY BOX, LAST THREE AT BOTTOM
+C   LBSEL(NSEL) NSEL 10 CHARACTER SELECT LABELS-- 10 CHARACTERS
+C               TO ID EACH CURVE IN THE MULTIPLOT (1,2,... NSEL)
+C
+C *NOTE LABELS DO *NOT* NEED TO BE TERMINATED WITH "$", BUT A "$" IN
+C  THE LABEL WILL CHOP OFF OUTPUT OF THE LABEL AT THAT POINT***
+C
+      REAL R(ND1,NZ),Y(ND1,NZ),Z(NZ)
+      INTEGER ISELF(NSEL)
+      INTEGER NC(NNC)
+      CHARACTER*(*) MNLAB(3)
+      CHARACTER*(*) KYLAB(5)
+      CHARACTER*(*) LBSEL(NSEL),RUN,YUN
+C
+C  LOCAL VARIABLES-- DETERMINE LOCATION OF LABELS, LINE STYLES,
+C     SIZE OF GRAPH, ETC.
+C
+      real :: zzx(1),zzy(1)
+      DIMENSION ZXL(NSYMBS),ZYL(NSYMBS)
+      INTEGER IPLOTF(2,15)
+C
+C  Initialize mulfdr_blk
+      call mulfdr_init
+C
+C  SELECT LINE DASH STYLE / SYMBOL COMBINATIONS
+      DATA IPLOTF/1,13,2,14,6,15,4,16,3,13,1,14,2,15,6,16,
+     >              4,13,3,14,1,15,2,16,6,13,4,14,3,15/
+C
+C----------------------------------------------
+C  START OF EXECUTABLE CODE
+C
+      call bu_eval(mnlab(3),' ',irast)  ! check for multi-line lower label
+C  MAX OF 15 FCNS
+C
+      INSEL=MIN0(15,NSEL)
+C  # PTS IN FIRST CURVE
+      INUM=NC(1)
+C  # OF PTS IN PLOT WINDOW
+      INUMS=MAX0(1,IMMNB(R(1,ISELF(1)),Y(1,ISELF(1)),INUM))
+C  SYMBOL SPACING VARIABLES
+      INTVL=MAX0(1,(INUMS+NSYMBS-1)/NSYMBS)
+      IF(INTVL.LT.NSYMBS) THEN
+        ISINC=INTVL-1
+      ELSE
+        ISINC=INTVL/NSYMBS
+      ENDIF
+C
+      IST=MAX0(1,(INTVL/2-ISINC))
+C
+C  DRAW AXES
+C
+      ZZX=XMAX+5.0*(XMAX-XMIN)
+      ZZY=YMAX+5.0*(YMAX-YMIN)
+      CALL DPLOTM(IXRG,IYRG,ZZX,ZZY,1,IAXSEL)
+C
+C  PLOT THE CURVES
+C
+      iwarn=0
+      DO 30 I=1,INSEL
+C
+        INUM=NC(MIN0(I,NNC))  ! NO. OF PTS THIS CURVE
+        if(inum.lt.2) then
+           iwarn=iwarn+1
+           go to 30
+        endif
+C
+        IND=ISELF(I)          ! INDEX
+C
+C  LINE STYLE CODE
+        ICOD=IPLOTF(1,I)
+C  PLOT CONTOUR CURVE
+        CALL DPLOTM(IXRG,IYRG,R(1,IND),Y(1,IND),INUM,ICOD)
+C  PLOT SYMBOLS ON CURVE
+        ICT=0
+C  # OF PTS IN PLOT WINDOW
+        INUMS=MAX0(1,IMMNB(R(1,IND),Y(1,IND),INUM))
+C  SYMBOL SPACING VARIABLES
+        INTVL=MAX0(1,(INUMS+NSYMBS-1)/NSYMBS)
+        IF(INTVL.LT.NSYMBS) THEN
+          ISINC=INTVL-1
+        ELSE
+          ISINC=INTVL/NSYMBS
+        ENDIF
+C
+        IST=IST+ISINC
+C
+ 24     CONTINUE
+        IF(IST.GT.INTVL) THEN
+          IST=IST-INTVL
+          GO TO 24
+        ENDIF
+C
+        IPT=IST-INTVL
+C
+        DO 26 J=1,NSYMBS
+          IPT=IPT+INTVL
+          CALL ISFNDS(ZXL,ZYL,NSYMBS,ICT,R(1,IND),Y(1,IND),INUM,IPT)
+ 26     CONTINUE
+C
+        IF(ICT.GT.0) CALL DPLOTM(IXRG,IYRG,ZXL,ZYL,ICT,IPLOTF(2,I))
+ 30   CONTINUE
+C
+C  DRAW KEY FRAME
+C
+      CALL MOVABS(IXRG(2),IYRG(2))
+      CALL DRWABS(IXRG(3),IYRG(2))
+      CALL DRWABS(IXRG(3),IYRG(1)+irast)
+      CALL DRWABS(IXRG(2),IYRG(1)+irast)
+      CALL DRWABS(IXRG(2),IYRG(2))
+C  KEY LABELS
+      DO 100 I=1,5
+         ioff=0
+         if(i.ge.3) ioff=irast
+        CALL GRFLBL(IXRKY,IYRKY(I)+irast,KYLAB(I),17,0,0)
+ 100  CONTINUE
+C  KEY LINES AND LABELS
+      IYL=IYRKSL+IDRKY
+      IYN=IYRKLA+IDRKY
+      DO 110 I=1,INSEL
+        IYL=IYL-IDRKY
+        IYN=IYN-IDRKY
+        CALL DPLOTK(IYL,IXRKSL,IYN,IXRKLA,IPLOTF(1,I),LBSEL(I))
+ 110  CONTINUE
+C  FUNCTION UNITS
+      CALL GRFLBL(IXRXU,IYRXU+irast,RUN,0,-1,0)
+      CALL GRFLBL(IXRFU,IYRFU,YUN,0,-1,1)
+C  MAIN GRAPH LABELS
+      IJUST=-1
+      DO I=1,3
+         if(i.le.2) then
+            CALL GRFLBL(IXRMN,IYRMN(I),MNLAB(I),60,IJUST,0)
+         else
+            ijust=0
+            if(ibrk_lbl3.eq.0) then
+               CALL GRFLBL(IXRMN,IYRMN(I),MNLAB(I),60,IJUST,0)
+            else
+               call grflbl(ixrmn,iyrmn(i)+irast,
+     >              mnlab(i)(1:ibrk_lbl3),60,ijust,0)
+               call grflbl(ixrmn,iyrmn(i),
+     >              mnlab(i)(ibrk_lbl3+1:),60,ijust,0)
+            endif
+         endif
+      ENDDO
+C ---------
+C GRAPH COMPLETED
+C
+      CALL UPAUST(2)
+      if(iwarn.gt.0) then
+         write(6,9901) iwarn
+ 9901    format(
+     >   ' %mulcdr warning:  ',i2,' invalid contour lengths detected.')
+      endif
+C
+      call bu_reset
+C
+      RETURN
+      END
+C******************** END FILE MULCDR.FOR ; GROUP MULCDR ***************

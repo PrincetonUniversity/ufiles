@@ -1,0 +1,289 @@
+README file for Scientific Graphics Library SGlib.
+
+****************
+REVISION HISTORY
+****************
+      date         Description
+
+    June, 1998  -- portability upgrade
+    July, 2000  -- Use "global Makefile"
+
+----------------------------------------------------------
+
+Index:
+   1. CONTENTS
+   2. UNPACKING INSTRUCTIONS
+   3. DESTINATIONS
+   4. BUILDING INSTRUCTIONS
+   5. USER GUIDE
+   6. FINAL INSTALLATION
+
+************
+1. CONTENTS:
+************
+The directory into which sglib{zip,tar.gz} was extracted,
+should contain the following files:
+
+README_sglib: This file.  Brief descriptions of the other files, and
+              instructions for compiling, testing and installing 
+              libsg.a, libjc.a libraries and xplot. 
+
+Makefile:     NOTE, "GNU make" must be used
+              (usually in /usr/gnu/bin or /usr/local/bin).
+              Main Makefile to invoke Makefile(s) in subdirectories
+              (allows for several modules to be built with one step).
+
+-- in subdirectory share:
+   Make.flags:        Include file for Makefile, to setup Flags, etc.
+   Make.local.sample: Include file for Makefile, to setup non-conventional,
+                      site specific locations.
+
+-- in subdirectory sglib:
+   README: Copy of README_sglib
+   Makefile
+   Sources to build the libraries, xplot and test programs.
+
+-- in subdirectory ufport:
+   Makefile
+   Sources to build internally used library libufport.a.
+
+**************************
+2. UNPACKING INSTRUCTIONS:
+**************************
+for tarfiles:
+  > gunzip sglib.tar.gz
+  > tar xvf sglib.tar
+
+or, for zip archives:
+  > unzip sglib.zip
+
+
+****************
+3. DESTINATIONS:
+****************
+Or where do the files go?
+(this refers to building and testing; see FINAL INSTALLATION for end result) 
+
+
+When you extract the tar file you get these subdirectories:
+./sglib    --  sources and Makefile
+./share    --  include files for Makefile
+./ufport   --  sources and Makefile for internally used ufport
+./fpreproc --  for preprocessing
+./include  --  include files for preprocessing
+
+The makefile will create more sub directories,
+lib:       for libraries 
+obj/sglib: for compiled objects
+test:      for xplot and test programs
+
+
+These object directories go:
+
+If $LOCAL is defined (for TRANSP users):
+----------------------------------------
+$LOCAL/other/      (instead of /lib)
+$LOCAL/exe/        (instead of /test)
+$LOCAL/obj/sglib/
+
+If $LOCAL is not defined (non-TRANSP users):
+--------------------------------------------
+By default these directories are created in  
+./<MACHINE>, which is determined by Make.flags.
+e.g.: if you are running Linux, and the tar file resides in $HOME/foo,
+      the directories would be in
+      $HOME/foo/LINUX/...
+
+You can overwrite the destination by defining LOCAL, as an environment
+variable (e.g. export LOCAL=/dir1/dir2),
+or with make (e.g. "gmake all LOCAL=..").
+If LOCAL is defined, the destinations will be
+$LOCAL/other/ and $LOCAL/exe.
+If LOCAL is defined as ".." then, in the example above, the destination
+would be $HOME/foo/exe.
+
+The rationale behind <MACHINE> is to facilitate building for various platforms.
+ 
+Note: If you define LOCAL as option to gmake, you have to consistently do so;
+      e.g: gmake clean LOCAL=.., gmake install LOCAL=..
+
+ 
+*************************
+4. BUILDING INSTRUCTIONS:
+*************************
+
+Building SG Library and XPLOT:
+==============================
+
+Some SUN systems require the GNU C compiler available as gcc.
+Ignore the "%LOC function treated as LOC" and other warnings.
+
+To build the SG/JC libraries and the XPLOT display program
+         and TSTP10 and TSTCON test programs:
+	> gmake 
+
+
+To build  TSTONE / TSTISO / TSTOPT programs in local directory:
+	> cd sglib
+	> gmake "name"
+
+To build Debug version:
+-----------------------
+	> gmake DEBUG=y
+
+To remove objects and library
+	> gmake realclean
+
+Compiling on Linux:
+-------------------
+
+To select a different compiler define
+COMPILER to "GCC" "Intel" "Portland"
+
+e.g.:
+setenv COMPILER Portland (csh)
+COMPILER=Portland; export  COMPILER (sh)
+
+Alternatively, COMPILER can be passed directly to the gmake
+command, as in:
+gmake  COMPILER=GCC
+
+NOTE for Portland:
+     You might need to compile jctic.f with "DEBUG=Y"
+
+
+**************
+5. USER GUIDE:
+**************
+
+
+1) set the environment variable TERMINAL_TYPE
+
+  If you are using xterm:
+	> setenv TERMINAL_TYPE XTERM
+
+  If you are using a terminal emulator such as VersaTerm(PRO) on a Macintosh:
+	> setenv TERMINAL_TYPE MAC
+
+  If you are using XTC:
+	> setenv TERMINAL_TYPE XTC
+  To avoid acknowledging each plot in XTC:
+	> setenv TERMINAL_INPUT NONE
+
+
+2) set the environment variable PLOT
+
+  To route plot output to your terminal:
+	> unsetenv PLOT
+
+  To route all plot output to the file "file.plt":
+	> setenv PLOT file.plt
+
+  To display plots on your terminal and save only those pages in the
+  file "file.plt" where you type a "D" (or "d") at the beep:
+	> setenv PLOT ",file.plt"
+
+  To view the plots in "file.plt" on your terminal, if you have set PLOT
+  to "file.plt" or ",file.plt":
+	> xplot
+
+  To view the plots in "file.plt" if you haven't set PLOT:
+	> xplot file.plt
+
+3) printing of *.plt files 
+   
+   Use xtc or tek2ps, which are available in the NTCC XtcTek module.
+
+
+For more inforamtion see web sites:
+   http://w3.pppl.gov/transp
+     or
+   http://w3.pppl.gov/NTCC/Ufiles/ufiles.html 
+
+    	SGLIB Help
+    	XPLOT Help
+    	XTC Help
+    	TEK2PS Help
+	
+===========================
+How to test the SG library:
+===========================
+
+Run the TSTP10 test program:
+   For TRANSP users:
+   -----------------
+        You should have $LOCAL/exe in your PATH, which you need
+        for rplot, etc.
+        In this case just type: 
+        > tstp10
+        
+        Otherwise you have to specify the full pathname:
+        > $LOCAL/exe/tstp10
+
+   For NON-TRANSP users:
+   --------------------
+	> cd <MACHINE>/test
+      or, if you did define LOCAL, > cd $LOCAL/exe
+	> tstp10
+
+   tstp10 will prompt you for input:
+	plot number (zero for all, -1 to quit)[0] ?0
+	plot number (zero for all, -1 to quit)[0] ?-1
+   After the "0" command, the program should output several plots.
+
+
+**********************
+6. FINAL INSTALLATION:
+**********************
+
+Choose or create the root directory in which you wish to install the software.
+A common location would be /usr/ntcc, but installation can occur in any 
+directory where you have appropriate permissions.
+
+Make sure users add this directory to their PATH.
+
+You define your choice of root directory via PREFIX.
+The default for PREFIX is /usr/ntcc.
+
+The assumptions are:
+
+libraries in: $PREFIX/lib          = $LIBDIR       
+xplot in:     $PREFIX/bin          = $BINDIR       
+man pages in: $PREFIX/man/man{1,3} = $MANDIR/man{1,3}
+
+To install the software, return to the top directory (the directory,
+where you downloaded the tar files) and type
+
+> gmake install  
+    to install into /usr/ntcc/...
+
+> gmake install PREFIX=/dir1/dir2/
+    to install into /dir1/dir2/...
+
+If you want things elsewhere, you can overwrite the default with
+> gmake install LIBDIR=/yyy MANDIR=/zzz
+
+NOTE:
+-----
+Libraries are installed as libsg.a and libjc.a
+Users should link with
+
+-L<PREFIX>/lib -lsg -ljc
+
+Make sure users know what <PREFIX> is.
+
+After you have installed the software, and manually copied above files,
+you can delete the entire tree with
+> cd ..
+> rm -r foo
+   (assuming the previous example).
+
+--------------------------------------------------------------------
+
+IF YOU HAVE ANY PROBLEMS, PLEASE CONTACT EITHER:
+
+    ntcc_webmaster@pppl.gov
+
+
+
+

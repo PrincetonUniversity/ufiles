@@ -1,0 +1,52 @@
+C******************** START FILE URDTTI.FOR ; GROUP UREAD5 ******************
+C
+C--------------------------------------------------------------------
+C&  URDTTI-- INSERT STRING IN UREAD TYPEAHEAD BUFFER
+C
+      SUBROUTINE URDTTI(STR)
+C
+      USE USERIO
+C
+      CHARACTER*(*) STR
+C
+      IN=LEN(STR)
+      IF(IN.LT.1) RETURN
+C  DO NOT COUNT TRAILING BLANKS
+      DO 10 IC=IN,1,-1
+        IF(STR(IC:IC).NE.' ') GO TO 20
+ 10   CONTINUE
+      IC=-1
+ 20   IN=MIN0((IC+1),IN)
+      IF(IN.LT.1) RETURN
+C  CHECK
+      ILC=LEN(CBUFF)
+      IF((IN+NCHARC).GT.ILC) THEN
+        WRITE(LUNTRM,9001) CBUFF(1:NCHARC),STR(1:IN)
+ 9001 FORMAT(' % TYPEAHEAD BUFFER OVERFLOW WHILE INSERTING STRING'/
+     >'   BUFFER="',A,'"'/'   INSERTION STRING="',A,'"'/
+     >' % PREVIOUS BUFFER CONTENTS REPLACED')
+        CALL UCLEAR
+      ELSE IF(NLECHO) THEN
+        WRITE(LUNTRM,9002) STR(1:IN)
+ 9002   FORMAT(' % STRING INSERTED AT START OF TYPEAHEAD BUFFER:'
+     >    /1X,A)
+      ENDIF
+C
+      IN=MIN0(IN,ILC)
+C  MAKE ROOM FOR STRING INSERTION
+      IF(NCHARC.GT.0) THEN
+        DO IC=NCHARC,1,-1
+          IL=IC+IN
+          CBUFF(IL:IL)=CBUFF(IC:IC)
+        ENDDO
+      ENDIF
+C  INSERT STRING
+      CBUFF(1:IN)=STR(1:IN)
+C
+      CALL UDECOD
+C
+      CALL URXOUT
+C
+      RETURN
+      END
+C******************** END FILE URDTTI.FOR ; GROUP UREAD5 ******************

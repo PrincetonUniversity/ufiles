@@ -1,0 +1,9 @@
+$(OBJDIR)/ufnter.o : ufnter.for 
+$(OBJDIR)/ufscpr.o : ufscpr.for 
+$(OBJDIR)/ufgkey.o : ufgkey.for 
+$(OBJDIR)/uchuns.o : uchuns.for 
+$(OBJDIR)/ufacom.o : ufacom.for 
+$(OBJDIR)/ufsclk.o : ufsclk.for 
+$(OBJDIR)/ufscm2.o : ufscm2.for 
+$(OBJDIR)/ufscmp.o : ufscmp.for 
+$(OBJDIR)/ufscad.o : ufscad.for 

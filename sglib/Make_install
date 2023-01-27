@@ -1,0 +1,93 @@
+# 2nd part of Makefile for sglib
+# 07/05/00 C.Ludescher
+# Was extracted to avoid building test programs and installing them
+# when sglib is supplied by default, e.g. for xplasma
+#
+exec:  chkdirs $(PREFIX)/bin/xplot $(PREFIX)/bin/tstp10 $(PREFIX)/bin/tstcon $(THISLIB) \
+	$(PREFIX)/bin/r8tstcon $(PREFIX)/bin/r8tstp10 $(PREFIX)/bin/r4tstcon $(PREFIX)/bin/r4tstp10
+
+# Executables
+$(PREFIX)/bin/xplot: $(PREFIX)/obj/sglib/xplot.o $(PREFIX)/obj/sglib/xvplot.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $(PREFIX)/obj/sglib/xplot.o $(PREFIX)/obj/sglib/xvplot.o $(LIBS)
+
+$(PREFIX)/obj/sglib/xplot.o: $(PREFIX)/obj/sglib/xplot.f
+	@$(FC) -I./ -I$(PREFIX)/obj/sglib/ $(FFLAGS)  $@  $<
+
+$(PREFIX)/obj/sglib/xvplot.o: $(PREFIX)/obj/sglib/xvplot.f
+	@$(FC) -I./ -I$(PREFIX)/obj/sglib/ $(FFLAGS)  $@  $<
+
+$(PREFIX)/bin/tstp10: $(PREFIX)/obj/sglib/tstp10.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $< $(LIBS) $(XLIBS)
+
+$(PREFIX)/obj/sglib/tstp10.o: tstp10.f 
+	@$(FC) $(FFLAGS)  $@  $<
+
+tstopt: $(PREFIX)/obj/sglib/tstopt.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $(PREFIX)/obj/sglib/tstopt.o $(LIBS) $(XLIBS)
+
+$(PREFIX)/obj/sglib/tstopt.o: tstopt.f
+	@$(FC) $(FFLAGS) $@  $<
+
+tstone: $(PREFIX)/obj/sglib/tstone.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $(PREFIX)/obj/sglib/tstone.o $(RLIBS) $(XLIBS)
+
+$(PREFIX)/obj/sglib/tstone.o: tstone.f
+	@$(FC) $(FFLAGS) $@  $<
+
+$(PREFIX)/bin/tstcon: $(PREFIX)/obj/sglib/tstcon.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $(PREFIX)/obj/sglib/tstcon.o $(LIBS) $(XLIBS)
+
+$(PREFIX)/obj/sglib/tstcon.o: $(PREFIX)/obj/sglib/tstcon.f
+	@$(FC) $(FFLAGS) $@  $<
+
+$(PREFIX)/bin/r8tstcon: $(PREFIX)/obj/sglib/r8tstcon.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $(PREFIX)/obj/sglib/r8tstcon.o $(LIBS) $(XLIBS)
+
+$(PREFIX)/obj/sglib/r8tstcon.o: $(PREFIX)/obj/sglib/r8tstcon.f sglib_mod.f
+	@$(FC) $(MFLAGS)$(PREFIX)/mod $(FFLAGS) $@  $<
+
+
+$(PREFIX)/bin/r4tstcon: $(PREFIX)/obj/sglib/r4tstcon.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $(PREFIX)/obj/sglib/r4tstcon.o $(LIBS) $(XLIBS)
+
+$(PREFIX)/obj/sglib/r4tstcon.o: $(PREFIX)/obj/sglib/r4tstcon.f sglib_mod.f
+	@$(FC) $(MFLAGS)$(PREFIX)/mod $(FFLAGS) $@  $<
+
+$(PREFIX)/bin/r4tstp10: $(PREFIX)/obj/sglib/r4tstp10.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $< $(LIBS) $(XLIBS)
+
+$(PREFIX)/obj/sglib/r4tstp10.o: r4tstp10.f sglib_mod.f
+	@$(FC) $(MFLAGS)$(PREFIX)/mod $(FFLAGS)  $@  $<
+
+$(PREFIX)/bin/r8tstp10: $(PREFIX)/obj/sglib/r8tstp10.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $< $(LIBS) $(XLIBS)
+
+$(PREFIX)/obj/sglib/r8tstp10.o: r8tstp10.f sglib_mod.f
+	@$(FC) $(MFLAGS)$(PREFIX)/mod $(FFLAGS)  $@  $<
+
+tstiso: $(PREFIX)/obj/sglib/tstiso.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $(PREFIX)/obj/sglib/tstiso.o $(LIBS) $(XLIBS)
+
+$(PREFIX)/obj/sglib/tstiso.o: $(PREFIX)/obj/sglib/tstiso.f
+	@$(FC) $(FFLAGS) $@  $<
+
+r8tstiso: $(PREFIX)/obj/sglib/r8tstiso.o $(THISLIB)
+	@$(FC) $(LDFLAGS) -o $@ $(PREFIX)/obj/sglib/r8tstiso.o $(LIBS) $(XLIBS)
+
+$(PREFIX)/obj/sglib/r8tstiso.o: $(PREFIX)/obj/sglib/r8tstiso.f
+	@$(FC) $(MFLAGS)$(PREFIX)/mod $(FFLAGS) $@  $<
+
+
+install:
+	@test -d $(PREFIX)/mod || mkdir -p $(PREFIX)/mod
+	@umask 133; cp $(A)libsg.a $(PREFIX)/lib/
+	@umask 133; cp $(A)libjc.a $(PREFIX)/lib/
+	@umask 022; cp $(PREFIX)/bin/xplot $(PREFIX)/bin/
+ifeq ($(MODUP),Y)
+	if test -f $(PREFIX)/mod/SGLIB_MOD.$(MODEXT); then \
+	cp $(PREFIX)/mod/SGLIB_MOD.$(MODEXT) $(PREFIX)/mod/; fi
+else
+	if test -f $(PREFIX)/mod/sglib_mod.$(MODEXT); then \
+	cp $(PREFIX)/mod/sglib_mod.$(MODEXT) $(PREFIX)/mod/; fi
+endif 
+

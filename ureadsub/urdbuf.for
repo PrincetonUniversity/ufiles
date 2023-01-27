@@ -1,0 +1,49 @@
+C---------------------------------------------------------------------
+C  URDBUF  - RETURN CONTENTS OF TYPEAHEAD BUFFER TO CALLER
+C
+      SUBROUTINE URDBUF(ZBUFF,ILEN,ICALL)
+C
+C  ICALL=1 -- RE-INSERT LAST ITEM POPPED OFF BUFFER STACK
+C  ICALL=0 -- DON'T RE-INSERT LAST ITEM
+C
+      USE USERIO
+C
+      CHARACTER*(*) ZBUFF
+C
+C--------------------------------
+C
+      ILEN=LEN(ZBUFF)
+C
+      ICT=1
+      IF(ICALL.NE.1) GO TO 100
+C
+      ICT=ICT-1
+C
+ 10   CONTINUE
+        ICT=ICT+1
+        IF(ICT.GT.ILEN) GO TO 500
+        IF(ICT.GT.LUWORD) GO TO 100
+        ZBUFF(ICT:ICT)=UWORD(ICT:ICT)
+      GO TO 10
+C
+ 100  CONTINUE
+      ICT=ICT-1
+      ICL=0
+ 110  CONTINUE
+        ICT=ICT+1
+        IF(ICT.GT.ILEN) GO TO 500
+        ICL=ICL+1
+        IF(ICL.GT.NCHARC) GO TO 200
+        ZBUFF(ICT:ICT)=CBUFF(ICL:ICL)
+      GO TO 110
+C
+ 200  CONTINUE
+      ICT=ICT-1
+      DO 210 IC=ICT+1,ILEN
+        ZBUFF(IC:IC)=' '
+ 210  CONTINUE
+      ILEN=ICT
+C
+ 500  CONTINUE
+      RETURN
+      END

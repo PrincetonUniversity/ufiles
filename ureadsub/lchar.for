@@ -1,0 +1,20 @@
+C******************** START FILE LCHAR.FOR ; GROUP URDUTS ******************
+C-----------------------------------------------------
+C&  LCHAR  UREAD LOGICAL FCN, CHECK INPUT AGAINST SPECIFIED CHAR
+C  LOGICAL FUNCTION, .TRUE. IF USER ASWER IS "CHAR"
+C  FALSE OTHERWISE
+C   USE IXUOPC - ROTATE ANSWER ONLY IF TEST IS .TRUE.
+C
+      LOGICAL FUNCTION LCHAR(CHAR)
+      CHARACTER*1 CHAR
+      CHARACTER*2 ITES
+      DATA ITES/' $'/
+C
+      ITES(1:1)=CHAR
+C
+      IANS=IXUOPC(ITES)
+      LCHAR=.FALSE.
+      IF(IANS.EQ.1) LCHAR=.TRUE.
+      RETURN
+      END
+C******************** END FILE LCHAR.FOR ; GROUP URDUTS ******************

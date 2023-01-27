@@ -1,0 +1,29 @@
+c Include file for sgnco COMMON
+c
+	integer    nlm
+	parameter (nlm=40)
+	real am(*), pl1(*), pl2(*)
+	pointer (iam,am), (ipl1,pl1), (ipl2,pl2)
+	real xarr(*), yarr(*)
+	pointer (lax,xarr), (lay,yarr)
+	integer uufxy
+	pointer (jufxy,uufxy)
+	logical iss, linx, liny
+	real xorg, xrang, xscal, yorg, yrang, yscal, cv
+	integer ix, iy, is, inir, nir, kir, mir
+	integer lam, igr, iar, ilft, irgt, npl, mpl, kfill
+	integer nxs, nys, npu, nsym
+	integer kmap(nlm), ksym(nlm), kdsh(nlm)
+
+cdec$	psect  /conre2/ noshr
+	common /conre2/
+c					!pointers
+     >	  iam, ipl1, ipl2, lax, lay, jufxy,
+c					!reals
+     >	  xorg, xrang, xscal, yorg, yrang, yscal, cv,
+c					!integers/logicals
+     >	  ix, iy, is, inir, iss, nir, kir, mir,
+     >	  lam, igr, iar, ilft, irgt, npl, mpl, kfill,
+     >	  nxs, nys, linx, liny, npu, nsym,
+     >	  kmap, ksym, kdsh
+	save /conre2/

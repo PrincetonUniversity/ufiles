@@ -1,0 +1,41 @@
+C******************** START FILE CONDM0.FOR ; GROUP CONCTR ******************
+C=========================
+C  SUBROUTINE CONDM0  DOES CONDOM FUNCTION ON ONE AXIS
+C
+      SUBROUTINE CONDM0(X,NX,IMIN,IMAX,XMIN,XMAX)
+C
+      DIMENSION X(NX)
+C
+C  X AXIS
+C
+      NXM1=NX-1
+      IMIN=1
+      IF(XMIN.LE.X(IMIN)) GO TO 20
+      NXM2=NXM1-1
+      DO 10 IJ=2,NXM2
+        IF(XMIN.LE.X(IJ)) GO TO 15
+ 10   CONTINUE
+      IJ=NXM1
+ 15   CONTINUE
+      IMIN=MIN0(IJ,NXM1)
+ 20   CONTINUE
+C  XMAX
+      IMAX=NX
+      IF(XMAX.GE.X(IMAX)) GO TO 40
+      IF(IMIN.EQ.NXM1) GO TO 40
+      IMP1=IMIN+1
+      DO 30 IJ=NXM1,IMP1,-1
+        IF(XMAX.GE.X(IJ)) GO TO 35
+ 30   CONTINUE
+      IJ=IMP1
+ 35   CONTINUE
+      IMAX=IJ
+C
+ 40   CONTINUE
+C
+CX	XMIN=X(IMIN)
+CX	XMAX=X(IMAX)
+C
+      RETURN
+      	END
+C******************** END FILE CONDM0.FOR ; GROUP CONCTR ******************

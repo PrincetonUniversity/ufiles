@@ -1,0 +1,120 @@
+C******************** START FILE UFHELP.FOR ; GROUP UFHELP *************
+C---------------------------------------------------------
+C& UFHELP  PROVIDE HELP TO UREAD USERS
+C  UFHELP.FOR
+C
+C  ACCESS SPECIFIED ASCII FILE AND DISPLAY ON SCREEN USING
+C  AGX CALLS SO THAT THE DISPLAY MAY BE PRINTED IN PLOT MODE
+C  ON THE VERSATEC.
+C
+C  DMC JUN 88, AGX CALLS REPLACED WITH GRFLBL CALLS
+C
+C    FRAME IS DRAWN ABOUT EACH PAGE, AND HEADER LINE IS PRINTED
+C  ON EACH PAGE, INCLUDING FILENAME AND PAGE NUMBER
+C
+C  THE INPUT FILE SHOULD BE ASCII SEQUENTIAL WITH NO LINES LONGER
+C  THAN 72 CHARACTERS TO FIT ON PAGE
+C
+C  A LINE WHICH STARTS OUT WITH THE STRING
+C  "<*=*>" IS A DELIMITER; CURRENT PAGE IS TERMINATED AND NEW PAGE
+C  IS GENERATED; THE DELIMITER IS NOT PRINTED.
+C
+C  PASSED ARGUMENTS:  25 CHARACTER FILENAME
+C     LUN TO USE FOR FILE INPUT
+C
+      SUBROUTINE UFHELP(LUN,ZFILE)
+C
+      CHARACTER*(*) ZFILE
+C
+      CHARACTER*80 ZLINE
+      CHARACTER*80 ZBUF
+C
+C
+C START OF EXECUTABLE CODE
+C
+      luntrm=lnout(0)
+C
+
+      OPEN(UNIT=LUN,FILE=ZFILE,ACCESS='SEQUENTIAL',STATUS='OLD',
+     >       ERR=50)
+
+      GO TO 90
+C
+C  ERROR EXIT
+C
+ 50   CONTINUE
+      WRITE(LUNTRM,5001) ZFILE
+ 5001 FORMAT(/' ? ERROR OPENING HELP FILE "',A,'"'/)
+      CALL UPAUST(1)
+      RETURN
+C
+ 60   CONTINUE
+      WRITE(LUNTRM,5002) ZFILE
+ 5002 FORMAT(/' ? HELP FILE "',A,'" IS EMPTY'/)
+      GO TO 200
+C
+C  PRINT FILE
+C
+ 90   CONTINUE
+      CALL UINITA(0)
+      IPAGE=0
+ 100  CONTINUE
+        IF(IPAGE.GT.0) CALL UPAUST(2)
+ 105    CONTINUE
+        ILINE=0
+C  NEW PAGE
+        IF((IPAGE.EQ.0).OR.(IDELIM.EQ.1))
+     >		CALL UGLINE(ZLINE,LUN,IEND,IDELIM)
+        IF(IDELIM.EQ.1) GO TO 105
+        IF((IEND.EQ.1).AND.(IPAGE.EQ.0)) GO TO 60
+        IF(.NOT.((IEND.EQ.1).AND.(IPAGE.GT.0))) GO TO 107
+C---
+        CLOSE(UNIT=LUN)
+        RETURN
+C---
+ 107    CONTINUE
+        CALL UBINIT
+        CALL DPLOFR(20,1020,10,770,0)
+        IX=32
+        ZY=740.0
+        ZDY=-25.0
+        IPAGE=IPAGE+1
+        ZBUF=' '
+        ilnb=index(zfile,' ')-1
+        if(ilnb.le.0) ilnb=len(zfile)
+        do istop=ilnb,1,-1
+          if(zfile(istop:istop).eq.'/') go to 108
+          if(zfile(istop:istop).eq.']') go to 108
+          if(zfile(istop:istop).eq.'>') go to 108
+          if(zfile(istop:istop).eq.':') go to 108
+        enddo
+        istop=0
+ 108    continue
+        istop=istop+1
+        WRITE(ZBUF,1001) ZFILE(istop:ilnb),IPAGE
+ 1001   FORMAT('  >>>HELP FILE "',A,T50,'" PAGE ',I2,1X)
+        IY=ZY
+        CALL GRFLBL(IX,IY,ZBUF,72,-1,0)
+        ZY=ZY+2*ZDY
+        IMAX=28
+C  NEW LINE
+ 110    CONTINUE
+          IF(ILINE.GT.0) CALL UGLINE(ZLINE,LUN,IEND,IDELIM)
+          IF(IEND.EQ.1) GO TO 200
+          IF(IDELIM.EQ.1) GO TO 100
+          ILINE=ILINE+1
+          IF(ILINE.GT.IMAX) GO TO 100
+          ZBUF=ZLINE
+          IY=ZY
+          CALL GRFLBL(IX,IY,ZBUF,72,-1,0)
+          ZY=ZY+ZDY
+        GO TO 110
+C
+C  END-OF-FILE
+C
+ 200  CONTINUE
+      CALL UPAUST(2)
+      CLOSE(UNIT=LUN)
+      RETURN
+      	END
+C******************** END FILE UFHELP.FOR ; GROUP UFHELP ***************

@@ -1,0 +1,74 @@
+;tgtest:  enter 1 character option code:$
+1
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;tgtest:  enter 1 character option code:$
+2
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;tgtest:  enter 1 character option code:$
+3
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;tgtest:  enter 1 character option code:$
+4
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;tgtest:  enter 1 character option code:$
+C
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+X -1.1 1.1
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;tgtest:  enter 1 character option code:$
+F
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;tgtest:  enter 1 character option code:$
+E
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;tgtest:  enter 1 character option code:$
+G
+; GRF3SG:  ENTER OPTION #:$
+1
+;GRF3SG:  SELECT 3D ISOMETRIC AXIS OPTION (X/Y/Z/D/P):$
+P
+;GRF3SG:  SELECT 3D ISOMETRIC AXIS OPTION (X/Y/Z/D/P):$
+N
+; GRF3SG:  ENTER OPTION #:$
+5F
+; GRF3SG:  ENTER OPTION #:$
+8
+;G3MSEL:  CHOOSE DIMENSION FOR X AXIS (1 OR 2):$
+1
+;G3MSEL:  ENTER SLICE OPCODE (A/B/C/X/Q):$
+C
+;G3MSEL:  ENTER START INDEX:$
+1
+;G3MSEL:  ENTER NUMBER OF SLICES TO PLOT (MAX 15):$
+15
+;G3MSEL:  ENTER INTERVAL (E.G. 2 FOR ALTERNATE SLICES):$
+20
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;G3MSEL:  ENTER SLICE OPCODE (A/B/C/X/Q):$
+X
+;G3MSEL:  CHOOSE DIMENSION FOR X AXIS (1 OR 2):$
+2
+;G3MSEL:  ENTER SLICE OPCODE (A/B/C/X/Q):$
+B
+;G3MSEL:  ENTER START VALUE:$
+0
+;G3MSEL:  ENTER INTERVAL:$
+0.5
+;G3MSEL:  ENTER NUMBER OF SLICES (INTEGER):$
+11
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;G3MSEL:  ENTER SLICE OPCODE (A/B/C/X/Q):$
+Q
+; GRF3SG:  ENTER OPTION #:$
+Q
+;tgtest:  enter 1 character option code:$
+Q

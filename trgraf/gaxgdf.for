@@ -1,0 +1,14 @@
+C------------------------------------------------------------
+C  GAXGDF - FETCH DEFAULT 2D GRAPH AXES TYPE CONTROL CODE
+C   4 VALUES SPECIFYING VARIOUS COMBINATIONS OF LOG/LIN
+C   X AND Y AXES
+C
+      SUBROUTINE GAXGDF(ISEL)
+C
+      use gaxes_blk
+C
+      IF(IGXINI.EQ.0) CALL GAXES0
+      ISEL=IAXSEL
+C
+      RETURN
+      END

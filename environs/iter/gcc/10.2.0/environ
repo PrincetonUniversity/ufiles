@@ -1,0 +1,21 @@
+module purge
+
+module load IMAS/3.37.0-4.11.0-foss-2020b
+export FLIBROOT=$(echo $LD_LIBRARY_PATH | sed 's/:.*//')
+export F90HOME=$GCC_HOME
+export GCC10=1
+
+export FC=gfortran
+export CC=gcc
+export CXX=g++
+
+export FTN_MAIN=""
+export FTN_TRAILER=" -L$FLIBROOT -lgfortran"
+export CPP_TRAILER=" -L$FLIBROOT -lstdc++ -lgcc_s -lgcc"
+
+export LOADER_TRAILER=" -L$LOCAL/other -lreadline -lhistory -ltermcap -ldl"
+
+module load netCDF-Fortran/4.5.3-gompi-2020b
+module load netCDF/4.7.4-gompi-2020b
+export NETCDFHOME=$EBROOTNETCDF
+export L_NETCDF=" -L$NETCDFHOME/lib -lnetcdff -lnetcdf"

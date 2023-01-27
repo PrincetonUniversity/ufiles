@@ -1,0 +1,80 @@
+C----------------------------------------------------------------
+C  GMMSELB
+C   BASED ON GMMSEL -- key list removed, limit of 15 contours removed
+C             JFS  23 Aug 95
+C
+C  GENERATE PLOT OF MULTIPLE CONTOURS (R,Y), INDEXED BY Z
+C
+      SUBROUTINE GMMSELB(R,Y,ND1,NC,Z,NZ,
+     >     RUN,YUN,ZLAB,ZUN,MNLAB)
+C
+C  R(ND1,NZ)
+C  Y(ND1,NZ)  SEQUENCES OF ORDERED PAIRS (R,Y) TO BE PLOTTED
+C             R MAPPED ALONG HORIZONTAL AXIS, Y ALONG VERTICAL AXIS
+C             ND1= 1ST DIMENSION OF R,Y ARRAYS
+C
+C  NC         NUMBER OF PTS IN EACH CONTOUR (.LE. ND1)
+C             (R(1,J),Y(2,J)), (R(2,J),Y(2,J)), ..., (R(NC,J),Y(NC,J))
+C
+C  Z(NZ)      CONTOUR INDEXING  JTH CONTOUR IS ASSOCIATED WITH Z(J)
+C
+C  RUN        10 CHAR LABEL PHYSICAL UNITS OF R
+C  YUN        10 CHAR LABEL PHYSICAL UNITS OF Y
+C
+C  ZLAB       10 CHAR LABEL FOR Z
+C  ZUN        10 CHAR LABEL UNITS OF Z
+C
+C  MNLAB      3 60 CHAR "MAIN" LABELS FOR MULTIPLOT
+C    MNLAB(1),MNLAB(2) APPEAR ABOVE PLOT  MNLAB(3) APPEARS BELOW
+C
+C  ** CALLER SUPPLIES ALL OF THE ABOVE **
+C
+C  ALL FIXED Z LABELS SET UP HERE.
+C
+C  SEE SUBROUTINES GRFMM1B AND MULCDRB
+C
+      REAL R(ND1,NZ),Y(ND1,NZ),Z(NZ)
+C
+      CHARACTER*(*) RUN,YUN,ZLAB,ZUN
+C
+        Parameter  ( jmsurf = 201 )
+      INTEGER ISELF(jmsurf)
+      REAL ZSELF(jmsurf)
+C
+      CHARACTER*(*) MNLAB(3)
+C
+C
+C *LISMAK* 12-APR-88  GENERATED LOGICAL DECLARATIONS
+      LOGICAL LCHAR
+      LOGICAL LXOUT
+C *LISMAK* END OF GENERATED LOGICAL DECLARATIONS
+C
+C  EXECUTABLE CODE
+C
+      LUNTRM=LNOUT(0)
+ 10   CONTINUE
+C
+      ZZ1=Z(1)
+      ZZ2=Z(NZ)
+C
+      istart = 1
+      insel  = NZ
+      If ( insel .gt. jmsurf )  then
+         Write ( luntrm, '(/'' Too many surfaces to plot''/)' )
+         Call ufbad_exit
+      End if
+      intvl = 1
+C
+      IND=ISTART-INTVL
+      NSEL=0
+      DO 350 I=1,INSEL
+        IND=IND+INTVL
+        ZV=Z(MAX0(1,MIN0(NZ,IND)))
+        CALL G3INX1(ZV,1,Z,NZ,Z,NZ,ISELF,ZSELF,jmsurf,NSEL)
+ 350  CONTINUE
+C
+      CALL GRFMM1B(R,Y,ND1,NC,1,Z,NZ,ISELF,NSEL,
+     >     RUN,YUN,MNLAB)
+C
+      Return
+      END

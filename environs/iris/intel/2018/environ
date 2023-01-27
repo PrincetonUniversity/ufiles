@@ -1,0 +1,24 @@
+module purge
+
+module load git
+
+module load intel/2018
+export FLIBROOT=/fusion/usc/opt/intel2018/compilers_and_libraries_2018.2.199/linux/compiler/lib/intel64
+
+export FC=ifort
+export CC=icc
+export CX=icpc
+
+export FTN_MAIN=/fusion/usc/opt/intel2018/lib/intel64/for_main.o
+export FTN_TRAILER="-L$FLIBROOT -lifport -lintlc -limf -lifcore -ldl -lm -lirc -lsvml"
+GCC_PATH=$(gcc -print-file-name=libstdc++.a)
+GCC_DIR=$(dirname $GCC_PATH)
+export CPP_TRAILER=" -L$GCC_DIR -lstdc++"
+
+export LOADER_TRAILER=" -L$LOCAL/other -lreadline -lhistory -ltermcap -ldl"
+
+module load netcdf/4.4.1-mpich3.2-intel2018
+export L_NETCDF=" -L$NETCDF_DIR/lib -lnetcdf -lnetcdff"
+
+module load mdsplus/6.1.84
+export L_MDSPLUS=" -L$MDSPLUS_DIR/lib -lMdsLib"
