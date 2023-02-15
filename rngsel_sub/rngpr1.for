@@ -1,0 +1,24 @@
+C******************** START FILE RNGPR1.FOR ; GROUP RNGSEL ******************
+C
+C-------------------------------
+C
+C  RNGPR1 - DISPLAY ONE GROUP OF THE SELECTED SUBSEQUENCE OR COMPLIMENT
+C
+      SUBROUTINE RNGPR1(LUNTRM,LSEL,X,N,IND1,IND2)
+C
+      LOGICAL LSEL(N)
+      REAL X(N)
+C
+      IF(IND1.GE.IND2) THEN
+        WRITE(LUNTRM,1001) IND1,X(IND1)
+ 1001 FORMAT(5X,I5,1X,'(',1PE12.5,')')
+C
+      ELSE
+        WRITE(LUNTRM,1002) IND1,X(IND1),IND2,X(IND2)
+ 1002 FORMAT(5X,I5,1X,'(',1PE12.5,')  THRU  ',I5,1X,'(',1PE12.5,')')
+C
+      ENDIF
+C
+      RETURN
+      END
+C******************** END FILE RNGPR1.FOR ; GROUP RNGSEL ******************

@@ -1,0 +1,58 @@
+C******************** START FILE SCURVF.FOR ; GROUP USMOO1 ******************
+C=================================
+C  EVALUATE NUMERIC ROOT-MEAN-SQUARE CURVATURE OF FCN
+C   SCURVF
+C
+      REAL FUNCTION SCURVF(X,Y,N)
+      DIMENSION X(N),Y(N)
+C
+C   CHANGED BY BOB MCCANN, 5 JAN 1981
+C   (TO AVOID OVERFLOW WITH DATA SPIKES IN LINE AVG. DENSITY)
+C
+C========================================================
+C
+      SCURVF=0.0
+      NM1=N-1
+      ZLEN=0.5*((X(N)-X(1))+(X(NM1)-X(2)))
+C
+99    CONTINUE
+C
+C   FIRST FIND OUT HOW BIG THE DATA IS
+C
+      ZSIZE = 0.0
+      DO 100 I = 1, N
+        ZSIZE = AMAX1( ABS(Y(I)), ZSIZE)
+100   CONTINUE
+      IF(ZSIZE.EQ.0.0)			RETURN	!ERROR
+      ZNORM = 1.0/ZSIZE
+C
+C   THEN NORMALIZE THE DATA TO THE RANGE [0.0, 1.0]
+C
+      DO 200 I = 1, N
+        Y(I) = Y(I)*ZNORM
+200   CONTINUE
+C
+C   THEN DO THE CALCULATION AS BEFORE
+C
+      DO 50 I=2,NM1
+      IP1=I+1
+      IM1=I-1
+      ZDX2=( X(IP1) - X(IM1) )*0.5
+      ZDXL=X(I)-X(IM1)
+      ZDXR=X(IP1)-X(I)
+      ZYDOTL=(Y(I)-Y(IM1))/ZDXL
+      ZYDOTR=(Y(IP1)-Y(I))/ZDXR
+      ZTERM=(ZYDOTR-ZYDOTL)/ZDX2
+      SCURVF=SCURVF+ZTERM*ZTERM*ZDX2
+ 50   CONTINUE
+      SCURVF=SQRT(SCURVF/ZLEN)
+C
+C   NOW PUT THE SIZE BACK INTO Y(I)
+C
+      DO 500 I = 1, N
+        Y(I) = Y(I)*ZSIZE
+500   CONTINUE
+C
+      RETURN
+      	END
+C******************** END FILE SCURVF.FOR ; GROUP USMOO1 ******************

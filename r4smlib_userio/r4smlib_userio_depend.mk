@@ -1,0 +1,30 @@
+$(OBJDIR)/usmoo_mod.o : usmoo_mod.f90 
+$(OBJDIR)/uf1f2_renorm.o : uf1f2_renorm.f90 
+$(OBJDIR)/pcidef.o : pcidef.for 
+$(OBJDIR)/scurvf.o : scurvf.for 
+$(OBJDIR)/tfill.o : tfill.for 
+$(OBJDIR)/dcutup.o : dcutup.for 
+$(OBJDIR)/dcutp3.o : dcutp3.for 
+$(OBJDIR)/fixtrp.o : fixtrp.for 
+$(OBJDIR)/grev2.o : grev2.for 
+$(OBJDIR)/usmfa2.o : usmfa2.for 
+$(OBJDIR)/getndx.o : getndx.for 
+$(OBJDIR)/incorl.o : incorl.for 
+$(OBJDIR)/dcuta2.o : dcuta2.for 
+$(OBJDIR)/gsckax.o : gsckax.for 
+$(OBJDIR)/indufi.o : indufi.for 
+$(OBJDIR)/dcutf1.o : dcutf1.for 
+$(OBJDIR)/eptran.o : eptran.for 
+$(OBJDIR)/incors.o : incors.for 
+$(OBJDIR)/grfweb.o : grfweb.for 
+$(OBJDIR)/grev1.o : grev1.for 
+$(OBJDIR)/usmoo1.o : usmoo1.for $(OBJDIR)/usmoo_mod.o 
+$(OBJDIR)/grfwct.o : grfwct.for 
+$(OBJDIR)/dcuta1.o : dcuta1.for 
+$(OBJDIR)/dcutst.o : dcutst.for 
+$(OBJDIR)/jansmo.o : jansmo.for 
+$(OBJDIR)/usmoo2.o : usmoo2.for $(OBJDIR)/usmoo_mod.o 
+$(OBJDIR)/inordu.o : inordu.for 
+$(OBJDIR)/induad.o : induad.for 
+$(OBJDIR)/dcuts1.o : dcuts1.for 
+$(OBJDIR)/dcutcp.o : dcutcp.for 

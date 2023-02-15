@@ -1,0 +1,15 @@
+$(OBJDIR)/r4_qksmooth.o : r4_qksmooth.f90 
+$(OBJDIR)/filtr90.o : filtr90.for 
+$(OBJDIR)/ddrop.o : ddrop.for 
+$(OBJDIR)/ierfcn.o : ierfcn.for 
+$(OBJDIR)/filfcn.o : filfcn.for 
+$(OBJDIR)/filers.o : filers.for 
+$(OBJDIR)/wxcint.o : wxcint.for 
+$(OBJDIR)/filtr6.o : filtr6.for 
+$(OBJDIR)/filfn6.o : filfn6.for 
+$(OBJDIR)/filfas.o : filfas.for 
+$(OBJDIR)/copyy.o : copyy.for 
+$(OBJDIR)/fileps.o : fileps.for 
+$(OBJDIR)/pctran.o : pctran.for 
+$(OBJDIR)/wxfint.o : wxfint.for 
+$(OBJDIR)/filter.o : filter.for 

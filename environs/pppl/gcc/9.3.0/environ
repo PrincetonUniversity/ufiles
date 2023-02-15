@@ -6,7 +6,6 @@ module load gcc/9.3.0
 export FLIBROOT=$(echo $LD_LIBRARY_PATH | sed 's/:.*//')
 export F90HOME=$GCC_HOME
 
-
 export FC=gfortran
 export CC=gcc
 export CX=g++

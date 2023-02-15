@@ -1,0 +1,818 @@
+C******************** START FILE GSMOO1.FOR ; GROUP GSMOO1 *************
+C-----------------------------------------------------------
+C  GSMOO1
+C  PROGRAM TO SMOOTH DATA INPUT FROM UFILES DATA FILE
+C
+C  REV. D. MC CUNE JAN 1983
+C   ADDING SMOOTHING-AUXILLIARY OPTION CONTROL NODE AFTER SHOT DATA
+C  IS SUCCESSFULLY READ IN.
+C
+      PROGRAM GSMOO1
+      USE USMOO
+C MAX NUMBER OF SCALARS
+      PARAMETER (MAXSC=200)
+C  MAX SIZE OF DATA ARRAYS
+C
+C      PARAMETER (JDSIZ=81920)
+      PARAMETER (JDSIZ=200000)
+C
+C  DATA BUFFERS AND LABELS
+      REAL X(JDSIZ),Y(JDSIZ),YF(JDSIZ),YT(JDSIZ),
+     >     EPS(JDSIZ),DEL(JDSIZ),XTRVAL(MAXSC),XTEVAL(MAXSC)
+      CHARACTER*10 ZSDATE,XLAB(3),YLAB(3),XTRLAB(3,MAXSC),ZSHID,ZDATE
+      INTEGER IORDER(MAXSC)
+      CHARACTER*128 ZFILE
+      CHARACTER*10 ZZDATE,XELAB(3),YELAB(3),XTELAB(3,MAXSC),ZPROG
+      CHARACTER*10 ZXUNOL,ZYUNOL,ZXUN00,ZYUN00
+      CHARACTER*4 IDEV,IDEV2
+C  DATA BUFFERS - SECONDARY FCN - ADD OR SUBTRACT TO PRIMARY DATA
+      REAL X2(JDSIZ),Y2(JDSIZ),XTRVL2(MAXSC)
+      CHARACTER*10 XTRLB2(3,MAXSC)
+      character*60 mnlab(3)
+C-----------------------------
+C flag that axis order was reversed for smoothing
+      logical lxrev
+      character*30 xrlab
+C
+C-----------------------------
+C  PROGRAM MOD APR 1984 DMC-- DEAL WITH VAX COMPRESSED UFILES DATA
+C   FORMATTED COMMENTS FOR THE OUTPUT FILE ARE PUT IN A TEMPORARY FILE
+C   WHICH IS SPOOLED TO THE PERMANENT FILE WHICH IS OPTIONALLY BINARY-
+C   COMPRESSED.
+C  USER MAY SELECT COMPRESSED OR UNCOMPRESSED DATA OUTPUT
+C
+      CHARACTER*7 CMPSTA(0:4)
+C
+C *LISMAK* DATA SATEMENT MOVED 12-APR-88
+C
+C  COMPRESSED DATA OUTPUT DEFAULT FLAG, =1 FOR COMPRESSION ON
+C *LISMAK* DATA SATEMENT MOVED 12-APR-88
+C
+C
+C-------------------------------
+C
+C  L.U.N FOR DATA INPUT
+C
+C *LISMAK* DATA SATEMENT MOVED 12-APR-88
+C  L.U.N FOR DATA OUPUT
+C *LISMAK* DATA SATEMENT MOVED 12-APR-88
+C  L.U.N. FOR ERROR BAR FILES
+C *LISMAK* DATA SATEMENT MOVED 12-APR-88
+C  L.U.N. FOR TEMPORARY COMMENTS FILE
+C *LISMAK* DATA SATEMENT MOVED 12-APR-88
+C  L.U.N. FOR 2NDARY FCN
+C *LISMAK* DATA SATEMENT MOVED 12-APR-88
+C  L.U.N. FOR 2NDARY COMMENTS FILE
+C *LISMAK* DATA SATEMENT MOVED 12-APR-88
+C
+C
+C *LISMAK* 12-APR-88  GENERATED LOGICAL DECLARATIONS
+      LOGICAL LCHAR
+      LOGICAL LYES
+      logical lxout
+C *LISMAK* END OF GENERATED LOGICAL DECLARATIONS
+C
+C => GSMOO1               BEGIN DATA BLOCK
+C => LISMAK 12-APR-88  MOVED DATA STATEMENTS
+      DATA CMPSTA/'ascii','????','binary','HDF','NetCDF'/
+C
+      DATA ICOMPR/2/    ! default:  compressed binary
+C
+      DATA ILUNI/21/
+      DATA ILUNO/22/
+      DATA ILUNE/23/
+      DATA ILUNT/24/
+      DATA ILUN2/25/
+      DATA ILUNT2/26/
+C => END DATA BLOCK
+C ====================
+C
+      ITOGGL=max(2,ICOMPR)
+      MAXD=JDSIZ
+      MAXE=JPCMAX
+C
+      call date_and_time(DATE=zdate)
+      CALL UINITG("GSMOO1")
+CC	CALL USINIT
+C  ENABLE INLINE TYPE-AHEAD
+CC	CALL UAHEAD
+      call urdext('ifi')
+      luntrm=lnout(0)
+ 10   CONTINUE
+      CALL UFNTER(ILUNI,'1D INPUT FILES - RAW')
+      CALL UFNTER(ILUNO,'OUTPUT FILES- SMOOTH')
+      IFLAGE=0
+      GO TO 20
+C
+ 14   CONTINUE
+      CALL NEUPAG
+      IF(LXOUT(0)) WRITE(LUNTRM,1001) MAXE,MAXD
+ 1001 FORMAT(/
+     >  '  PROGRAM ALLOWS USE OF AN ERROR BAR FILE TO DEFINE'/
+     >  '  LIMITS TO BE APPLIED IN SMOOTHING THE DATA.'/
+     >  '  THE INDEPENDANT VARIABLE (X) ARRAY FOR THE ERROR BAR'/
+     >  '  FILE NEED NOT MATCH THAT OF THE PRIMARY INPUT DATA'/
+     >  '  FILE.  HOWEVER THE ERROR BAR FILE MAY CONTAIN NO'/
+     >  '  MORE THAN ',I6,' POINTS, WHILE THE PRIMARY'/
+     >  '  (UNSMOOTHED DATA) FILE MAY CONTAIN UP TO'/
+     >  2X,I6,' POINTS.'/)
+      IFLAGE=0
+      CALL UREAD('GSMOO1:  USE AN ERROR BAR FILE? (Y/N):$')
+      if(lchar('Q')) goto 900
+      IF(.NOT.LYES(0)) GO TO 20
+C
+ 17   CONTINUE
+      IFLAGE=1
+      CALL UFNTER(ILUNE,'ERROR BAR FILES     ')
+C
+ 20   CONTINUE
+C  INITIALIZE UNITS CONVERSION INFO
+      IXUNOL=0
+      ZXCONA=1.0
+      ZXCONB=0.0
+      IYUNOL=0
+      ZYCONA=1.0
+      ZYCONB=0.0
+C
+      CALL NEUPAG
+      IF(LXOUT(0)) CALL UFSNMD(LUNTRM,'               INPUT',ILUNI)
+      IF(LXOUT(0)) CALL UFSNMD(LUNTRM,'              OUTPUT',ILUNO)
+      IF(LXOUT(0).AND.(IFLAGE.EQ.1)) CALL UFSNMD(
+     >     LUNTRM,'           ERROR BAR',ILUNE)
+ 21   CONTINUE
+      IF(LXOUT(0)) WRITE(LUNTRM,1002)
+ 1002 FORMAT(' ENTER "E" TO NAME ERROR-BAR FILE, "I" FOR ERROR-BAR',
+     >  ' INFO + SWITCH')
+      CALL URSHOT('GSMOO1',', "Q" TO QUIT, "D" TO CHANGE NAMES',
+     >	  'QDEI',ISHOT,IANS)
+      IF(IANS.GT.0) GO TO (900,10,17,14) IANS
+C
+      IF(ISHOT.EQ.0) GO TO 900
+C---
+C  CREATE TEMPORARY FILE TO RECORD SCALARS MODIFICATIONS, OTHER REMARKS
+      ISMOO=0
+      IDCUT=0
+      CALL UFOPCF(ILUNT,IER)
+      WRITE(ILUNT,7001)
+ 7001 FORMAT('  ')
+C---
+C
+      CALL UFOPRD(ILUNI,ISHOT,IER)
+      IF(IER.NE.0) THEN
+        CALL UCLEAR
+        GO TO 21
+      ENDIF
+C
+      CALL UF1DRD(ILUNI,IDEV,ZSDATE,
+     >   X,Y,JDSIZ,NRET,IPROC,
+     >   XLAB,YLAB,MAXSC,NUMSC,XTRVAL,XTRLAB,IER)
+C
+      ZXUN00=XLAB(3)
+      ZYUN00=YLAB(3)
+      IPROCP=IPROC
+      IF((IPROC.EQ.0).OR.(IPROC.EQ.1)) GO TO 32
+      IF(IPROC.GT.3) GO TO 34
+      write(luntrm,9901)
+ 9901 format(1x,'% INPUT DATA HAS ALREADY BEEN SMOOTHED')
+      GO TO 34
+C
+ 32   CONTINUE
+C
+ 34   CONTINUE
+C
+      IF(IER.NE.0) THEN
+        CALL UCLEAR
+        GO TO 290
+      ENDIF
+C
+C  CHECK AXIS MONOTONICITY
+      lxrev=.false.
+      CALL GSCKAX('GSMOO1',XLAB(1),XLAB(3),X,NRET,IER)
+      IF(IER.NE.0) THEN
+        CALL UCLEAR
+        iabort=1
+        if(ier.eq.2) then
+c  repair is possible -- option to invert axis order
+           call uread(
+     >'gsmoo1:  reverse x axis order and continue? (Y/N):$')
+           if(lyes(0)) then
+      	iabort=0
+      	xrlab=xlab(1)//xlab(2)//xlab(3)
+      	lxrev=.true.
+      	call grev1(x,y,nret)
+           endif
+        endif
+        if(iabort.eq.1) GO TO 290
+      ENDIF
+C
+C  COPY UNSMOOTHED DATA INTO OUTPUT BUFFER FOR NOW ...
+C
+C  REENTRY LINE 35 - DO NOT REREAD ERROR BAR DATA
+      IFLREB=0
+ 35   CONTINUE
+      CALL COPYY(Y,1.0,YF,NRET)
+C
+      IF(IFLREB.NE.0) GO TO 50
+      IFLREB=1
+C
+      KTPPCE=0
+      IF(IFLAGE.EQ.0) GO TO 50
+C
+C  READ IN ERROR BAR FILE; CHECK THAT UNITS ARE CONSISTANT
+C
+      CALL UFOPRD(ILUNE,ISHOT,IER)
+      IF(IER.NE.0) GO TO 49
+C
+      ZPROG='GSMOO1 OP.'
+C
+      CALL UF1DRD(ILUNE,IDEV2,ZZDATE,
+     >   XPCE,EPSPC,JPCMAX,NPCE,IDUM,
+     >   XELAB,YELAB,MAXSC,NUMSCE,XTEVAL,XTELAB,IER)
+      CALL UFCLOS(ILUNE)
+ 
+      IF(IER.NE.0) GO TO 49
+C
+      IF(NUMSCE.EQ.0) GO TO 29
+      CALL UREAD(
+     >  'GSMOO1: EXAMINE KEYWORD SCALARS IN ERROR-BAR FILE? (Y/N):$')
+      if(lyes(0)) then
+        CALL UFSCLK(ILUNE,ISHOT,NUMSCE,XTEVAL,XTELAB,IORDER,0,0)
+      ENDIF
+ 29   CONTINUE
+C
+      IERL=0
+      IF(XLAB(3).EQ.XELAB(3)) GO TO 30
+      IERL=1
+      WRITE(LUNTRM,9001)
+ 9001 FORMAT(' ? X AXIS UNITS IN ERROR BAR FILE DO NOT'/
+     >  '   MATCH UNITS IN PRIMARY INPUT FILE')
+ 30   CONTINUE
+      IF(YLAB(3).EQ.YELAB(3)) GO TO 40
+      IERL=1
+      WRITE(LUNTRM,9002)
+ 9002 FORMAT(' ? Y AXIS UNITS IN ERROR BAR FILE DO NOT'/
+     >  '   MATCH UNITS IN PRIMARY INPUT FILE')
+ 40   CONTINUE
+      KTPPCE=1
+      IF(IERL.EQ.1) WRITE(LUNTRM,9003) XLAB(3),YLAB(3),XELAB(3),
+     >   YELAB(3)
+ 9003 FORMAT(' PRIMARY DATA     X: ',A10,'  Y: ',A10/
+     >         ' ERROR BAR FILE   X: ',A10,'  Y: ',A10/)
+      IF(IERL.EQ.0) GO TO 50
+C
+C  ERROR IN ERROR BAR FILE
+C
+ 49   CONTINUE
+      CALL UERMSG('ERROR BAR DATA REJECTED DUE TO ERROR',' ',2)
+      KTPPCE=0
+C
+ 50   CONTINUE
+C-------------------------------------------
+C  SMOOTHING CONTROL NODE
+C
+      CALL NEUPAG
+ 51   IF(LXOUT(0)) WRITE(LUNTRM,2000) NUMSC,CMPSTA(ICOMPR)
+ 2000 FORMAT(' GSMOO1 DATA OPTIONS:'/
+     >'  A - ADD FUNCTION TO *UNSMOOTHED* DATA (** SMOOTHED DATA',
+     >' OVERWRITTEN **)'/
+     >'  B - "CUT-UP" THE *UNSMOOTHED* DATA (SMOOTHED DATA UNAFFECTED)'/
+     >'  C - "CUT-UP" THE *SMOOTHED* DATA (UNSMOOTHED DATA UNAFFECTED)'/
+     >'  D - EXPLANATION OF "B" AND "C" OPTIONS'/
+     >'  E - EXAMINE/MODIFY ASSOCIATED SCALARS (NSC= ',I6,')'/
+     >'  1 - PRESET PLOT SCALING/AXES DEFAULTS'/
+     >'  G - GRAPH THE *UNSMOOTHED* DATA'/
+     >'  H - GRAPH THE *SMOOTHED* DATA'/
+     >'  K - GRAPH smoothed AND unsmoothed DATA on same pair of axes'/
+     >'  M - impose MIN and MAX values on original data; smoothed',
+     >' data erased.'/
+     >'  Q - QUIT (GET NEW SHOT WITHOUT WRITING OUTPUT FILE)'/
+     >'  S - SMOOTH THE DATA'/
+     >'  F - SMOOTH THE DATA **FAST**'/
+     >'  U - CHANGE THE UNITS OF THE DATA (F--> A*F+B TRANSFORM)'/
+     >'  W - WRITE DATA (SMOOTHED DATA IF AVAILABLE) TO OUTPUT FILE'/
+     >'  P - COMPRESS:  TOGGLE UFILE OUTPUT FORMAT, NOW "',A,'"'/
+     >'  4 - *new* Ufile output format control menu'/
+     >'  X - EXIT (STOP PROGRAM NOW)')
+      CALL UREAD('GSMOO1: ENTER OPTION CODE:$')
+
+      if(lchar('K')) go to 195
+      if(lchar('M')) go to 500
+
+      IANS=IXUOPC('1PBCDEQSFUWXGHA4$')
+      CALL UCHKOP(IANS,0,1,100,-1,*51)
+      GO TO (45,55,95,90,80,60,290,70,75,100,125,900,180,190,400,56)
+     1  IANS
+C              1  P  B  C  D  E  Q   S  F  U   W   X   G   H   A   4
+C
+ 45   CONTINUE
+      CALL GPRESET
+      GO TO 50
+C
+ 55   CONTINUE
+      ICOMPR=ITOGGL-ICOMPR
+      GO TO 50
+C
+ 56   continue
+      call ufmtsel(icompr)
+      if(icompr.gt.0) itoggl=icompr
+      go to 50
+C
+C  MODIFY SCALARS
+ 60   CONTINUE
+      CALL UFSCAD(ILUNO,ISHOT,MAXSC,NUMSC,XTRVAL,XTRLAB,IORDER,ILUNT)
+      GO TO 50
+C
+C  SMOOTH THE DATA
+C
+ 70   write(ZSHID,3001) IDEV,ISHOT  !*** jpj@JET Apr-1995 (was ENCODE)
+ 3001 FORMAT(A4,I6)
+      CALL USMOO1(X,Y,NRET,YF,DEL,EPS,
+     >    ZEND1,ZEND2,ZBASE,NBASE,ZDROP,NDROP,XLAB,YLAB,
+     >    XLAB(3),YLAB(3),ZSHID,ZPROG)
+      ISMOO=1
+      IF(IPROC.LT.2) IPROC=IPROC+2
+      GO TO 50
+C  ** FAST ** SMOOTHING
+ 75   CONTINUE
+      IF(LXOUT(0)) WRITE(LUNTRM,2002)
+ 2002 FORMAT(/' THE "FILFAS" FAST SMOOTHING ALGORITHM CALCULATES'/
+     >  ' SMOOTHED DATA POINTS AS A WEIGHTED AVERAGE OF +/- N '/
+     >  ' UNSMOOTHED DATA POINTS IN THE VICINITY'/)
+      CALL UREAD('GSMOO1:  ENTER "N" FOR FILFAS:  $$')
+      INFAST=IDCOD(IERT)
+      IF(LCHAR('Q')) GOTO 290
+      IF(IERT.NE.0) THEN
+        CALL UPAUST(0)
+        GO TO 50
+      ENDIF
+      CALL FILFAS(Y,YF,NRET,INFAST)
+      ZPROG='FILFAS    '
+      IF(INFAST.GT.0) THEN
+        IF(IPROC.LT.2) IPROC=IPROC+2
+        ISMOO=1
+      ENDIF
+      GO TO 50
+C
+C
+ 80   CONTINUE
+C  CUT-UP EXPLANATION
+      CALL NEUPAG
+      IF(LXOUT(0)) WRITE(LUNTRM,2001)
+ 2001 FORMAT(/'  ... DATA "CUT-UP" ROUTINE:'/
+     > /' *APPLIED TO SMOOTHED DATA:'/
+     >  ' THIS ROUTINE ALLOWS INTERACTIVE REPLACEMENT OF A'/
+     >  ' "SPURIOUS" SEGMENT OF THE DATA CURVE BY A CUBIC'/
+     >  ' INTERPOLATED FROM THE ENDPOINTS OF THE SEGMENT'/
+     >  ' REPLACED.  THE CUBIC IS CHOSEN SO AS TO ACHIEVE'/
+     >  ' CONTINUITY AND 1ST ORDER DIFFERENTIABILITY'/
+     >  ' AT THE ENDPOINTS OF THE SEGMENT REPLACED.'/
+     > /' *APPLIED TO UNSMOOTHED DATA:'/
+     >  ' THE INTERPOLANT IS A "WEIGHTED REFLECTION" OF NEIGHBORING'/
+     >  ' POINTS RATHER THAN A CUBIC POLYNOMIAL'/)
+C
+      CALL UPAUST(0)
+      GO TO 50
+C
+ 90   CONTINUE
+      IDCUT=1
+      ISMOO=1
+C  CUT-UP SMOOTHED DATA
+      write(ZSHID,3001) IDEV,ISHOT   !*** jpj@JET Apr-1995
+        CALL DCUTUP(X,YF,YT,NRET,YLAB,XLAB,ZSHID)
+      GO TO 50
+ 95   CONTINUE
+      IDCUT=1
+C  CUT-UP UNSMOOTHED DATA
+      write(ZSHID,3001) IDEV,ISHOT   !*** jpj@JET Apr-1995
+        CALL DCUTP3(X,Y,YT,NRET,YLAB,XLAB,ZSHID)
+      GO TO 50
+C  UNITS TRANSFORM OPTION
+ 100  CONTINUE
+C  X UNITS
+      CALL UCHUNS(
+     >'X    ',XLAB(3),IXUNTC,ZXUN00,X,NRET,ZXCONA,ZXCONB,1)
+      IXUNOL=MAX0(IXUNOL,IXUNTC)
+C
+      IF((KTPPCE.EQ.1).AND.(IXUNTC.GT.0)) THEN
+        DO 126 I=1,NPCE
+          IF(IXUNTC.EQ.1) THEN
+            ZFAC=ZXCONA
+          ELSE
+            ZFAC=ZXCONB
+          ENDIF
+          XPCE(I)=ZFAC*XPCE(I)
+ 126    CONTINUE
+      ENDIF
+C
+C  Y UNITS
+      CALL UCHUNS(
+     >'Y    ',YLAB(3),IYUNTC,ZYUN00,YF,NRET,ZYCONA,ZYCONB,2)
+      IYUNOL=MAX0(IYUNOL,IYUNTC)
+C
+      IF(IYUNTC.GT.0) THEN
+C
+      DO 127 I=1,NRET
+C TRANSFORM OF BOTH SMOOTHED AND UNSMOOTHED DATA REQUIRED
+C  SMOOTHED DATA DONE ABOVE IN UCHUNS CALL
+        IF(IYUNTC.EQ.1) THEN
+          Y(I)=ZYCONA*Y(I)+ZYCONB
+        ELSE
+          Y(I)=ZYCONB*ABS(Y(I))**ZYCONA
+        ENDIF
+ 127  CONTINUE
+C
+      IF(KTPPCE.EQ.1) THEN
+        DO 128 I=1,NPCE
+          IF(IYUNTC.EQ.1) THEN
+            ZFAC=ZXCONA
+          ELSE
+            ZFAC=ZXCONB
+          ENDIF
+          EPSPC(I)=ZFAC*EPSPC(I)
+ 128    CONTINUE
+      ENDIF
+C
+      ENDIF
+C  RECORD TRANSFORMATIONS IN COMMENTS FILE
+      CALL UFAXCOM(ILUNT,IXUNTC,ZXCONA,ZXCONB,IYUNTC,ZYCONA,ZYCONB,
+     >     0,0.0,0.0)
+      GO TO 50
+C  GRAPH THE UNSMOOTHED DATA
+ 180  CONTINUE
+      CALL GRFUF1(X,Y,NRET,IPROCP,YLAB,XLAB,ISHOT,IDEV,ZSDATE,
+     >              NUMSC,XTRVAL,XTRLAB)
+      GO TO 50
+C  GRAPH SMOOTHED DATA (IF ANY)
+ 190  CONTINUE
+      CALL GRFUF1(X,YF,NRET,IPROC,YLAB,XLAB,ISHOT,IDEV,ZSDATE,
+     >               NUMSC,XTRVAL,XTRLAB)
+      GO TO 50
+C  plot smoothed and unsmoothed data together
+ 195  continue
+      write(mnlab(1),1901) idev,ishot,zsdate
+ 1901 format(a,1x,i6,1x,a)
+      mnlab(2)='smoothed data:  solid curve.'
+      mnlab(3)=ylab(1)//ylab(2)//' vs. '//xlab(1)//xlab(2)
+      call grafx2(x,yf,y,nret,xlab(3),ylab(3),
+     1  mnlab(1),mnlab(2),mnlab(3))
+      go to 50
+C *** WRITE THE FILE
+ 125  CONTINUE
+C
+C  SET COMPRESSION OPTION
+      CALL UFCMPR(ILUNO,ICOMPR)
+      CALL UFOPWR(ILUNO,ISHOT,IER)
+      IF(IER.NE.0) CALL UCLEAR
+      IF(IER.NE.0) GO TO 290
+C
+C  VALIDATE IPROC
+C
+C  VERIFY THAT SMOOTHED DATA AND UNSMOOTHED DATA ARE NOT IDENTICAL ...
+      DO IF=1,NRET
+        IF(Y(IF).NE.YF(IF)) GO TO 129
+      ENDDO
+      IPROC=IPROCP
+      ISMOO=0
+C
+ 129  CONTINUE
+      IF(ISMOO.EQ.0) THEN
+        WRITE(LUNTRM,9096)
+ 9096   FORMAT(' % GSMOO1 - DATA WAS NOT SMOOTHED.')
+        DO IF=1,NRET
+          YF(IF)=Y(IF)
+        ENDDO
+      ENDIF
+C
+      CALL UF1DWR(ILUNO,IDEV,
+     >     ZSDATE,X,YF,NRET,IPROC,XLAB,YLAB,NUMSC,XTRVAL,XTRLAB,IER)
+C
+C  APPEND COMMENTS TO FILE
+C
+      IF(IER.NE.0) THEN
+        CALL UCLEAR
+        GO TO 200
+      ENDIF
+C
+      CALL UFSNAM(ISHOT,ZFILE,IER,ILUNI)
+      WRITE(ILUNT,4001) ZFILE
+ 4001 FORMAT('    PRODUCED BY PROGRAM GSMOO1 [TRANSP] '/
+     >         '    FROM INPUT DATA FILE:  "',A,'"')
+C
+      if(lxrev) then
+         write(ilunt,4201) xrlab
+ 4201    format(' '/' gsmoo1:'/
+     >  1x,a,' ** order reversed to monotonic increasing **'/' ')
+      endif
+C
+      IF(ZPROG(1:5).EQ.'FILTR') WRITE(ILUNT,4002) ZEND1,ZEND2
+ 4002 FORMAT(/'  END CONDITION PARAMETERS: ',2(1X,1PE10.3))
+      IF((ISMOO.EQ.0).OR.(NDROP.EQ.0)) GO TO 140
+      WRITE(ILUNT,4003) NDROP,ZDROP
+ 4003 FORMAT('  ',I4,'  SPIKE PTS DROPPED; MIN. HEIGHT= ',1PE10.3)
+ 140  CONTINUE
+      IF((NBASE.EQ.0).OR.(ISMOO.EQ.0))  GO TO 150
+      WRITE(ILUNT,4004) NBASE,ZBASE
+ 4004 FORMAT('  ',I4,' PTS RESET TO BASELINE.  BASELINE = ',1PE10.3)
+C
+ 150  CONTINUE
+      IF(IDCUT.EQ.1) WRITE(ILUNT,4010)
+ 4010 FORMAT(/' DATA "CUT-UP" WAS APPLIED'/
+     >          ' -------------------------'/)
+      IF(IXUNOL.NE.0) WRITE(ILUNT,4011) ZXUN00,XLAB(3)
+      IF(IYUNOL.NE.0) WRITE(ILUNT,4012) ZYUN00,YLAB(3)
+ 4011 FORMAT(' "X" UNITS WERE TRANSFORMED: "',A10,'" TO "',A10,'"')
+ 4012 FORMAT(' "Y" UNITS WERE TRANSFORMED: "',A10,'" TO "',A10,'"')
+      IF(ISMOO.EQ.1) WRITE(ILUNT,4005) ZPROG
+ 4005 FORMAT('  SMOOTHING ALGORITHM NAME:  ',A10)
+C
+C  GET USER COMMENTS TO APPEND TO END OF OUTPUT FILE
+      CALL UFACOM(ILUNT)
+C
+      WRITE(ILUNT,4007) IPROCP,ZDATE
+ 4007 FORMAT(
+     > /' =========================================================='/
+     >  ' COMMENTS SPOOLED FROM FILE INPUT TO GSMOO1 [IPROC=',I1,']:'/
+     >  ' ON VAX-11 ON DATE:  ',A10/)
+C  SPOOL COMMENTS FROM INPUT FILE, SCALARS MODIFICATIONS RECORD FILE
+C
+      CALL UCSEND(ILUNT,ILUNO)
+C
+      CALL USPOOL(ILUNI,ILUNO)
+C
+ 200  CONTINUE
+      CALL UFCLOS(ILUNO)
+ 290  CONTINUE
+      CALL UFCLOS(ILUNI)
+      GO TO 20
+C-------------------------------------------------------
+C  NEW OPTION "A" - ADD MULTIPLE OF A UFILE FUNCTION TO PRIMARY
+C  INPUT DATA
+C
+ 400  CONTINUE
+      CALL ADDFUN(ISHOT,X,Y,YF,NRET,XLAB,YLAB,
+     >     ZSDATE,IDEV,XTRVAL,XTRLAB,NUMSC,
+     >     X2,Y2,JDSIZ,ILUN2,ILUNT2,XTRVL2,XTRLB2,MAXSC,IEXIT)
+      IF(IEXIT.EQ.1) CALL UCSEND(ILUNT2,ILUNT)
+      GO TO 35
+C-------------------------------------------------------
+C  new "M" option -- impose min and max on data
+ 500  continue
+      yymin = minval(y(1:nret))
+      yymax = maxval(y(1:nret))
+
+      if(lxout(0)) then
+         write(luntrm,*) ' enter "," to retain old MIN & MAX values...'
+      endif
+      call ureadf('enter new MINimum allowed value:',yymin)
+      call ureadf('enter new MAXimum allowed value:',yymax)
+      if(yymin.gt.yymax) then
+         write(luntrm,*) ' ?gsmoo1: yymin > yymax: ',yymin,yymax
+         write(luntrm,*) '  (no action taken).'
+         call uclear
+         go to 50
+      endif
+
+      do ii=1,nret
+         y(ii)=min(yymax,max(yymin,y(ii)))
+      enddo
+
+      yf(1:nret) = y(1:nret)
+      ismoo=0
+
+      go to 50
+C
+C-------------------------------------------------------
+C  EXIT PROGRAM
+C
+ 900  CONTINUE
+      CALL UEXITA
+      STOP
+      	END
+C******************** END FILE GSMOO1.FOR ; GROUP GSMOO1 ***************
+
+
+
+C******************** START FILE ADDFUN.FOR ; GROUP GSMOO1 ******************
+C------------------------------------------------------------
+C  ADDFUN
+C
+C  ADD A FUNCTION TO THE DATA
+C
+C
+      SUBROUTINE ADDFUN(ISHOT,X,Y,YF,N,XL,YL,SD,TOK,SCV,SCL,NSC,
+     >     X2,Y2,IMAX,LUN2,LUNT2,SCV2,SCL2,IMAXSC,IEXIT)
+C
+C  PASSED:
+      REAL X(N),Y(N),YF(N),X2(IMAX),Y2(IMAX),SCV(IMAXSC),SCV2(IMAXSC)
+C
+      CHARACTER*30 XL,YL,SCL(IMAXSC),SCL2(IMAXSC)
+      CHARACTER*10 SD,ztest1,ztest2
+      CHARACTER*4 TOK
+C  LOCAL:
+      CHARACTER*30 XL2,YL2
+      CHARACTER*10 ZSD,ZTEMP
+      CHARACTER*4 ZTOK
+      CHARACTER*40 ZFILE2
+C
+C
+      EXTERNAL XIDENT
+C
+C  PRIMARY DATA FROM UFILES (SUPPLIED BY CALLER):
+C    X(N),Y(N)  LABELS: XL,YL  TOKAMAK:  TOK  DATE: SD
+C    SCALARS:  SCV,SCL (NSC OF THEM)
+C
+C  ** THIS ROUTINE CAN MODIFY PRIMARY DATA Y(N)
+C   EXIT FLAG IEXIT=1 IF DATA WAS MODIFIED
+C   EXIT FLAG IEXIT=0 IF DATA WAS NOT MODIFIED
+C
+C  2NDARY DATA TO ADD OR SUBTRACT:
+C    X2 Y2 (MAX DIM IMAX)
+C    SCV2 SCL2  (SCALARS, MAX IMAXSC)
+C    READ HERE, UNIT LUN2
+C
+C  WORKSPACE YF(N) - CONTENTS WHIPED
+C
+C  L.U.N. FOR COMMENTS FOR OUTPUT FILE:  LUNT2
+C  L.U.N. FOR 2NDARY DATA:  LUN2
+C
+C
+C *LISMAK* 12-APR-88  GENERATED LOGICAL DECLARATIONS
+      LOGICAL LXOUT
+      LOGICAL LYES
+C *LISMAK* END OF GENERATED LOGICAL DECLARATIONS
+C
+      LUNTRM=LNOUT(0)
+      IDATA2=0
+C
+      CALL UFOPCF(LUNT2,IER)
+      WRITE(LUNT2,7001)
+ 7001 FORMAT(/' ---------/GSMOO1>>ADDFUN<</----------'/
+     >'   COMMENTS PERTAINING TO ADDITION OF A "SECONDARAY"'/
+     >'   DATA FUNCTION TO PRIMARY INPUT DATA'/)
+C
+      CALL UFNTER(LUN2,'SECONDARY INPUT DATA')
+C
+ 5    CONTINUE
+      ISHOT2=0
+      CALL UREADI(
+     >'GSMOO1>ADDFUN:  ENTER SHOT NO. OF 2NDARY DATA: (0 EXITS):$$',
+     >ISHOT2)
+      IF(ISHOT2.EQ.0) GO TO 950
+C
+C  READ THE DATA
+C
+      CALL UFOPRD(LUN2,ISHOT2,IER)
+      IF(IER.NE.0) THEN
+        CALL UCLEAR
+        GO TO 5
+      ENDIF
+C
+      CALL UF1DRD(LUN2,ZTOK,ZSD,X2,Y2,IMAX,NRET2,IPROC2,XL2,YL2,
+     >     IMAXSC,NSC2,SCV2,SCL2,IER)
+C
+      CALL UFCLOS(LUN2)
+      IF(IER.NE.0) THEN
+        CALL UCLEAR
+        GO TO 5
+      ENDIF
+C
+      CALL UFSNAM(ISHOT2,ZFILE2,IER,LUN2)
+      WRITE(LUNT2,4001) ZFILE2
+ 4001 FORMAT(' SECONDARY FUNCTION ORIGINAL DATA FROM FILE:  '/1X,A/
+     >' -------------------------------------------------')
+C
+      ZXCONA=1.0
+      ZXCONB=0.0
+      ZYCONA=1.0
+      ZYCONB=0.0
+C
+      IMOD=0
+C
+ 10   CONTINUE
+      CALL NEUPAG
+      IF(LXOUT(0)) WRITE(LUNTRM,1001)
+ 1001 FORMAT(/
+     >' ADDFUN OPTIONS:'/
+     >'  A - PLOT PRIMARY INPUT DATA (UNMODIFIED)'/
+     >'  B - PLOT SECONDARY INPUT DATA'/
+     >'  C - PLOT PRIMARY INPUT DATA (AS MODIFIED)'/
+     >'  D - "CHANGE UNITS" >> APPLY F-->A*F+B TRANSFORM TO 2NDRY DATA'/
+     >'  E - ADD 2NDARY DATA FUNCTION TO UNMODIFIED PRIMARY DATA ***'/
+     >'  F - APPLY 2NDARY DATA SCALARS TO PRIMARY DATA (new)'/
+     >'  Q - QUIT'/)
+C
+      CALL UREAD('ADDFUN:  ENTER CONTROL OPTION:$$')
+      IOP=IXUOPC('ABCDEQF$')
+      CALL UCHKOP(IOP,0,1,100,2,*10)
+      GO TO (100,200,300,400,500,900,600) IOP
+C
+C  PLOTTING
+C
+ 100  CONTINUE
+      CALL GRFUF1(X,Y,N,0,YL,XL,ISHOT,TOK,SD,NSC,SCV,SCL)
+      GO TO 10
+C
+ 200  CONTINUE
+      CALL GRFUF1(X2,Y2,NRET2,0,YL2,XL2,ISHOT2,ZTOK,ZSD,
+     >     NSC2,SCV2,SCL2)
+      GO TO 10
+C
+ 300  CONTINUE
+      CALL GRFUF1(X,YF,N,0,YL,XL,ISHOT,TOK,SD,NSC,SCV,SCL)
+      GO TO 10
+C
+C  LINEAR TRANSFORMS ON 2NDARY DATA:
+C
+ 400  CONTINUE
+      CALL UCHUNS('2ND X',XL2(21:30),IXUN,ZTEMP,X2,NRET2,ZXA,ZXB,1)
+C
+      CALL UCHUNS('2ND Y',YL2(21:30),IYUN,ZTEMP,Y2,NRET2,ZYA,ZYB,2)
+C
+      CALL UFAXCOM(LUNT2,IXUN,ZXA,ZXB,IYUN,ZYA,ZYB,0,0.0,0.0)
+      GO TO 10
+C
+C  APPLY DATA
+C
+ 500  CONTINUE
+C
+      DO 510 IX=1,N
+        ZX=X(IX)
+        CALL XINTER(XIDENT,ZX,X2,NRET2,I1,I2,ZI2,ZI1,IER)
+        ZY=Y2(I1)*ZI1+Y2(I2)*ZI2
+        YF(IX)=Y(IX)+ZY
+ 510  CONTINUE
+      IMOD=1
+      GO TO 10
+C
+c
+c  copy scalars
+c
+ 600  continue
+c
+      if(imod.eq.0) then
+         call uermsg('?addfun: use option "E" first.',' ',0)
+         go to 10
+      endif
+c
+c  copy or append scalars from file2 to file1
+c
+      do il2=1,nsc2
+         ztest2=scl2(il2)(1:10)
+         call uupper(ztest2)
+         imatch=0
+         do il1=1,nsc
+            ztest1=scl(il1)(1:10)
+            call uupper(ztest1)
+c
+            if(ztest1.eq.ztest2) then
+               imatch=il1
+               scl(il1)(11:30)=scl2(il2)(11:30)
+               scv(il1)=scv2(il2)
+               exit
+            endif
+         enddo
+         if(imatch.eq.0) then
+            if(nsc.lt.imaxsc) then
+               nsc=nsc+1
+               scv(nsc)=scv2(il2)
+               scl(nsc)=scl2(il2)
+            else
+               write(luntrm,*) '%addfun: out of array space.'
+               write(luntrm,*) ' discarded scalar: ',
+     >            scv2(il2),' ',scl2(il2)
+            endif
+         endif
+      enddo
+      go to 10
+C
+C  EXIT
+C
+ 900  CONTINUE
+      IF(IMOD.EQ.0) GO TO 950
+C
+      CALL UREAD(
+     >'ADDFUN:  ENTER "Y" TO VERIFY MODIFICATION OF DATA:$$')
+      IF(.NOT.LYES(0)) GO TO 950
+C
+C-----------------
+C  EXIT SAVING DATA MODIFICATION
+C
+      IEXIT=1
+C
+      DO 910 IX=1,N
+      Y(IX)=YF(IX)
+ 910  CONTINUE
+C
+      WRITE(LUNT2,4090)
+ 4090 FORMAT(' ---/END OF COMMENTS ON 2NDRY DATA FUNCTION')
+C
+      RETURN
+C
+C------------------
+C  EXIT:  NO MODIFICATION OF INPUT DATA
+C
+ 950  CONTINUE
+      IEXIT=0
+      RETURN
+      END
+C******************** END FILE ADDFUN.FOR ; GROUP GSMOO1 ******************

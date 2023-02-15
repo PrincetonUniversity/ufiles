@@ -1,0 +1,90 @@
+C******************** START FILE TVMAK2.FOR ; GROUP CONCAT ******************
+C---------------------------------------------------------------
+C  TVMAK2
+C    ASSEMBLE SEQUENCE OF INPUT PROFILES INTO 2D OUTPUT ARRAY
+C  USE LASER FIRING TIMES OF INPUT PROFILES TO DETERMINE TIME VECTOR
+C
+C    IF SEVERAL INPUT PROFILES HAVE THE SAME INPUT TIME ERROR
+C   MESSAGES ARE GENERATED.  THE FIRST PROFILE READ IS USED.
+C
+      SUBROUTINE TVMAK2
+C
+      USE CONCAT_MOD
+C  A VERY LARGE NUMBER:
+      DATA ZEPSI/1.E30/
+C
+C  START OF EXECUTABLE CODE
+C
+      ZT0=-ZEPSI
+      NYO=0
+      NSO=0
+C
+C  INITIALIZE OUTPUT RADIAL VECTOR
+C
+      NXO=NX
+C
+      IF(NSHOT2.EQ.0) THEN
+        IOFF=0
+      ELSE
+        IOFF=(NY2-1)*NX
+      ENDIF
+C
+C  FIND FIRST/SUBSEQUENT TIME POINT
+C
+ 20   CONTINUE
+        IMIN=0
+        ZTMIN=+ZEPSI
+C  SEARCH INPUT PROFILES
+        IF(NSHOT2.NE.0) THEN
+C  INITIAL 2D INPUT FILE
+          DO 25 IY=1,NY2
+            IF(Y2(IY).LE.ZT0) GO TO 25
+            IF(Y2(IY).GT.ZTMIN) GO TO 25
+            IMIN=-IY
+            ZTMIN=Y2(IY)
+ 25       CONTINUE
+        ENDIF
+C
+        DO 30 I=1,NS
+C  1D FILE LIST
+          IF((I.EQ.1).AND.(NSHOT2.NE.0)) GO TO 30
+          IF(YSHOTS(I).LE.ZT0) GO TO 30
+          IF(YSHOTS(I).GT.ZTMIN) GO TO 30
+          IMIN=I
+          ZTMIN=YSHOTS(I)
+ 30     CONTINUE
+C  DONE IF IMIN=0
+C
+        IF(IMIN.EQ.0) GO TO 100
+C
+        NYO=NYO+1
+        IPTO=(NYO-1)*NXO
+        IF(IMIN.LT.0) THEN
+C  FROM INPUT 2D FILE
+          Y(NYO)=Y2(-IMIN)
+          IPTI=(-IMIN-1)*NX
+        ELSE
+C  FROM INPUT 1D FILE
+          Y(NYO)=YSHOTS(IMIN)
+          IPTI=(IMIN-1)*NX+IOFF
+          NSO=NSO+1
+          ISHOTX(NSO)=ISHOTS(IMIN)
+          YSHOTX(NSO)=YSHOTS(IMIN)
+          LSHOTX(NSO)=IMIN
+        ENDIF
+C
+        DO 50 I=1,NX
+          F(IPTO+I)=FIN(IPTI+I)
+ 50     CONTINUE
+C
+        ZT0=Y(NYO)
+C
+      GO TO 20
+C
+C----
+C
+ 100  CONTINUE
+C
+      RETURN
+      	END
+C******************** END FILE TVMAK2.FOR ; GROUP CONCAT ******************

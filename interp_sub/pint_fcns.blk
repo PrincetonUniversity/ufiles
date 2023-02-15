@@ -1,0 +1,22 @@
+C---------------------
+C  statement fcns include file
+C
+      bs1(xx) = xx
+      bs2(xx) = xx*xx*(3.0-2.0*xx)
+      bs3(xx) = xx*xx*xx*(10.0+xx*(6.0*xx-15.0))
+C
+      bs1d1(xx)=1.0
+      bs1d2(xx)=0.0
+C
+      bs2d1(xx)=xx*(6.0-6.0*xx)
+      bs2d2(xx)=6.0-12.0*xx
+C
+      bs3d1(xx)=30.0*xx*xx*(1.0+xx*(1.0*xx-2.0))
+      bs3d2(xx)=60.0*xx*(1.0+xx*(2.0*xx-3.0))
+C
+C  these are blending functions on [0,1], and their derivatives
+C  all satisfy bsj(0)=0, bsj(1)=1
+C  bs2 & bs3 satisfy bsj'(0)=0=bsj'(1)
+C  bs3 satisfies bsj''(0)=0=bsj''(1)
+C
+C---------------------

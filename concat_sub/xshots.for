@@ -1,0 +1,142 @@
+C******************** START FILE XSHOTS.FOR ; GROUP CONCAT ******************
+C-------------------------------------------------------------
+C  XSHOTS
+C
+C  LIST PROFILES IN OUTPUT ARRAY
+C
+C  ICALL=1:  LIST TO TERMINAL
+C  ICALL=2:  LIST TO OUTPUT FILE
+C
+      SUBROUTINE XSHOTS(ICALL)
+C
+      USE UFILES
+      USE CONCAT_MOD
+C
+      CHARACTER*40 ZFILE
+      CHARACTER*1 IC11,IC12
+      CHARACTER*13 ISHT1,ISHT2
+      CHARACTER*1 ZC1
+C
+      ZC1=' '
+      luntrm = lnout(0)
+      IF(ICALL.EQ.1) ILUN=LUNTRM
+      IF(ICALL.EQ.2) ILUN=LUNT
+C
+      IF(ICALL.EQ.1) CALL NEUPAG
+      IF(NSHOT2.GT.0) GO TO 5
+      IF(NSO.GT.1) GO TO 5
+      IF(NSO.EQ.1) GO TO 4
+C  ERROR
+      WRITE(LUNTRM,9001)
+ 9001 FORMAT(/' ? NO OUTPUT DATA DEFINED.'/)
+      CALL URSTOP(2)
+      RETURN
+C
+ 4    CONTINUE
+      WRITE(LUNTRM,9002)
+ 9002 FORMAT(/' % ONLY ONE INPUT PROFILE'/)
+C
+ 5    CONTINUE
+      IF(NSHOT2.GT.0) THEN
+        CALL UFSNAM(NSHOT2,ZFILE,IER,LUN2)
+        WRITE(ILUN,4011) ZFILE
+ 4011   FORMAT(/
+     >' ***> 2D INPUT FILE:  ',A/' Y VALUES:')
+        IF(NY2.LE.60) THEN
+          WRITE(ILUN,4012) (Y2(IY),IY=1,NY2)
+ 4012     FORMAT(6(1X,1PE11.4))
+        ELSE
+          WRITE(ILUN,4013) NY2,Y2(1),Y2(NY2)
+ 4013     FORMAT(
+     >2X,I6,' Y VALUES RANGING FROM ',1PE11.4,' TO ',1PE11.4)
+        ENDIF
+      ENDIF
+      CALL UFLCHK(LUNI,'XSHOTS    ',ICHANL,IER)
+      IF(NSO.EQ.0) THEN
+        WRITE(ILUN,4000)
+ 4000   FORMAT(' % NO 1D INPUT FILES')
+      ELSE
+        WRITE(ILUN,4001) YLAB(1),YLAB(3)
+ 4001 FORMAT(/
+     >  ' LIST OF 1D INPUT FILES AND ',A10,' (Y) VALUES, ',A10,
+     >  ';     (ORIGINAL Y)')
+C
+        DO 10 I=1,NSO
+          UEXTND(ICHANL)=XSHOTX(LSHOTX(I))
+          CALL UFSNAM(ISHOTS(LSHOTX(I)),ZFILE,IER,LUNI)
+          WRITE(ILUN,4002)
+     >	      ZFILE,YSHOTS(LSHOTX(I)),YSHOT0(LSHOTX(I))
+ 10     CONTINUE
+      ENDIF
+ 4002 FORMAT(' ==> FILE "',A,'" Y=',1PE11.4,' (',1PE11.4,')')
+C
+      IF(NSHOT2.EQ.0) THEN
+        IEXTR=NYO-NSO
+      ELSE
+        IEXTR=NYO-NY2-NSO
+      ENDIF
+      IF(IEXTR.EQ.0) GO TO 50
+C
+      WRITE(ILUN,4003)
+ 4003 FORMAT(/2X,'ADDITIONAL PROFILES:  BETWEEN-SHOT',
+     >  ' INTERPOLATIONS:')
+C
+      DO 20 I=1,IEXTR
+        ZW1=WSHOT2(I)
+        IW11=10.0*(ZW1+.005)
+        IW12=100.0*(ZW1+.005)
+        IW12=IW12-10*IW11
+        IC11=' '
+        IF(IW11.EQ.10) IC11='1'
+        IF(IW11.EQ.10) IW11=0
+        ZW2=1.0-ZW1
+        IW21=10.0*(ZW2+.005)
+        IW22=100.0*(ZW2+.005)
+        IW22=IW22-10*IW21
+        IC12=' '
+        IF(IW21.EQ.10) IC12='1'
+        IF(IW21.EQ.10) IW21=0
+C
+        ISHT1 = '-ZERO-'
+        ISHT2 = '-ZERO-'
+        IF(MODEI.EQ.1) THEN
+          IF(LSHOT2(1,I).GT.0) THEN
+             WRITE(ISHT1,5001) ISHOTS(LSHOT2(1,I))
+          ELSE IF(LSHOT2(1,I).LT.0) THEN
+             ISHT1='2D_GLB'
+          ENDIF
+          IF(LSHOT2(2,I).GT.0) THEN
+             WRITE(ISHT2,5001) ISHOTS(LSHOT2(2,I))
+          ELSE IF(LSHOT2(2,I).LT.0) THEN
+             ISHT2='2D_LUB'
+          ENDIF
+        ELSE
+          IF(LSHOT2(1,I).GT.0) THEN
+             WRITE(ISHT1,5002) XSHOTX(LSHOT2(1,I))
+          ELSE IF(LSHOT2(1,I).LT.0) THEN
+             ISHT1='2D_GLB'
+          ENDIF
+          IF(LSHOT2(2,I).GT.0) THEN
+             WRITE(ISHT2,5002) XSHOTX(LSHOT2(2,I))
+          ELSE IF(LSHOT2(2,I).LT.0) THEN
+             ISHT2='2D_LUB'
+          ENDIF
+        ENDIF
+ 5001 FORMAT(I6)
+ 5002 FORMAT(1X,A10,2X)
+C
+        WRITE(ILUN,5007) ZC1,YSHOT2(I),I,
+     >	     IC11,IW11,IW12,ISHT1,IC12,IW21,IW22,ISHT2
+C
+ 5007 FORMAT(A1,2X,'[Y=',1PE10.3,']  PROFILE #',I2,' =',A1,
+     >  '.',I1,I1,'*[',A,'] +',A1,'.',I1,I1,'*[',A,']  ')
+C
+ 20   CONTINUE
+C----------------
+C
+ 50   CONTINUE
+C
+      IF(ICALL.EQ.1) CALL UPAUST(1)
+      RETURN
+      END
+C******************** END FILE XSHOTS.FOR ; GROUP CONCAT ******************
