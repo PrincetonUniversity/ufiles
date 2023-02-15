@@ -1,0 +1,33 @@
+C******************** START FILE CFNXID.FOR ; GROUP CONCAT ******************
+C----------------------------------------------------------
+C  CFNXID  - FIND NEXT 2 CHAR ID FOR TEMPORARY SPOOLED COMMENTS
+C  FILE
+C   ISET=0 TO RESET, ISET=1 TO FETCH ID
+C  LOOP THRU ALL POSSIBLE 2 LETTER COMBINATIONS
+C
+      SUBROUTINE CFNXID(ID,ISET)
+C
+      CHARACTER*2 ID
+      CHARACTER*26 ALPHAB
+      DATA ALPHAB/'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
+C
+      DATA I1/0/
+      DATA I2/26/
+C
+      IF(ISET.GT.0) GO TO 10
+      I1=0
+      I2=26
+      RETURN
+C
+ 10   CONTINUE
+      I2=I2+1
+      IF(I2.LE.26) GO TO 20
+      I2=1
+      I1=I1+1
+C
+ 20   CONTINUE
+      ID(1:1)=ALPHAB(I1:I1)
+      ID(2:2)=ALPHAB(I2:I2)
+      RETURN
+      END
+C******************** END FILE CFNXID.FOR ; GROUP CONCAT ******************

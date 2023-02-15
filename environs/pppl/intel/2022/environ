@@ -26,4 +26,3 @@ export L_MDSPLUS=" -L$MDSPLUS_DIR/lib -lMdsLib"
 export TRANSPGRID_SERVER=transpgrid.pppl.gov
 export MDS_TRANSP_SERVER=transpgrid.pppl.gov
 export MDS_TRANSP_RETRY=3
-

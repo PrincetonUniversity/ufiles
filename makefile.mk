@@ -4,38 +4,64 @@
 # Libraries (order is important)
 LIBS := ufport \
 	ufhdf \
+	concat_sub \
 	extrac_sub \
+	gdiff1sub \
+	interp_sub \
 	trgraf \
 	mds_sub \
 	mdstransp \
+	r4smlib \
+	r4smlib_userio \
+	rngsel_sub \
 	tokid \
 	ufencod \
 	uflib \
 	uflib_userio \
 	ureadsub \
 	mds_dummy \
-	sgdummy
+	sawcor_sub \
+	sgdummy \
+	splice_sub \
+	thinsub
 
 # Executables
 EXES := cmp_2d \
+	concat \
+	extrac \
 	find_yg \
 	fooch \
+	gaver0 \
+	gaver1 \
+	gaver2 \
+	gdiff1 \
+	gsmoo1 \
+	gsmoo2 \
+	gxint1 \
 	map2 \
 	mds_get_inf \
 	mdsmark \
 	mds_start \
 	mult2 \
 	nulltron \
+	propane \
 	repl1 \
 	repl2 \
+	sawtoo \
+	splice \
+	splice2 \
+	splice3 \
 	test3d \
 	tgtest \
+	thin1 \
+	thin2 \
 	ucheck \
 	uftype \
 	ugraf1 \
 	ugraf2 \
 	ugraf3 \
-	ulook0
+	ulook0 \
+	wiggle
 
 .PHONY: check clean realclean clobber libs exes sglib depend
 
@@ -47,7 +73,6 @@ check:
 	@test -d $(PREFIX)/lib || mkdir -p $(PREFIX)/lib
 	@test -d $(PREFIX)/mod || mkdir -p $(PREFIX)/mod
 	@test -d $(PREFIX)/obj || mkdir -p $(PREFIX)/obj
-	@test -d $(PREFIX)/other || mkdir -p $(PREFIX)/other
 	@set -e; for l in $(LIBS); do cd $${l}; make -f $${l}_makefile.mk check; cd .. ; done
 	@set -e; for e in $(EXES); do cd $${e}; make -f $${e}_makefile.mk check; cd .. ; done
 

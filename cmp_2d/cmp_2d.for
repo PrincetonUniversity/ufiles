@@ -30,7 +30,7 @@ c
       character*6   indicator
  
       logical done
- 
+
       call ufsetr(9,'C','RCA','my_ufiles:',' ')
  
       call uinita(0)

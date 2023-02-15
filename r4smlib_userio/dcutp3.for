@@ -1,0 +1,239 @@
+C******************** START FILE DCUTP3.FOR ; GROUP DCUTP3 *************
+C============================================================
+C  DCUTUP      D. MC CUNE  20 MAY 1980
+C
+C  INTERACTIVE 'CUT AND PASTE' ROUTINE TO ALLOW REMOVAL OF
+C  UNWANTED FEATURES FROM DATA.  USER SPECIFIES A RANGE
+C  OF DATA TO BE REPLACED BY CUBIC WHICH IS CONTINUOUS
+C  AND MATCHES DATA FIRST DERIVATIVE AT END POINTS OF REPLACEMENT
+C  INTERVAL
+C
+C  GRAPHICS PROVIDED:   GRFWCT.FOR[53,545]
+C
+C  ARGUMENTS:  X(N)   MONOTONIC INCREASING INDEP. VAR.
+C              Y(N)   DEPENDANT VARIABLE.  REPLACED BY CUT-UP
+C                     VERSION ON EXIT
+C              Y0(N)  STORAGE/ WORKSPACE
+C              LABY   30 CHARACTER LABEL FOR Y
+C              LABX   30 CHARACTER LABEL FOR X
+C              LSHOT  10 CHARACTER SHOT ID
+C
+C-------------
+C
+      SUBROUTINE DCUTP3(X,Y,Y0,N,LABY,LABX,LSHOT)
+C-----------------------
+C  D. MC CUNE
+C  THIS VERSION USES A "WEIGHTED REFLECTION OF NEIGHBORING POINTS"
+C  RATHER THAN A CUBIC POLYNOMIAL INTERPOLANT
+C------------------------
+C
+C  TBT FEB 1991 -- Added printout explanations.
+ 
+C  DMC OCT 1990 -- SUBROUTINE DCUTF1 BROKEN OUT OF THIS SOURCE FILE
+C   DEVELOP OPTION FOR AUTOMATED DEGLITCHING
+C
+C------------------------
+C
+      LOGICAL, EXTERNAL :: LCHAR,LXOUT,LYES,LYESC
+C
+      DIMENSION X(N),Y(N),Y0(N)
+      CHARACTER*10 LABY(3),LABX(3)
+C
+      CHARACTER*(*) LSHOT
+C
+C  LOCAL--
+      DIMENSION XCUT(2),YCUT(2),XBOX(5),YBOX(5)
+      INTEGER JCUT(2)
+      DIMENSION YD1(2),YD0(2)
+C
+C ---------------------------------
+C
+      luntrm = lnout(0)
+C
+      IALGOR=1
+      IALGORB=1
+C
+      ISAVE=1
+C
+C  USER OPTION
+C
+ 10   CONTINUE
+      CALL NEUPAG
+ 12   CONTINUE
+      IF(LXOUT(0)) WRITE(LUNTRM,1001)
+ 1001 FORMAT(//'  "CUT AND PASTE" ROUTINE'/
+     >     '  REPLACE UNWANTED FEATURES WITH INTERPOLANT'/
+     >     '  VERSION 3.0:  WEIGHTED REFLECTION INTERPOLANT,',
+     >' FOR UNSMOOTHED DATA'//
+     >     '  % MAY NOT BE GOOD FOR UNEVENLY SPACED DATA'//
+     >     '  USER OPTIONS:'/
+     >     '  (1)  CUT,PASTE, AND DISPLAY RESULTS'/
+     >     '  (2)  SAVE RESULTS'/
+     >     '  (3)  QUIT'/
+     >     '  (4)  GRAPH DATA AS CURRENTLY SAVED'/
+     >     '  (5)  AUTOMATED DEGLITCHING OPTION'/)
+      if(lxout(0).and.(ialgorb.eq.1)) write(luntrm,1002) ialgor
+ 1002 format(
+     >' *TYPE "A" TO TOGGLE INTERPOLANT CHOICE (CURRENT VALUE=',I1,'):'/
+     >'  INTERPOLANT 1:  WEIGHTED REFLECTION OF NEIGHBOURING POINTS'/
+     >'  INTERPOLANT 2:  LINEAR SEGMENT CONNECTING THE END POINTS'/
+     >' *TYPE "B" FOR NEW PAIR OF INTERPOLANT CHOICES')
+      if(lxout(0).and.(ialgorb.eq.2)) write(luntrm,1003) ialgor
+ 1003 format(
+     >' *TYPE "A" TO TOGGLE INTERPOLANT CHOICE (CURRENT VALUE=',I1,'):'/
+     >'  INTERPOLANT 1:  flat extrapolation from left neighbour'/
+     >'  INTERPOLANT 2:  flat extrapolation from right neighbour'/
+     >' *TYPE "B" FOR NEW PAIR OF INTERPOLANT CHOICES')
+C
+ 17   CALL UREAD(' DCUTP3: ENTER OPTION #:$')
+      IF(LCHAR('Q')) RETURN
+      IF(LCHAR('A')) THEN
+        IALGOR=3-IALGOR
+        GO TO 10
+      ENDIF
+      IF(LCHAR('B')) THEN
+        IALGORB=3-IALGORB
+        GO TO 10
+      ENDIF
+      NOPT=IDCOD(IERT)
+      IF((IERT.NE.0).OR.(NOPT.LT.1).OR.(NOPT.GT.5)) THEN
+        CALL UERMSG('% ILLEGAL INTEGER OPCODE',' ',0)
+        GO TO 12
+      ENDIF
+      IF(NOPT.EQ.3) RETURN
+      IF(NOPT.EQ.1) GO TO 100
+      IF(NOPT.EQ.4) GO TO 400
+      IF(NOPT.EQ.5) THEN
+         if(ialgorb.eq.1) then
+            CALL DCUTA1(X,Y,Y0,N,LABY,LABX,LSHOT,IALGOR)
+            GO TO 10
+         else
+            call uermsg('toggle option "B" to re-enable option "5"',
+     1	 ' ',0)
+            go to 10
+         endif
+      ENDIF
+C
+C IF ISAVE=1, Y0=Y AND RESULTS ALREADY SAVED.
+      IF(LXOUT(0).AND.(ISAVE.EQ.1)) WRITE(LUNTRM,1004)
+ 1004 FORMAT(' % NO CHANGES'/)
+      IF(ISAVE.EQ.1) GO TO 12
+      ISAVE=1
+      DO 20 I=1,N
+        Y(I)=Y0(I)
+ 20   CONTINUE
+      GO TO 10
+C
+C
+C  CUT AND PASTE
+C
+ 100  CONTINUE
+      ISAVE=0
+      DO 110 I=1,N
+        Y0(I)=Y(I)
+ 110  CONTINUE
+C
+      IF(LXOUT(0)) WRITE(LUNTRM,1011) LABX(1), X(1), X(N), LABX(3)
+ 1011 FORMAT(//' DCUTP3%: RANGE OF X (',A, ') IS ',
+     1         1PE12.4, ',', 1PE12.4, 1X, A)
+ 
+ 1101   continue
+      CALL UREAD('DCUTP3:  ENTER LOCATION OF FIRST CUT (X-UNITS):$')
+      XCUT(1)=FDCOD(IERT)
+      IF(LCHAR('Q')) GOTO 10
+      IF(IERT.NE.0) GO TO 1101
+ 1102 FORMAT(G10.0)
+ 1103 CALL UREAD('DCUTP3:  ENTER LOCATION OF SECOND CUT (X-UNITS):$')
+      XCUT(2)=FDCOD(IERT)
+      IF(LCHAR('Q')) GO TO 10
+      IF(IERT.NE.0) GO TO 1103
+      IF(XCUT(2).GE.XCUT(1)) GO TO 120
+      ZTEMP=XCUT(1)
+      XCUT(1)=XCUT(2)
+      XCUT(2)=ZTEMP
+C
+ 120  CONTINUE
+C  FIND INDEX LOCATIONS; CALCULATE AND SAVE BDY CONDS
+C  ON INTERPOLANT
+      NM1=N-1
+      JCUT(1)=N
+      DO 130 J=1,NM1
+        JP1=J+1
+        IF((X(J).LT.XCUT(1)).AND.(X(JP1).GE.XCUT(1))) JCUT(1)=JP1
+ 130  CONTINUE
+      IF(XCUT(1).LE.X(1)) JCUT(1)=1
+      JCUT(2)=1
+      DO 140 J=N,2,-1
+        JM1=J-1
+        IF((X(J).GT.XCUT(2)).AND.(X(JM1).LE.XCUT(2))) JCUT(2)=JM1
+ 140  CONTINUE
+      IF(XCUT(2).GE.X(N)) JCUT(2)=N
+C  # TO REPLACE
+      NREP=JCUT(2)-JCUT(1)+1
+      IF((NREP.GT.0).AND.(NREP.LT.N)) GO TO 150
+C  TOO FEW OR TOO MANY-- IMPROPER RANGE SPECIFIED
+      ISAVE=1
+      WRITE(LUNTRM,1190) X(1),X(N)
+ 1190 FORMAT(/' ? IMPROPER RANGE SPECIFIED'/
+     >  '   THE INTERVAL IS TOO SMALL, TOO LARGE, OR'/
+     >  '   DOES NOT INTERSECT THE DOMAIN OF THE DATA:'/
+     >  '   X= ',1PE10.3,' TO ',1PE10.3)
+      CALL UCLEAR
+      CALL UPAUST(1)
+      GO TO 12
+C
+C  CALCULATE  INTERPOLANT
+C
+ 150  CONTINUE
+C
+      CALL DCUTF1(X,Y,Y0,N,IALGOR,IALGORB,JCUT,XCUT,YCUT)
+C
+C  SET UP "BOX" AROUND CUT SECTION FOR DISPLAY
+      XBOX(1)=XCUT(1)
+      XBOX(2)=XCUT(2)
+      XBOX(3)=XCUT(2)
+      XBOX(4)=XCUT(1)
+      XBOX(5)=XCUT(1)
+C
+      YBOX(1)=YCUT(1)
+      YBOX(2)=YCUT(1)
+      YBOX(3)=YCUT(2)
+      YBOX(4)=YCUT(2)
+      YBOX(5)=YCUT(1)
+C
+      JCUT(1)=MAX0(1,(JCUT(1)-1))
+      JCUT(2)=MIN0(N,(JCUT(2)+1))
+C
+C  DISPLAY RESULTS
+C
+      if(ialgorb.eq.1) then
+         IF(IALGOR.EQ.1) THEN
+            CALL GRFWCT(X,Y,Y0,N,LABX,LABY,LSHOT,
+     1	 'DCUTP3 - WEIGHTED REFLECTION SEGMENT INTERPOLANT',
+     2	 JCUT,XBOX,YBOX)
+         ELSE
+            CALL GRFWCT(X,Y,Y0,N,LABX,LABY,LSHOT,
+     1	 'DCUTP3 - LINEAR SEGMENT INTERPOLANT',
+     2	 JCUT,XBOX,YBOX)
+         ENDIF
+      else
+         IF(IALGOR.EQ.1) THEN
+            CALL GRFWCT(X,Y,Y0,N,LABX,LABY,LSHOT,
+     1	 'DCUTP3 - flat extrapolation from left neighbour',
+     2	 JCUT,XBOX,YBOX)
+         ELSE
+            CALL GRFWCT(X,Y,Y0,N,LABX,LABY,LSHOT,
+     1	 'DCUTP3 - flat extrapolation from right neighbour',
+     2	 JCUT,XBOX,YBOX)
+         ENDIF
+      endif
+      GO TO 10
+C
+ 400  CONTINUE
+C  GRAPH DATA AS CURRENTLY SAVED
+      CALL GRFAH0(X,Y,N,LABX,LABY,LSHOT//' SAVED DATA (DCUTP3)',
+     >              0,LABX)
+      GO TO 10
+C
+      	END
+C******************** END FILE DCUTP3.FOR ; GROUP DCUTP3 ***************

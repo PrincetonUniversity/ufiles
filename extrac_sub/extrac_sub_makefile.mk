@@ -1,4 +1,4 @@
-# Makefile to build libextract_sub.a
+# Makefile to build libextrac_sub.a
 #
 
 # Include system dependent flags
