@@ -31,14 +31,6 @@ c
  
       logical done
 
-      write(6,*)
-      write(6,'(a)') " UFILES: cmp_2d progam"
-      write(6,'(a,72("-"))') ""
-      write(6,'(2a)') " Version      : ", VERSION
-      write(6,'(2a)') " Revision     : ", GIT_HASH
-      write(6,'(2a)') " Build Date   : ", BUILD_DATE
-      write(6,'(a,72("-"))') ""
- 
       call ufsetr(9,'C','RCA','my_ufiles:',' ')
  
       call uinita(0)
