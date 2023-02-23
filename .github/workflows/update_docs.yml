@@ -1,17 +1,15 @@
-name: update_docs_pages
- 
-# execute this workflow automatically when a we push to main
+name: Update Docs
+
 on:
-  push: [ main ]
- 
+  push:
+    branches:
+      - main
+
 jobs:
- 
   build_docs:
     runs-on: ubuntu-latest
     container: debian:buster-slim
- 
     steps:
- 
     - name: prereqs
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -20,7 +18,6 @@ jobs:
         apt-get install -y git
         git clone "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
       shell: bash
- 
     - name: Execute script to build our documentation and update pages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
