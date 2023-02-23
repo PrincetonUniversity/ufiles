@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ufiles Documentation &mdash; ufiles 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            ufiles
+          </a>
+              <div class="version">
+                add-docs
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Ufiles Documentation</a></li>
+<li><a class="reference internal" href="#software-availability">Software Availability</a></li>
+<li><a class="reference internal" href="#history">History</a></li>
+<li><a class="reference internal" href="#contributors">Contributors</a></li>
+<li><a class="reference internal" href="#precision">Precision</a></li>
+<li><a class="reference internal" href="#data-formats">Data Formats</a></li>
+<li><a class="reference internal" href="#data-structures">Data Structures</a></li>
+<li><a class="reference internal" href="#filenames">Filenames</a></li>
+<li><a class="reference internal" href="#utilities">Utilities</a><ul>
+<li><a class="reference internal" href="#display">Display</a></li>
+<li><a class="reference internal" href="#averaging">Averaging</a></li>
+<li><a class="reference internal" href="#smoothing">Smoothing</a></li>
+<li><a class="reference internal" href="#advanced-utilities">Advanced Utilities</a></li>
+<li><a class="reference internal" href="#specialized-utilities">Specialized Utilities</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#utility-demo-scripts">Utility Demo Scripts</a><ul>
+<li><a class="reference internal" href="#id1">Display</a></li>
+<li><a class="reference internal" href="#basic-averaging-and-smoothing">Basic Averaging and Smoothing</a></li>
+<li><a class="reference internal" href="#hand-generated-profiles-and-signals">Hand generated Profiles and Signals</a></li>
+<li><a class="reference internal" href="#methods-for-extracting-combining-or-thinning-ufiles-data">Methods for Extracting, Combining, or Thinning Ufiles Data</a></li>
+<li><a class="reference internal" href="#sawtooth-event-recognition">Sawtooth Event Recognition</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#applications-programming">Applications Programming</a><ul>
+<li><a class="reference internal" href="#linking-to-ufiles">Linking to Ufiles</a></li>
+<li><a class="reference internal" href="#lun">lun</a></li>
+<li><a class="reference internal" href="#file-setup">File Setup</a></li>
+<li><a class="reference internal" href="#suppress-shot-number">Suppress Shot Number</a></li>
+<li><a class="reference internal" href="#mdsplus-setup">MDSplus Setup</a></li>
+<li><a class="reference internal" href="#scalar">Scalar</a></li>
+<li><a class="reference internal" href="#d-arrays">1-d Arrays</a></li>
+<li><a class="reference internal" href="#id2">2-d Arrays</a></li>
+<li><a class="reference internal" href="#format-variants">Format Variants</a></li>
+<li><a class="reference internal" href="#comments">Comments</a></li>
+<li><a class="reference internal" href="#error-flags">Error Flags</a></li>
+<li><a class="reference internal" href="#error-messages">Error Messages</a></li>
+<li><a class="reference internal" href="#read-header">Read Header</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-ufiles-work">How Ufiles Work</a></li>
+<li><a class="reference internal" href="#working-with-idl">Working with IDL</a><ul>
+<li><a class="reference internal" href="#read-ufiles-from-idl">Read Ufiles from IDL</a></li>
+<li><a class="reference internal" href="#write-ufiles-from-idl">Write Ufiles from IDL</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">ufiles</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Ufiles Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/PrincetonUniversity/ufiles/blob/main/docs/index.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ufiles-documentation">
+<h1>Ufiles Documentation<a class="headerlink" href="#ufiles-documentation" title="Permalink to this headline"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>Ufiles are a standard way for storing physics data across various magnetic confinement fusion devices (tokamaks). This software project started in the 1980s at the Princeton Plasma Physics Laboratory by Doug McCune and has been maintained and developed by many researchers since then. This software includes utility programs and service subroutines to support users. The utility programs are menu driven command line oriented interactive programs with Tektronix (SGLIB) graphics capability. Fortran subroutines for user written software are stored in subroutine libraries.</p>
+<p>Ufiles are essentially an early data standard for single precision (32 bit) floating point data, that has been used heavily in tokamak and fusion energy research both in the USA and in Europe and Japan.</p>
+<p>The Ufiles software was developed at Plasma Physics Laboratory of Princeton University, under U.S. DoE contract DE-AC02-76-CH0-3073.</p>
+</section>
+<section id="software-availability">
+<h1>Software Availability<a class="headerlink" href="#software-availability" title="Permalink to this headline"></a></h1>
+<p>Previously the Ufiles software was included as part of the TRANSP software repository. To give access to the scientific community it was also included in the National Transport Code Collaboration (NTCC) Modules Library effort and could be downloaded from the <a class="reference external" href="https://w3.pppl.gov/NTCC">NTCC</a> website. However, this software has been marked for deprecation from the TRANSP code and has been placed in the <a class="reference external" href="https://github.com/PrincetonUniversity/ufiles">Ufiles</a> software repository. This is a private repo but should be made public soon. Early access can be requested by sending an email to: <a class="reference external" href="mailto:transp_support&#37;&#52;&#48;pppl&#46;gov">transp_support<span>&#64;</span>pppl<span>&#46;</span>gov</a></p>
+</section>
+<section id="history">
+<h1>History<a class="headerlink" href="#history" title="Permalink to this headline"></a></h1>
+<p>Ufiles were originally developed to facilitate preparation of data for the TRANSP code analyses of PDX tokamak data at PPPL. The design aimed at two goals:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Be able to write the data on the data acquisition DEC-10 machine but read it on a VAX 11/780;</p></li>
+<li><p>Be able to process data from different diagnostics using common utility programs for smoothing, averaging, etc.</p></li>
+</ol>
+</div></blockquote>
+<p>The resulting standardization of physics results data (and removal of most format peculiarities specific to diagnostic, tokamak, or data acquisition system) has proven extremely useful, both for processing of the data and for sharing the data on a wide variety of machines. Ufiles have since been used to carry the data from many tokamaks to many computers around the world. Most of the Ufiles software was developed in the early 1980s on DEC VAX minicomputers.</p>
+</section>
+<section id="contributors">
+<h1>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline"></a></h1>
+<p>There have been many people who have contributed to the Ufiles software over many decades. A list of contributors was harvested from the TRANSP repository and is ordered by appearance in the commit log (oldest to newest). An honest attempt has been made to make this list as comprehensive as possible, so please let us know if there are any glaring omissions. This acknowledgment is meant for developers of the legacy version of Ufiles and not new work going forward.</p>
+<p>Doug McCune (original architect); Marilee Thompson; JP Jeral; Ted Terpstra; Richard Wieland; PM Stubber; John Schivell; Christina Ludescher-Furth (most commits); Rob Andre; Eliot Feibush; Jim Conboy; Alex Pletzer; Robert Budny; Greg Colyer; Ben Bariteau; Marina Gorelenkova; Keshavamurthy Indireshkumar; Xingqiu Yuan; Johan Carlsson; Jai Sachdev; Garrett Wright; Joshua Breslau; Francesca Poli; Gopan Perumpilly</p>
+</section>
+<section id="precision">
+<h1>Precision<a class="headerlink" href="#precision" title="Permalink to this headline"></a></h1>
+<p>The main Ufiles routines are all written in single precision; all floating point arrays are declared <code class="docutils literal notranslate"><span class="pre">REAL</span></code>. The Ufiles data formats store single precision (32 bit) floating point data. However, a parallel interface is maintained for codes which use <code class="docutils literal notranslate"><span class="pre">REAL*8</span></code> to declare floating point arrays. For each named routine in the Ufiles library, that name prepended with <code class="docutils literal notranslate"><span class="pre">R8_</span></code> gives the <code class="docutils literal notranslate"><span class="pre">REAL*8</span></code> interface routine name. Thus, to call <code class="docutils literal notranslate"><span class="pre">UF1DRD</span></code> from a <code class="docutils literal notranslate"><span class="pre">REAL*8</span></code> code, use <code class="docutils literal notranslate"><span class="pre">R8_UF1DRD</span></code>, replacing all <code class="docutils literal notranslate"><span class="pre">REAL</span></code> arguments and arrays with <code class="docutils literal notranslate"><span class="pre">REAL*8</span></code> arguments and arrays. Similarly, to call UF2DWR from a <code class="docutils literal notranslate"><span class="pre">REAL*8</span></code> code, use <code class="docutils literal notranslate"><span class="pre">R8_UF2DWR</span></code>.</p>
+</section>
+<section id="data-formats">
+<h1>Data Formats<a class="headerlink" href="#data-formats" title="Permalink to this headline"></a></h1>
+<p>Five Ufiles file format variants are supported:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>ASCII – portable from machine to machine – 7 decimal digits of precision.</p></li>
+<li><p>Compressed binary – NOT portable – 16 bit precision – fast and compact. Accuracy not sufficient for some applications. Not recommended for new Ufiles but many old TFTR Ufiles are in this format.</p></li>
+<li><p>Loss-free portable compressed binary – 100% bit for bit accurate network portable compressed binary Ufiles data – transferable btw all brands of unix and VMS via binary ftp.</p></li>
+<li><p>NetCDF – NetCDF Ufiles may be written, if the Ufiles software is linked with the NetCDF binary library(s).</p></li>
+<li><p>HDF – HDF Ufiles may be written, if the Ufiles software is linked with the HDF binary library(s).</p></li>
+</ul>
+</div></blockquote>
+<p>Ufiles reading software deals automatically with all formats. However, the user needs to be somewhat concerned when writing Ufiles as a format variant must be considered. The Ufiles software default is ASCII. However, many applications override this to set their own default. Standard Ufiles utilities offer user control over output file formats as a menu option.</p>
+</section>
+<section id="data-structures">
+<h1>Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline"></a></h1>
+<p>Ufiles are generally described as having <em>dimensionality</em>. A Ufile may be 0d, 1d, 2d, or 3d. A 0d Ufile contains scalars only. Higher dimensional Ufiles contain dimensioned data plus optional scalars.</p>
+<p>A fundamental rule of Ufiles – a kind of atomicity – is that each Ufile contains at most one data structure of dimensionality 1 or more. This <em>one item per file</em> rule is the key to the simplicity, flexibility and portability of Ufiles.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Scalar – scalar numbers associated with keywords, labels and physical units. Any Ufile may contain zero or more associated scalars.</p></li>
+<li><p>1d – discreet representation of data of the form <code class="docutils literal notranslate"><span class="pre">f(x)</span></code> where <code class="docutils literal notranslate"><span class="pre">x</span></code> is usually a monotonic increasing sequence. Ufiles do not require <code class="docutils literal notranslate"><span class="pre">x</span></code> to be monotonic increasing but some utility programs do depend on this.</p></li>
+<li><p>2d – discreet representation of data of the form <code class="docutils literal notranslate"><span class="pre">f(x,y)</span></code>.</p></li>
+<li><p>3d – discreet representation of data of the form <code class="docutils literal notranslate"><span class="pre">f(x,y,z)</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>The vast majority of existing Ufiles are either 1d or 2d. Software using Ufiles generally must know in advance the dimensionality of the Ufiles being read.</p>
+</section>
+<section id="filenames">
+<h1>Filenames<a class="headerlink" href="#filenames" title="Permalink to this headline"></a></h1>
+<p>Ufiles filenames have 3 parts:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>A prefix (up to 16 characters long, uppercase letters)</p></li>
+<li><p>A shot number (5 digits)</p></li>
+<li><p>A suffix (up to 16 characters long, uppercase letters).</p></li>
+</ol>
+</div></blockquote>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">T12345.CUR</span></code> where <code class="docutils literal notranslate"><span class="pre">T</span></code> is the prefix, <code class="docutils literal notranslate"><span class="pre">12345</span></code> is the shot number, and <code class="docutils literal notranslate"><span class="pre">CUR</span></code> is the suffix.</p>
+<p>Ufiles software also allows specification of a disk and directory name (VMS) or a path name (unix) – see the section on applications programming. An option exists for suppressing the shot number field.</p>
+</section>
+<section id="utilities">
+<h1>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline"></a></h1>
+<p>A rich collection of utility programs exist for the display and manipulation of Ufiles data. They share the following common features:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ufiles data format input/output</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sglib</span></code> (Tektronix) graphics</p></li>
+<li><p>Interactive menu driven command line user i/o using the UREAD system (described elsewhere) to allow scripting and automation of routine operations</p></li>
+<li><p>Ufiles filename set up via interactive menu.</p></li>
+<li><p>Utilities which write Ufiles generate comments describing the Ufile manipulation &amp; copy comments from the input Ufile. Also, user comments are solicited. Thus the comment section of Ufiles contains a history of utility manipulations applied to the data.</p></li>
+</ul>
+</div></blockquote>
+<p>The utility programs are intended to be largely self documenting through their menu interfaces. The following list summarizes Ufile utility programs currently in existence:</p>
+<section id="display">
+<h2>Display<a class="headerlink" href="#display" title="Permalink to this headline"></a></h2>
+<p>This utilities make Tektronix displays of Ufile data:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ulook0</span></code> look at scalar Ufile data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ugraf1</span></code> look at 1d Ufile data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ugraf2</span></code> look at 2d Ufile data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ugraf3</span></code> look at 3d Ufile data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uftype</span></code> read a Ufile header, type out dimensionality and formatting information.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="averaging">
+<h2>Averaging<a class="headerlink" href="#averaging" title="Permalink to this headline"></a></h2>
+<p>Utilities which average or sum data from multiple input Ufiles; output the average or sum to a single Ufile. Some interpolation capability is provided in <code class="docutils literal notranslate"><span class="pre">gaver1</span></code> and <code class="docutils literal notranslate"><span class="pre">gaver2</span></code>: the first input file’s grid becomes the interpolation target for subsequent input files in case their grids do not match.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gaver0</span></code> average scalar lists</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gaver1</span></code> average/sum 1d Ufile data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gaver2</span></code> average/sum 2d Ufile data</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="smoothing">
+<h2>Smoothing<a class="headerlink" href="#smoothing" title="Permalink to this headline"></a></h2>
+<p>Apply “local triangular weighted average” smoothing to Ufile data. Also permit limited arithmetic, e.g. linear transformations: <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">--&gt;</span> <span class="pre">a*x</span> <span class="pre">+</span> <span class="pre">b</span></code> on data axes (units transformations, e.g. <code class="docutils literal notranslate"><span class="pre">a=1000</span></code>, <code class="docutils literal notranslate"><span class="pre">b=0</span></code> to take KeV to eV).</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gsmoo1</span></code> smooth 1d data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gsmoo2</span></code> smooth 2d data</p></li>
+</ul>
+</div></blockquote>
+<p>Smoothing programs also have some capability for deglitching data, by means of automatic algorithms and by means of interactive cutting and pasting. These features are not effective on all data.</p>
+</section>
+<section id="advanced-utilities">
+<h2>Advanced Utilities<a class="headerlink" href="#advanced-utilities" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">concat</span></code> – concatenator, combine a sequence of 1d Ufiles to form a 2d Ufile. Or, add 1d slices to an existing 2d Ufile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extrac</span></code> – extractor, extract 1d slices from an existing 2d Ufile or extract a 2d subset from a 2d Ufile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">splice</span></code> – splice a single 1d Ufile <code class="docutils literal notranslate"><span class="pre">f(x)</span></code> using selected intervals from input Ufiles <code class="docutils literal notranslate"><span class="pre">f1(x)</span></code>, <code class="docutils literal notranslate"><span class="pre">f2(x)</span></code>, <code class="docutils literal notranslate"><span class="pre">f3(x)</span></code>, …</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">splice2</span></code> – same as splice but using 2d Ufiles on input and output. All ufiles share the same grid in the direction not spliced</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thin1</span></code> – thin the x coordinate of a 1d Ufile <code class="docutils literal notranslate"><span class="pre">f(x)</span></code>, to make it smaller</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thin2</span></code> – thin out the x and y coordinates of a 2d Ufile <code class="docutils literal notranslate"><span class="pre">f(x,y)</span></code> to make it smaller</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="specialized-utilities">
+<h2>Specialized Utilities<a class="headerlink" href="#specialized-utilities" title="Permalink to this headline"></a></h2>
+<p>Discussion with experienced PPPL user is recommended prior to use of these programs.</p>
+<ul class="simple">
+<li><p>(<code class="docutils literal notranslate"><span class="pre">ecprog</span></code> manipulate ECE data; frequency –&gt; radius maps valid for simple tokamak geometries; recalibration and edge trimming options) - Not available as part of the Ufiles repository</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sawtoo</span></code> apply pattern matching algorithm to detect sawtooth event times from input 1d Ufile data. Output 1d Ufile of sawtooth event times (suitable for input to TRANSP).</p></li>
+</ul>
+</section>
+</section>
+<section id="utility-demo-scripts">
+<h1>Utility Demo Scripts<a class="headerlink" href="#utility-demo-scripts" title="Permalink to this headline"></a></h1>
+<p>Note: these are not currently available in the Ufiles repo but we will try to provide them soon.</p>
+<p>The NTCC Modules Library distribution includes a test directory with demo scripts that illustrate the capabilities of the Ufiles utilities.</p>
+<p>These are <code class="docutils literal notranslate"><span class="pre">uread</span></code> scripts – they encode the user side of a dialog with a <code class="docutils literal notranslate"><span class="pre">uread</span></code> menu driven interactive Fortran program. Each script contains contains a complete session with a specific Ufiles utility. Ufiles data required by the script sessions are included in the same directory with the scripts themselves.</p>
+<p>Execution of the scripts results in the output of <em>Tektronix</em> style graphics (supported by ordinary unix xterm, or by the xtc application available with the NTCC Ufiles software distribution); also messages are written to the terminal window in which the demo is invoked. Typically, demo scripts will pause to allow the user to view each graph before going on to the next graph (but other behaviors are possible, depending on the user’s configuration). The graphs illustrate the utilities’ capabilities; the text provides some supporting explanation.</p>
+<p>The scripts are ascii text. The user may want to print out a copy of the script and then follow along in an interactive session with the utility, in order to see the program menus and prompts.</p>
+<p>What follows is a list of the demo scripts provided, and a summary of their contents. Assuming the utility binaries have been built and made available as commands (on the user’s PATH in UNIX), the demo scripts are invoked by typing <code class="docutils literal notranslate"><span class="pre">&lt;utility-name&gt;</span> <span class="pre">&#64;&lt;utility-name&gt;.demo</span></code> from the directory containing the scripts.</p>
+<section id="id1">
+<h2>Display<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ugraf1</span> <span class="pre">&#64;ugraf1.demo</span></code> – plot 1d Ufiles – show some 1d display style options and rescaling capability.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ugraf2</span> <span class="pre">&#64;ugraf2.demo</span></code> – plot 2d Ufiles – show 2d display types including slice plots, isometric plots, contour plots, and multi-slice plots.</p></li>
+</ul>
+</div></blockquote>
+<p>(All utilities have similar display capabilities).</p>
+</section>
+<section id="basic-averaging-and-smoothing">
+<h2>Basic Averaging and Smoothing<a class="headerlink" href="#basic-averaging-and-smoothing" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gaver1</span> <span class="pre">&#64;gaver1.demo</span></code> – demonstrate averaging of data – average several 1d profiles.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gsmoo1</span> <span class="pre">&#64;gsmoo1.demo</span></code> – 1d smoothing – smooth an ECE time trace with internal breaks inserted for preservation of pellet injection events.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gsmoo2</span> <span class="pre">&#64;gsmoo2.demo</span></code> – 2d smoothing – smooth f(x,t) first in x, then in t.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="hand-generated-profiles-and-signals">
+<h2>Hand generated Profiles and Signals<a class="headerlink" href="#hand-generated-profiles-and-signals" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">propane</span> <span class="pre">&#64;propane.demo</span></code> – generate an analytic profile; generate a hand entered waveform.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="methods-for-extracting-combining-or-thinning-ufiles-data">
+<h2>Methods for Extracting, Combining, or Thinning Ufiles Data<a class="headerlink" href="#methods-for-extracting-combining-or-thinning-ufiles-data" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">concat</span> <span class="pre">&#64;concat.demo</span></code> – demonstrate concatenation of multiple 1d profiles to form a 2d profile evolution Ufile. Add extrapolated profiles at endpoints.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extrac</span> <span class="pre">&#64;extrac.demo</span></code> – extract 1d slices and 2d sub-blocks from a 2d input Ufile.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">splice</span> <span class="pre">&#64;splice.demo</span></code> – join 1d Ufile time trace segments end to end, to form a new 1d Ufile timetrace.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">splice2</span> <span class="pre">&#64;splice2.demo</span></code> – “splice” method applied to profile evolution 2d Ufiles.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thin1</span> <span class="pre">&#64;thin1.demo</span></code> – thin (resample at lower rate) 1d Ufile data, with averaging option.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thin2</span> <span class="pre">&#64;thin2.demo</span></code> – thin method applied to 2d Ufile profile evolution function.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="sawtooth-event-recognition">
+<h2>Sawtooth Event Recognition<a class="headerlink" href="#sawtooth-event-recognition" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sawtoo</span> <span class="pre">&#64;sawtoo.demo</span></code> –  use a correlation method applied to smoothing residue to yield a sequence of sawtooth event times.</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="applications-programming">
+<h1>Applications Programming<a class="headerlink" href="#applications-programming" title="Permalink to this headline"></a></h1>
+<p>Ufiles are opened, read, and written via calls to subroutines in a Fortran subroutine library. The process involves:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Setting up the filename                - see file_setup</p></li>
+<li><p>Opening the file                       - see file_setup</p></li>
+<li><p>Reading or writing the data            - see scalar/1d/2d</p></li>
+<li><p>(optionally) dealing with comment data - see comments</p></li>
+<li><p>Closing the file                       - see file_setup</p></li>
+</ol>
+</div></blockquote>
+<p>Ancillary calls are available to define file format (ascii or compressed binary) or modify error handling. Ufiles software can also access MDSplus – READ access only.</p>
+<section id="linking-to-ufiles">
+<h2>Linking to Ufiles<a class="headerlink" href="#linking-to-ufiles" title="Permalink to this headline"></a></h2>
+<p>Linking to the Ufiles libraries depends on what the application needs. The NetCDF-4 libraries should be available on your system. You will need to specify the location of the NetCDF-4 include directory when compiling:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-I<span class="sb">`</span>nf-config --includedir<span class="sb">`</span>
+</pre></div>
+</div>
+<p>and this in the link line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L<span class="sb">`</span> nf-config --flibs<span class="sb">`</span>
+</pre></div>
+</div>
+<p>If MDSplus is available on your system then you will need to include this while compiling:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-I<span class="k">$(</span>MDSPLUS_DIR<span class="k">)</span>/include
+</pre></div>
+</div>
+<p>and this in the link line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L<span class="k">$(</span>MDSPLUS_DIR<span class="k">)</span>/lib -lMdsLib
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">MDSPLUS_DIR</span></code> should point to the directory where MDSplus is installed.</p>
+<p>Linking to the Ufiles libraries can be done as follows, where <code class="docutils literal notranslate"><span class="pre">UFILES_ROOT</span></code> specifies the location of the Ufiles installation,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>-L<span class="nv">$UFILES_ROOT</span>/lib -luflib_userio -luflib -lr4smlib_userio -lr4smlib -lmds_sub -lufhdf <span class="se">\</span>
+             -lmdstransp -linterp_sub -lextrac_sub -ltrgraf -lureadsub -ltokid -lufencod <span class="se">\</span>
+             -lsg -ljc -lufport
+</pre></div>
+</div>
+<p>This includes the MDSplus interface and the sglib graphics package. If you do not need the sglib graphics package then replace <code class="docutils literal notranslate"><span class="pre">-lsg</span> <span class="pre">-ljc</span></code> with <code class="docutils literal notranslate"><span class="pre">-lsgdummy</span></code>. If you do not have MDSplus installed then replace <code class="docutils literal notranslate"><span class="pre">-lmds_sub</span></code> with <code class="docutils literal notranslate"><span class="pre">-lmds_dummy</span></code>.</p>
+</section>
+<section id="lun">
+<h2>lun<a class="headerlink" href="#lun" title="Permalink to this headline"></a></h2>
+<p>The acronym “lun” stands for “logical unit number” and is used by Fortran to keep track of open files.</p>
+<p>The lun is used similarly by the Ufiles system. Most Ufiles calls have the lun as the first argument; this tells the Ufiles software to which file the call applies. Applications can maintain multiple Ufile streams open in parallel; lun is used to distinguish between them.</p>
+<p>Fortran allows lun values in the range from 0 to 99. However, it is recommended to use values in the range 21 to 99, because the lower numbers are typically used by the system (e.g. 5 and 6 for terminal i/o), and numbers between 10 and 20 may be used by the <code class="docutils literal notranslate"><span class="pre">ureadsub</span></code> library, if the application uses this.</p>
+<p>If the application opens any file on any logical unit number, that lun should not be used for Ufiles until after the file is closed.</p>
+</section>
+<section id="file-setup">
+<h2>File Setup<a class="headerlink" href="#file-setup" title="Permalink to this headline"></a></h2>
+<p>UFSETR is used to set up the naming and location convention
+you will use. The disk and directory fields may be blank, in
+which case the files will default to the current working directory.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UFSETR</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">prefix</span><span class="p">,</span><span class="n">suffix</span><span class="p">,</span><span class="n">disk</span><span class="p">,</span><span class="n">directory</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="c">! lun - integer</span>
+<span class="w">      </span><span class="c">! prefix - character, max length 16</span>
+<span class="w">      </span><span class="c">! suffix - character, max length 16</span>
+<span class="w">      </span><span class="c">! disk - character, max length 16</span>
+<span class="w">      </span><span class="c">! directory - character, max length 64</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UFSETR</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="s1">&#39;T&#39;</span><span class="p">,</span><span class="s1">&#39;CUR&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;/usr/ufiles/data&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                        </span><span class="c">!To access /usr/ufiles/data/T*.CUR</span>
+<span class="w">                        </span><span class="c">!leave &quot;disk&quot; argument blank</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">ufsetr</span></code> does not set the entire filename: the shot number has not yet been given. This is given as an integer argument to the open subroutine (<code class="docutils literal notranslate"><span class="pre">ufoprd</span></code> or <code class="docutils literal notranslate"><span class="pre">ufopwr</span></code>). The shot number is a positive integer of no more than six digits.</p>
+<p>then</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UFOPRD</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">ishot</span><span class="p">,</span><span class="n">ierr</span><span class="p">)</span><span class="w">     </span><span class="c">!Open for READONLY access</span>
+<span class="k">call </span><span class="n">UFOPWR</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">ishot</span><span class="p">,</span><span class="n">ierr</span><span class="p">)</span><span class="w">     </span><span class="c">!Open for WRITE access</span>
+<span class="w"> </span><span class="c">! ...check ierr for errors, ierr=0 indicates success</span>
+
+<span class="w"> </span><span class="c">! ...read/write the data (code depends on what kind)</span>
+
+<span class="k">call </span><span class="n">UFCLOS</span><span class="p">(</span><span class="n">lun</span><span class="p">)</span><span class="w">                </span><span class="c">!Close the file</span>
+</pre></div>
+</div>
+<p>See also the section on compression if you are writing Ufiles.</p>
+</section>
+<section id="suppress-shot-number">
+<h2>Suppress Shot Number<a class="headerlink" href="#suppress-shot-number" title="Permalink to this headline"></a></h2>
+<p>Use a call to the subroutine <code class="docutils literal notranslate"><span class="pre">UFNSHO</span></code> to suppress the encoding of the shot number in the Ufile name.</p>
+<p>Thus, to read a Ufile called <code class="docutils literal notranslate"><span class="pre">ABC.DAT</span></code>, do:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">ufsetr</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="s1">&#39;ABC&#39;</span><span class="p">,</span><span class="s1">&#39;DAT&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="w"></span>
+<span class="k">call </span><span class="n">ufnsho</span><span class="p">(</span><span class="n">lun</span><span class="p">)</span><span class="w"></span>
+<span class="k">call </span><span class="n">ufoprd</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">idummy</span><span class="p">,</span><span class="n">ierr</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="c">! ... ...</span>
+<span class="k">call </span><span class="n">ufclos</span><span class="p">(</span><span class="n">lun</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>note the 2nd argument of ufoprd is ignored. The same is true for <code class="docutils literal notranslate"><span class="pre">ufopwr</span></code> if the Ufile is being written.</p>
+<p>The normal sequence would have been</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">ufsetr</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="s1">&#39;ABC&#39;</span><span class="p">,</span><span class="s1">&#39;DAT&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="w"></span>
+<span class="n">ishot</span><span class="o">=</span><span class="mi">12345</span><span class="w"></span>
+<span class="k">call </span><span class="n">ufoprd</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">ishot</span><span class="p">,</span><span class="n">ierr</span><span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="c">! ... ...</span>
+<span class="k">call </span><span class="n">ufclos</span><span class="p">(</span><span class="n">lun</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>which would read the Ufile <code class="docutils literal notranslate"><span class="pre">ABC12345.DAT</span></code>.</p>
+</section>
+<section id="mdsplus-setup">
+<h2>MDSplus Setup<a class="headerlink" href="#mdsplus-setup" title="Permalink to this headline"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">UFSETR</span></code> is used to identify the MDSplus server, treename, path, and nodename of an MDSplus signal that is to be read by Ufiles software. (The applications program needs to know the dimensionality of the signal in advance).</p>
+<p>The general form of such a call is:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UFSETR</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">server</span><span class="p">,</span><span class="n">tree_name</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">node</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Note this is the same routine as is used to setup access to standard Ufiles. To distinguish MDSplus access from standard Ufile access, the server string must start with <code class="docutils literal notranslate"><span class="pre">MDS+::</span></code>. If it does not, then standard Ufile access is assumed.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="n">lun</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">integer</span>
+<span class="n">server</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">character</span><span class="p">,</span><span class="w"> </span><span class="nb">max </span><span class="n">length</span><span class="w"> </span><span class="mi">55</span><span class="w"> </span><span class="n">including</span><span class="w"> </span><span class="s2">&quot;MDS+::&quot;</span><span class="w"></span>
+<span class="n">tree_name</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">character</span><span class="p">,</span><span class="w"> </span><span class="nb">max </span><span class="n">length</span><span class="w"> </span><span class="mi">20</span><span class="w"></span>
+<span class="n">path</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">character</span><span class="p">,</span><span class="w"> </span><span class="nb">max </span><span class="n">length</span><span class="w"> </span><span class="mi">120</span><span class="w"></span>
+<span class="n">node</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="kt">character</span><span class="p">,</span><span class="w"> </span><span class="nb">max </span><span class="n">length</span><span class="w"> </span><span class="mi">20</span><span class="w"></span>
+</pre></div>
+</div>
+<p>The full path string to the desired data is</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="n">path</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">ilp</span><span class="p">)</span><span class="o">//</span><span class="s1">&#39;:&#39;</span><span class="o">//</span><span class="n">node</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">iln</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>where ilp is the non-blank length of “path” (stripping off also any trailing colon), and iln is the non-blank length of “node”.</p>
+<p>actual example:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="w">   </span><span class="k">call </span><span class="n">UFSETR</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="w"></span>
+<span class="o">&gt;</span><span class="w">              </span><span class="s1">&#39;MDS+::TRANSPGRID.PPPL.GOV&#39;</span><span class="p">,</span><span class="w"></span>
+<span class="o">&gt;</span><span class="w">              </span><span class="s1">&#39;TRANSP_NSTX&#39;</span><span class="p">,</span><span class="w"></span>
+<span class="o">&gt;</span><span class="w">              </span><span class="s1">&#39;TRANSP_OUT&#39;</span><span class="p">,</span><span class="w"></span>
+<span class="o">&gt;</span><span class="w">              </span><span class="s1">&#39;PCUR&#39;</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>PPPL TRANSP trees have their own numbering system; shot 1027 has data for the above path configuration.</p>
+<p>Note that, as with traditional file access, <code class="docutils literal notranslate"><span class="pre">UFSETR</span></code> does not access the data. The shot number of the MDSplus tree has not been given yet. As with traditional file access, the shot number is given via a call to <code class="docutils literal notranslate"><span class="pre">UFOPRD</span></code>, which in this mode calls the appropriate MDSplus client software to connect to the MDSplus server, and open up the named tree. <code class="docutils literal notranslate"><span class="pre">UF1DRD</span></code> or <code class="docutils literal notranslate"><span class="pre">UF2DRD</span></code> will be used to go to the indicated path in the tree and actually read the signal data. Access to data comments is not available at this time.</p>
+<p>So:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UFOPRD</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">ishot</span><span class="p">,</span><span class="n">ierr</span><span class="p">)</span><span class="w">     </span><span class="c">!Open tree #ishot for READ</span>
+<span class="w"> </span><span class="c">! ...check ierr for errors, ierr=0 indicates success</span>
+
+<span class="w"> </span><span class="c">! ...use UF1DRD or UF2DRD or similar routine to read the signal; check status code.</span>
+
+<span class="w"> </span><span class="c">! ...WRITE access is NOT available</span>
+
+<span class="k">call </span><span class="n">UFCLOS</span><span class="p">(</span><span class="n">lun</span><span class="p">)</span><span class="w">                </span><span class="c">!Close the tree</span>
+</pre></div>
+</div>
+</section>
+<section id="scalar">
+<h2>Scalar<a class="headerlink" href="#scalar" title="Permalink to this headline"></a></h2>
+<p>To write an array of N scalars:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UF0DWR</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">tdev</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span><span class="n">sdate</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span><span class="n">values</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="n">labels</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">ierr</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">tdev</span></code> labels the tokamak: ‘TFTR’, ‘PDX’, ‘PLT’, ‘PBX’,…, max of four characters, <code class="docutils literal notranslate"><span class="pre">character*4</span></code>
+<code class="docutils literal notranslate"><span class="pre">sdate</span></code> should contain a <code class="docutils literal notranslate"><span class="pre">character*10</span></code> shot date e.g. <code class="docutils literal notranslate"><span class="pre">'29-FEB-89</span> <span class="pre">'</span></code></p>
+<p>for the i’th scalar, <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">=</span> <span class="pre">1</span> <span class="pre">to</span> <span class="pre">N</span></code>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">values(i)</span></code> is the i’th scalar value, <code class="docutils literal notranslate"><span class="pre">real</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">label(1,i)</span></code> is a 1-9 character keyword followed by a “:”.
+<code class="docutils literal notranslate"><span class="pre">label(2,i)</span></code> is a 10 character descriptive label
+<code class="docutils literal notranslate"><span class="pre">label(3,i)</span></code> is the physical units.</p>
+<p>all element of the label array are <code class="docutils literal notranslate"><span class="pre">character*10</span></code>.</p>
+<p>Similarly, to read scalar values:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UF0DRD</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">tdev</span><span class="p">,</span><span class="n">sdate</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">labels</span><span class="p">,</span><span class="n">Nmax</span><span class="p">,</span><span class="n">Nactual</span><span class="p">,</span><span class="n">ierr</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>if the operation is successful <code class="docutils literal notranslate"><span class="pre">ierr=0</span></code> is set on return.</p>
+</section>
+<section id="d-arrays">
+<h2>1-d Arrays<a class="headerlink" href="#d-arrays" title="Permalink to this headline"></a></h2>
+<p>To write a 1-d array, you need arrays for both <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">f(x)</span></code>.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UF1DWR</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">tdev</span><span class="p">,</span><span class="n">sdate</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">iproc</span><span class="p">,</span><span class="n">xlab</span><span class="p">,</span><span class="n">flab</span><span class="p">,</span><span class="n">nsc</span><span class="p">,</span><span class="n">scval</span><span class="p">,</span><span class="n">sclab</span><span class="p">,</span><span class="n">ier</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>The variables <code class="docutils literal notranslate"><span class="pre">tdev</span></code>, <code class="docutils literal notranslate"><span class="pre">sdate</span></code> are as under Scalars. The variables at the end containing “sc” are like those defined under Scalars.</p>
+<p>The ones special to a 1-d call are:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="n">The</span><span class="w"> </span><span class="kt">real </span><span class="n">arrays</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="n">f</span><span class="w"> </span><span class="nb">and </span><span class="n">their</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="n">n</span><span class="p">.</span><span class="w"></span>
+<span class="n">IPROC</span><span class="p">:</span><span class="w"> </span><span class="n">process</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">Translated</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">raw</span><span class="w"> </span><span class="k">data</span><span class="w"> </span><span class="p">(</span><span class="kt">integer</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="mi">1</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">Averaged</span><span class="w"></span>
+<span class="w">                    </span><span class="mi">2</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">Smoothed</span><span class="w"></span>
+<span class="w">                    </span><span class="mi">3</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">Smoothed</span><span class="w"> </span><span class="nb">and </span><span class="n">Averaged</span><span class="w"></span>
+<span class="w">                    </span><span class="mi">4</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="s2">&quot;other&quot;</span><span class="p">.</span><span class="w"></span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">XLAB</span></code>/<code class="docutils literal notranslate"><span class="pre">FLAB</span></code> contain 20 characters of label, 10 characters of units – total <code class="docutils literal notranslate"><span class="pre">CHARACTER*30</span></code> or 3 adjacent <code class="docutils literal notranslate"><span class="pre">CHARACTER*10</span></code> array elements.</p>
+<p>To read the data, labels and scalars:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UF1DRD</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">tdev</span><span class="p">,</span><span class="n">sdate</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">nmax</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">iproc</span><span class="p">,</span><span class="n">xlab</span><span class="p">,</span><span class="n">flab</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">nscmax</span><span class="p">,</span><span class="n">nsc</span><span class="p">,</span><span class="n">scval</span><span class="p">,</span><span class="n">sclab</span><span class="p">,</span><span class="n">ier</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>To read just the data, and dispose of the rest to unit lunxt:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UF1DRE</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">nmax</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ier</span><span class="p">,</span><span class="n">lunxt</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h2>2-d Arrays<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<p>To write 2-d data for a function <code class="docutils literal notranslate"><span class="pre">f(x,y)</span></code> where <code class="docutils literal notranslate"><span class="pre">f</span></code> is a 2d array (e.g. declared <code class="docutils literal notranslate"><span class="pre">REAL</span> <span class="pre">f(nf1,nymax)</span></code> with <code class="docutils literal notranslate"><span class="pre">nf1</span></code>, <code class="docutils literal notranslate"><span class="pre">nymax</span></code> as array dimension parameters):</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UF2DWR</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">tdev</span><span class="p">,</span><span class="n">sdate</span><span class="p">,</span><span class="w">            </span><span class="c">!just like for scalars</span>
+<span class="w">            </span><span class="n">f</span><span class="p">,</span><span class="n">nf1</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">nx</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">iproc</span><span class="p">,</span><span class="w">     </span><span class="c">!similar to 1-d arguments</span>
+<span class="w">            </span><span class="n">flab</span><span class="p">,</span><span class="n">xlab</span><span class="p">,</span><span class="n">ylab</span><span class="p">,</span><span class="w">            </span><span class="c">!character*30, like 1-d args.</span>
+<span class="w">            </span><span class="n">nsc</span><span class="p">,</span><span class="n">scval</span><span class="p">,</span><span class="n">sclab</span><span class="p">,</span><span class="n">ier</span><span class="p">)</span><span class="w">       </span><span class="c">!just like for scalars</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">uf2dwr</span></code> declares real arrays <code class="docutils literal notranslate"><span class="pre">f(nf1,ny)</span></code>, <code class="docutils literal notranslate"><span class="pre">x(nx)</span></code>, and <code class="docutils literal notranslate"><span class="pre">y(ny)</span></code> where <code class="docutils literal notranslate"><span class="pre">nf1.ge.nx</span></code> is required.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>call UF2DRD(lun,tdev,sdate,</dt><dd><p>f,nf1,x,nxmax,y,nymax,iproc,      !as above
+nx,ny,                            !actuals returned
+iflag,                            ! ** see below **
+flab,xlab,ylab,                   !as above
+nscmax,nsc,scval,sclab,ier)       !as in scalars</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">iflag</span></code> controls the dimensioning of <code class="docutils literal notranslate"><span class="pre">f</span></code> as seen by <code class="docutils literal notranslate"><span class="pre">uf2drd</span></code>.</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">iflag=0</span></code> then <code class="docutils literal notranslate"><span class="pre">uf2drd</span></code> assumes the callers declares <code class="docutils literal notranslate"><span class="pre">f(nf1,nymax)</span></code> and reads the data using the loop specification <code class="docutils literal notranslate"><span class="pre">read(...)</span> <span class="pre">((f(ix,iy),ix=1,nx),iy=1,ny)</span></code>. It is expected that <code class="docutils literal notranslate"><span class="pre">nx.le.nf1</span></code>, otherwise an error is reported. If <code class="docutils literal notranslate"><span class="pre">nx.lt.nf1</span></code>, then, not all the elements of f will be set by the read statement.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">iflag=1</span></code> then <code class="docutils literal notranslate"><span class="pre">uf2drd</span></code> assumes the caller declares <code class="docutils literal notranslate"><span class="pre">f(nfmax)</span></code> as a large buffer, and wants the data read <em>contiguously</em> into the <code class="docutils literal notranslate"><span class="pre">f</span></code> array. In this case, set <code class="docutils literal notranslate"><span class="pre">nf1=nfmax/nymax</span></code> on input. An error will occur if <code class="docutils literal notranslate"><span class="pre">nx*ny</span></code> is greater than <code class="docutils literal notranslate"><span class="pre">nf1*nymax</span></code>, i.e. if reading the data would write past the end of the buffer in memory.</p></li>
+<li><p>For either value of iflag, the independent coordinate arrays <code class="docutils literal notranslate"><span class="pre">x(nxmax)</span></code>, <code class="docutils literal notranslate"><span class="pre">y(nymax)</span></code> are declared, and an error occurs if in the data file either <code class="docutils literal notranslate"><span class="pre">nx.gt.nxmax</span></code> or <code class="docutils literal notranslate"><span class="pre">ny.gt.nymax</span></code>.</p></li>
+</ul>
+<p>On exit, <code class="docutils literal notranslate"><span class="pre">ier=0</span></code> indicates normal successful operation. Applications programs should check.</p>
+</section>
+<section id="format-variants">
+<h2>Format Variants<a class="headerlink" href="#format-variants" title="Permalink to this headline"></a></h2>
+<p>In addition to the traditional Ascii Ufile format, there are four binary Ufile format variants:  16-bit compressed binary, 32-bit loss free portable compressed binary, NetCDF, and HDF.</p>
+<p>The 16 bit Compressed binary Ufiles occupy ~ 1/10th the disk space of ascii Ufiles, and can be read in about 1/5th the time (or faster), with no significant loss of data accuracy in most cases (compression involves specifying scale factors and using a 16 bit digitization of the floating point data. Inaccuracy can occur in analyzed data with wide dynamic range for which this 16 bit digitization is inadequate).</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>16-bit binary compressed Ufiles are not portable across machine architectures!</p></li>
+<li><p>16-bit binary compressed Ufiles are small and fast but their use involves loss of data precision!</p></li>
+</ul>
+</div></blockquote>
+<p>Read access to Ufile data in any format is automatic; the application does not have to know the format of the Ufile it is reading.</p>
+<p>To set up for a Ufile write, choosing a non-Ascii format variant:</p>
+<p><em>After</em> the <code class="docutils literal notranslate"><span class="pre">UFSETR</span></code> call, <em>prior</em> to the <code class="docutils literal notranslate"><span class="pre">UFOPWR</span></code> call, add</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UFCMPR</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="n">iarg</span><span class="p">)</span><span class="w"> </span><span class="c">!iarg = 1 for compressed binary (NOT RECOMMENDED due to data loss)</span>
+<span class="w">                      </span><span class="c">!iarg = 2 for loss free portable compressed binary</span>
+<span class="w">                      </span><span class="c">!iarg = 3 for HDF</span>
+<span class="w">                      </span><span class="c">!iarg = 4 for NetCDF</span>
+<span class="w">                      </span><span class="c">!iarg = 0 for Ascii</span>
+</pre></div>
+</div>
+<p>to set the output format for a Ufile to be written on unit ILUN.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">call </span><span class="n">UFCMPR</span><span class="p">(</span><span class="n">lun</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>clears the flag, allowing an old style ascii Ufiles data write. Note that <code class="docutils literal notranslate"><span class="pre">UFCMPR</span></code> must be called prior to each <code class="docutils literal notranslate"><span class="pre">UFOPWR</span></code> call. <code class="docutils literal notranslate"><span class="pre">UFCMPR</span></code> does not establish a permanent default.</p>
+</section>
+<section id="comments">
+<h2>Comments<a class="headerlink" href="#comments" title="Permalink to this headline"></a></h2>
+<p>Historically, comments were written to the end of Ufiles simply using formatted WRITE statements after the Ufile write call (<code class="docutils literal notranslate"><span class="pre">UF1DWR</span></code> or <code class="docutils literal notranslate"><span class="pre">UF2DWR</span></code>).</p>
+<p>Since compressed Ufiles are binary/unformatted, direct formatted writes of comments appended to the end of the file after data write is no longer a reliable programming method. Instead, use</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">CALL </span><span class="n">UFOPCF</span><span class="p">(</span><span class="n">ILUNC</span><span class="p">,</span><span class="n">IER</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>to open a scratch formatted comments file on unit <code class="docutils literal notranslate"><span class="pre">ILUNC</span></code>. Write the comments on <code class="docutils literal notranslate"><span class="pre">ILUNC</span></code>. Then,</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">CALL </span><span class="n">UCSEND</span><span class="p">(</span><span class="n">ILUNC</span><span class="p">,</span><span class="n">ILUN</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>to send the comments in binary form to the binary compressed output file on unit <code class="docutils literal notranslate"><span class="pre">ILUN</span></code>. <code class="docutils literal notranslate"><span class="pre">UCSEND</span></code> rewinds <code class="docutils literal notranslate"><span class="pre">ILUNC</span></code> and uses the <code class="docutils literal notranslate"><span class="pre">USPOOL</span></code> subroutine to copy the comments to the binary output file. <code class="docutils literal notranslate"><span class="pre">USPOOL</span></code> has been enhanced to support comment output to binary files.</p>
+<p>The 16-bit Compressed data write calls generate statistics describing data (usually negligible) error associated with compression. These statistics are appended as comments in the compressed binary output file.</p>
+</section>
+<section id="error-flags">
+<h2>Error Flags<a class="headerlink" href="#error-flags" title="Permalink to this headline"></a></h2>
+<p>Many Ufiles routines have an error return flag, usually called <code class="docutils literal notranslate"><span class="pre">ier</span></code> or <code class="docutils literal notranslate"><span class="pre">ierr</span></code> and usually the last argument of the subroutine call.</p>
+<p>This flag is set to 0 if the subroutine call is successful. If there is an error, generally a message is written and <code class="docutils literal notranslate"><span class="pre">ier</span></code> is set to a value other than zero.</p>
+<p>Applications programs should check the return value of <code class="docutils literal notranslate"><span class="pre">ier</span></code>, especially at file open time and at data read time, since a number of errors can and do occur.</p>
+</section>
+<section id="error-messages">
+<h2>Error Messages<a class="headerlink" href="#error-messages" title="Permalink to this headline"></a></h2>
+<p>By default the Ufiles subroutine library system will write error messages to stdout. If this is attached to an interactive terminal, the default is also that the user will be prompted to acknowledge the error.</p>
+<p>Applications programs may choose different Ufiles system behaviour in response to error situations– e.g. to prevent error messages from going to stdout.</p>
+</section>
+<section id="read-header">
+<h2>Read Header<a class="headerlink" href="#read-header" title="Permalink to this headline"></a></h2>
+<p>The Ufiles routine <code class="docutils literal notranslate"><span class="pre">UFHDCK</span></code> can be used to read the header of an existing Ufile. This can be useful if you want information prior to committing to an attempt to read the Ufile, in particular:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The dimensionality of the Ufile</p></li>
+<li><p>the size of the data array in the Ufile</p></li>
+</ol>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">UFHDCK</span></code> can only be called after calling <code class="docutils literal notranslate"><span class="pre">UFOPRD</span></code> to open the file, but before calling one of the read routines e.g. <code class="docutils literal notranslate"><span class="pre">UF1DRD</span></code> or <code class="docutils literal notranslate"><span class="pre">UF2DRD</span></code>.</p>
+<p>The syntax of the call is:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="n">C</span><span class="w">  </span><span class="n">declaration</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="kt">INTEGER </span><span class="n">INFO</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="w"></span>
+
+<span class="n">C</span><span class="w">   </span><span class="p">....</span><span class="w"></span>
+
+<span class="n">C</span><span class="w">  </span><span class="k">read </span><span class="n">Ufile</span><span class="w"> </span><span class="n">header</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="k">CALL </span><span class="n">UFHDCK</span><span class="p">(</span><span class="n">ILUN</span><span class="p">,</span><span class="n">INFO</span><span class="p">,</span><span class="n">IER</span><span class="p">)</span><span class="w"></span>
+</pre></div>
+</div>
+<p>This calls the routine <code class="docutils literal notranslate"><span class="pre">UFHDCK</span></code>:</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span>C  READ HEADER OF UFILE AND RETURN STATISTICAL INFORMATION
+C
+    SUBROUTINE UFHDCK(ILUN,INFO,IER)
+C
+C  INPUT:
+C    ILUN -- L.U.N. OF A JUST - OPENED  UFILE
+C
+C  OUTPUT:
+C    INFO -- INFORMATION BLOCK
+C    INFO(1)=FILE DIMENSIONALITY
+C    INFO(2)=TOTAL # OF WORDS IN DEPENDENT DATA ARRAY
+C    INFO(3)=SIZE OF FIRST DIMENSION OF DATA ARRAY
+C    INFO(4)=SIZE OF SECOND DIMENSION OF DATA ARRAY (IF APPLICABLE)
+C     ...
+C    INFO(8)=NUMBER OF SCALARS IN DATA FILE
+C
+C    IER = 0 IF ROUTINE COMPLETES EXECUTION SUCCESSFULLY
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">UFHDCK</span></code> rewinds the Ufile after reading the header, so that on exit the Ufile is ready to be read by <code class="docutils literal notranslate"><span class="pre">UF1DRD</span></code>, <code class="docutils literal notranslate"><span class="pre">UF2DRD</span></code>, or whatever Ufile  read routine is appropriate.</p>
+</section>
+</section>
+<section id="how-ufiles-work">
+<h1>How Ufiles Work<a class="headerlink" href="#how-ufiles-work" title="Permalink to this headline"></a></h1>
+<p>Ufiles maintains the logical equivalent of a table, stored in COMMON (include file “Ufiles”).</p>
+<p>This table associates a fortran logical unit number (lun) with filename parts stored as character strings – the <code class="docutils literal notranslate"><span class="pre">ufsetr</span></code> call establishes this association, which is referred to within Ufiles code internal documentation as a channel. Channels are indexed by the lun, and all subsequent calls to do with a given channel use the lun for identification.</p>
+<p>Additional table entries track channel status, i.e. whether an actual file is open on a given channel, what kind of access (read or write), what format option (ascii, binary, NetCDF, etc.), and whether the data from an open file has yet been read or written.</p>
+<p>Buffers are maintained for compression of the binary representation of floating point numbers, and for input/output of binary Ufiles data.</p>
+<p>Up to 64 Ufiles channels can be simultaneously defined and independently maintained within an application.</p>
+<p>A word of caution: Ufiles have not been used on multiprocessors for parallel i/o operations. Since Ufiles COMMON contains resources which are shared between channels, parallel i/o operations would probably be unreliable without further careful work on the software.</p>
+</section>
+<section id="working-with-idl">
+<h1>Working with IDL<a class="headerlink" href="#working-with-idl" title="Permalink to this headline"></a></h1>
+<p>Ufiles can be read and written from IDL. <code class="docutils literal notranslate"><span class="pre">IDL_PATH</span></code> must contain the location of the <code class="docutils literal notranslate"><span class="pre">readuf.pro</span></code> and <code class="docutils literal notranslate"><span class="pre">w*duf.pro</span></code> files. The <code class="docutils literal notranslate"><span class="pre">LD_LIBRARY_PATH</span></code> must contain the location of <code class="docutils literal notranslate"><span class="pre">libufshr.so</span></code>.</p>
+<section id="read-ufiles-from-idl">
+<h2>Read Ufiles from IDL<a class="headerlink" href="#read-ufiles-from-idl" title="Permalink to this headline"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      IDL&gt; readuf
+           lists parameters
+READBUF
+NAME:         READUF
+
+PURPOSE:      Read 1,2,or 3d Ufile, and return everything in the file
+              arrays are dynamically allocated
+
+Inputs for Files on Disk:
+      disk            - &#39; &#39;
+      dir             - directory enclosed in single quotes &#39; &#39;
+      pref            - file prefix, up to 16 characters, enclosed in &#39; &#39;
+      shot            - long integer shot #, 5(TFTR) or 6(PBXM) digits
+      ext             - file suffix, enclosed in &#39; &#39;
+
+Inputs for Files in MDSplus:
+      disk            - mdspath -- e.g. &#39;.INPUTS&#39;
+      dir             - Node Name -- e.g. &#39;CUR&#39;
+      pref            - &#39;MDS+::&lt;server&gt;&#39; --  e.g. &#39;MDS+::TRANSPGRID.PPPL.GOV&#39;
+
+     &gt;&gt;if in a Tree where mds-pulse# = shot#:
+      shot            - mds pulse number (long integer)
+      ext             - MDSplus Tree -- e.g. &#39;TRW_BUDNY&#39;
+     &gt;&gt;if in a TRANSP Tree using PPPL shot-to-pulse translation:
+      shot            -  long integer shot # &quot;NOT&quot; mds-pulse#
+      ext             - &#39;&lt;tree&gt;@&lt;runid&gt;&#39; -- e.g. &#39;transp_tftr@37065Y01&#39;
+     &gt;&gt;if NOT PPPL &amp;&amp; shot != pulse
+      shot            -  long integer shot # &quot;NOT&quot; mds pulse number
+      ext             - &#39;&lt;tree&gt;(&lt;pulse #&gt;)&#39; -- e.g. &#39;TRANSP01(12345678)&#39;
+
+
+Outputs:
+      shdate          - shot date
+      mach            - tokamak device
+      ierr            - 0=ok
+      nsc             - number of scalars
+      scval           - scalar values array
+      sclab           - scalar array descriptions
+      iproc           - type of
+                        data,0=unprocessed,1=avg,2=smth,3=avg&amp;smth
+
+      f               - dependent variable array
+      x               - first dimension of variable array
+      nx              - number of 1st independent variable data pts
+      flab            - label of dependent variable
+      xlab            - label of 1st independent variable
+
+If 2D or 3D Ufile:
+      y               - second dimension of variable array
+      ny              - number of 2nd independent variable data pts
+      ylab            - label of 2nd independent variable
+If 3D Ufile:
+      z               - third dimension of variable array
+      nz              - number of 3nd independent variable data pts
+      zlab            - label of 3nd independent variable
+
+
+NOTE:   comment not implemented
+
+USAGE: (to read S_V765611.Q0T)
+      idl&gt; readuf,&#39; &#39;,&#39;/u/mydir&#39;,&#39;S_V7&#39;,65611,&#39;Q0T&#39;,  $ ;input
+           shdate,mach,ierr, $
+           nsc,scval,sclab,iproc,f,x,nx,flab,xlab $
+           ,y,ny,ylab                                   ;for 2,3D files
+           ,z,nz,zlab                                   ;for 3D file
+</pre></div>
+</div>
+<p>Example to read 1D Ufile from a MDSplus working tree:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>disk=&#39;.inputs&#39;
+dir=&#39;CUR&#39;
+pref=&#39;MDS+::TRANSP.PPPL.GOV&#39;
+ext=&#39;transp_nstx&#39;
+shot=1144630102
+readuf, disk,dir,pref,shot,ext,shdate,mach,ierr,nsc,scval,sclab, $
+        iproc,f,x,nx,flab,xlab
+
+plot,x,f
+</pre></div>
+</div>
+</section>
+<section id="write-ufiles-from-idl">
+<h2>Write Ufiles from IDL<a class="headerlink" href="#write-ufiles-from-idl" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">W1DUF</span></code> - Write a 1D Ufile, see W3DUF for parameters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">W2DUF</span></code> - Write a 2D Ufile, see W3DUF for parameters</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>W3DUF
+NAME:         W3DUF
+
+PURPOSE:      Write 3d Ufile
+
+Inputs:
+      disk            - disk name enclosed in single quotes &#39; &#39;
+      dir             - directory enclosed in &#39; &#39;
+      pref            - file prefix, up to 16 characters, enclosed in &#39; &#39;
+      shot            - long integer shot #, 5(TFTR) or 6(NSTX) digits
+      ext             - file suffix, enclosed in &#39; &#39;
+      nx              - actual # pts in first dimension of F(x,y,z)
+      ny              - actual # pts in second dimension of F(x,y,z)
+      nz              - actual # pts in third dimension of F(x,y,z)
+      nsc             - # of scalar values
+      f               - 3-dim array, F(x,y,z)
+      x               - 1st independent variable array
+      y               - 2nd independent variable array
+      z               - 3rd independent variable array
+      scval           - scalar values array
+      sclab           - scalar array descriptions = strarr(nsc)
+      iproc           - type of data,0=unprocessed,1=avg,2=smth,3=avg&amp;smth
+      flab            - label of F(x,y,z)
+                        First 20 characters -- NAME of F
+                        Last  10 characters --  PHYSICAL UNITS of F
+      xlab            - label of 1st dimension of F(x,y,z)
+      ylab            - label of 2nd dimension of F(x,y,z)
+      zlab            - label of 3rd dimension of F(x,y,z)
+      sdate           - shot date
+      mach            - tokamak device
+      comment         - Ufile comment &gt;&gt;&gt;&gt; not implemented &lt;&lt;&lt;&lt;
+Outputs:
+      ierr            - 0=ok
+
+NOTE:   comment not implemented
+
+USAGE: (to write 3D /u/mydir/s_v765611.qpr)
+      idl&gt; nx = 36
+      idl&gt; ny = 12
+      idl&gt; nz = 4
+      idl&gt; nsc = 2
+      idl&gt; w3duf,&#39; &#39;,&#39;/u/mydir&#39;,&#39;s_v7&#39;,65611,&#39;qpr&#39;,nx,ny,nz,nsc, $
+           f,x,y,z,scval,sclab,iproc,flab,xlab,ylab,zlab, $
+           sdate,mach,comment,ierr
+</pre></div>
+</div>
+<p>Example to create A12345.F1D in working directory, no scalars:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>time = findgen(100)+1
+dflux = cos(time/5)
+nsc=0
+scval=0
+sclab=&#39; &#39;
+xlab=&#39;Time                  second  &#39;
+ylab=&#39;Diagm Flx             Wb      &#39;
+mach=&#39;NSTX&#39;
+cmt=&#39; &#39;
+iproc=1
+nx=n_elements(time)
+st=systime(0)
+shdate = strmid(st,8,2)+strmid(st,4,3)+&#39;-&#39;+strmid(st,20,4)
+
+w1duf,&#39; &#39;,&#39; &#39;,&#39;a&#39;,12345,&#39;f1d&#39;,nx,nsc,time,dflux,$
+      scval,sclab,iproc,xlab,ylab,shdate,mach,cmt,ier
+
+print,ier
+</pre></div>
+</div>
+<p>Example to create A22222.FOO in <code class="docutils literal notranslate"><span class="pre">/u/mypath</span></code> with 2 scalars:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>shot=22222
+dsk=&#39; &#39;
+dir=&#39;/u/mypath&#39;
+pref=&#39;A&#39;
+ext=&#39;FOO&#39;
+
+time = findgen(100)+1
+f = findgen(100,5)
+y = findgen(5)+1
+ntimes=n_elements(time)
+ny=n_elements(y)
+st=systime(0)
+shdate = strmid(st,8,2)+strmid(st,4,3)+&#39;-&#39;+strmid(st,20,4)
+
+mach=&#39;NSTX&#39;
+cmt=&#39;No comment&#39;
+ylab=&#39;Rmajor               cm       &#39;
+xlab=&#39;Time                  s       &#39;
+iproc=2       ; smoothed data
+nsc=2
+scval=findgen(2)+2
+sclab=strarr(2)
+sclab[0] = &#39;value one:           units1   &#39;
+sclab[1] = &#39;value two:           units2   &#39;
+flab=      &#39;Te                   eV       &#39;
+
+w2duf,dsk,dir,pref,shot,ext,ntimes,ny,nsc,f,time,y,%
+      scval,sclab,iproc,$
+      flab,xlab,ylab,shdate,mach,cmnt,ierr
+
+print,ierr
+</pre></div>
+</div>
+<p>Example to create A33333.TEST in <code class="docutils literal notranslate"><span class="pre">/u/mypath</span></code> with no scalars:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>shot=33333
+dsk=&#39; &#39;
+dir=&#39;/u/mypath&#39;
+pref=&#39;A&#39;
+ext=&#39;TEST&#39;
+
+time = findgen(10)+1
+f = findgen(10,5,3)
+y = findgen(5)+1
+z = findgen(3)+2
+ntimes=n_elements(time)
+ny=n_elements(y)
+nz=n_elements(z)
+shdate=&#39;07Aug-2003&#39;
+mach=&#39;TFTR&#39;
+cmt=&#39;No comment&#39;
+flab=&#39;Te                   eV       &#39;
+xlab=&#39;Time:                 s       &#39;
+ylab=&#39;Rmajor:              cm       &#39;
+zlab=&#39;Test:               none      &#39;
+iproc=2       ; smoothed data
+nsc=0
+scval=0.
+sclab=&#39; &#39;
+
+w3duf,dsk,dir,pref,shot,ext,ntimes,ny,nz,nsc,f,time,y,z,$
+      scval,sclab,iproc,$
+      flab,xlab,ylab,zlab,shdate,mach,cmt,ierr
+
+print,ierr
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Princeton Plasma Physics Laboratory and Princeton University.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

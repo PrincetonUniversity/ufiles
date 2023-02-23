@@ -86,7 +86,7 @@ Description of libraries and programs
 
 ## Contributors
 
-There have been many people who have contributed to the Ufiles suite over many decades. A list of contributors was harvested harvested from the TRANSP repository and is ordered by appearance in the commit log (oldest to newest). Let us know if there are any errors.
+There have been many people who have contributed to the Ufiles suite over many decades. A list of contributors was harvested from the TRANSP repository and is ordered by appearance in the commit log (oldest to newest). Let us know if there are any errors.
 ```
 Doug McCune (original architect)
 Marilee Thompson

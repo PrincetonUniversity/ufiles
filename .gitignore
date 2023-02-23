@@ -35,3 +35,10 @@ builds
 *.exe
 *.out
 *.app
+
+*.swp
+/_build
+/doctrees
+
+__pycache__
+*.pyc
