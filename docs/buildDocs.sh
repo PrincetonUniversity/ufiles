@@ -94,17 +94,18 @@ git checkout main
 #######################
 # Update GitHub Pages #
 #######################
- 
+
+git config --global --add safe.directory /__w/ufiles/ufiles
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
- 
+
 pushd "${docroot}"
- 
+
 # don't bother maintaining history; just generate fresh
 git init
 git remote add deploy "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 git checkout -b gh-pages
- 
+
 # add .nojekyll to the root so that github won't 404 on content added to dirs
 # that start with an underscore (_), such as our "_content" dir..
 touch .nojekyll
