@@ -1,0 +1,13 @@
+title: Ufiles
+description: Documentation for the Ufiles libraries and utilities
+remote_theme: carlosperate/jekyll-theme-rtd
+
+# Theme settings:
+locale: "en-US"
+site_author: Princeton Plasma Physics Laboratory
+repo_url: "https://github.com/jsachdev/myufiles"
+edit_on_github: true
+github_docs_folder: true
+sticky_navigation: true
+prev_next_buttons_location: bottom
+search_enabled: true
