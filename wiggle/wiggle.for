@@ -31,6 +31,7 @@ c
  
       logical done
  
+      call ufheader("wiggle")
       call uinita(0)
 c     call random_init(iseed)
  

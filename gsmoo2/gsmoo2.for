@@ -124,6 +124,7 @@ C
       MAXD=JDSIZ
       MAXIND=JDIND
 C
+      call ufheader("gsmoo2")
       call date_and_time(DATE=zdate)
       CALL UINITG("GSMOO2")
       luntrm = lnout(0)

@@ -118,6 +118,7 @@ C  MAX NUMBER OF SHOTS IN AVERAGE
 C  MAX SIZE OF INDEPENDANT VARIABLE ARRAYS
       MAXIND=JDIND
 C
+      call ufheader("gaver2")
       call date_and_time(DATE=zdate)
       CALL UINITG("GAVER2")
       luntrm=lnout(0)

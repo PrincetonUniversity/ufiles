@@ -30,6 +30,7 @@ C
 C
 C-------------------
 C
+      call ufheader("tgtest")
       call uinitg('TGTEST')
       luntrm=lnout(0)
 C

@@ -46,6 +46,7 @@ C-------------------
 C
       PI=SC1(1)
 C
+      call ufheader("test3d")
       CALL C9DATE(ZDATE)
 C
       CALL UINITG("TEST3D")

@@ -57,6 +57,7 @@ C ====================
 C
       itoggl=icompr
 C
+      call ufheader("splice")
       CALL UINITG("SPLICE")
 C
       NBDY=0

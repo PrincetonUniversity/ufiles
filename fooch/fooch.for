@@ -30,11 +30,10 @@ C
 C
 C-----------------------------------------------------------------------
 C
-C
-C *LISMAK* 12-APR-88  GENERATED LOGICAL DECLARATIONS
       LOGICAL LCHAR
       LOGICAL LXOUT
-C *LISMAK* END OF GENERATED LOGICAL DECLARATIONS
+C
+      CALL UFHEADER("fooch")
 C
       CALL UINITG("FOOCH")
 C

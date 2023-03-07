@@ -4,6 +4,7 @@ $(OBJDIR)/find_io_unit.o : find_io_unit.f90
 $(OBJDIR)/is_ascii.o : is_ascii.f90 
 $(OBJDIR)/nanscan.o : nanscan.f90 
 $(OBJDIR)/ufexit.o : ufexit.f90 
+$(OBJDIR)/ufheader.o : ufheader.f90
 $(OBJDIR)/cftio.o : cftio.for 
 $(OBJDIR)/cstring.o : cstring.for 
 $(OBJDIR)/fgetline.o : fgetline.for 

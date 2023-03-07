@@ -1,0 +1,50 @@
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+*T ==> "thin1" is used to thin (resample at lower resolution) 1d Ufile data.
+*T     different subregions can be resampled at different rates
+*T     sampling can be with or without averaging of neighbouring points.
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+F S VSF Q
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+G THIN VSF Q
+;THIN1:  ENTER 5 DIGIT SHOT #,0 OR Q TO QUIT, D TO CHANGE FILENAMES$
+37065
+; THIN1: ENTER OPT. CODE:$
+4
+;ufmtsel:  enter format option A/B/C/D/Q:$
+B
+; THIN1: ENTER OPT. CODE:$
+P
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+X 0.5 1.5
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+Q
+; THIN1: ENTER OPT. CODE:$
+A
+; THINSET: ENTER OPTION CODE:$
+A
+; THINSET: PLEASE ENTER A BOUNDRY VALUE$
+1
+; THINSET: ENTER OPTION CODE:$
+A 5
+; THINSET: ENTER OPTION CODE:$
+C
+;THINSET: ENTER REGION # TO CHANGE, OR "Q":$
+1 100
+; THINSET: ENTER OPTION CODE:$
+C 2 5
+; THINSET: ENTER OPTION CODE:$
+C 3 100
+; THINSET: ENTER OPTION CODE:$
+Y 3
+; THINSET: ENTER OPTION CODE:$
+S
+; THINSET: ENTER OPTION CODE:$
+D
+; THIN1: ENTER OPT. CODE:$
+T
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+X .5 1.5
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+Q
+; THIN1: ENTER OPT. CODE:$
+Q

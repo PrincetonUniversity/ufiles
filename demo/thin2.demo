@@ -1,0 +1,37 @@
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+*T ==> "thin2" is used to thin (resample at lower resolution) 2d Ufile data.
+*T     The data can be thinned in either or both dimensions of variation.
+*T     Different subregions can be resampled at different rates
+*T     sampling can be with or without averaging of neighbouring points.
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+H ACS ECS Q
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+H THIN ECS Q
+;THIN1:  ENTER 5 DIGIT SHOT #,0 OR Q TO QUIT, D TO CHANGE FILENAMES$
+37065
+; THIN1: ENTER OPT. CODE:$
+X
+; THINSET: ENTER OPTION CODE:$
+C 1 200
+; THINSET: ENTER OPTION CODE:$
+Y 1
+; THINSET: ENTER OPTION CODE:$
+S
+; THINSET: ENTER OPTION CODE:$
+D
+; THIN1: ENTER OPT. CODE:$
+P
+; GRF3SG:  ENTER OPTION #:$
+1 P Q
+; GRF3SG:  ENTER OPTION #:$
+Q
+; THIN1: ENTER OPT. CODE:$
+T
+; GRF3SG:  ENTER OPTION #:$
+1 P
+;GRF3SG:  SELECT 3D ISOMETRIC AXIS OPTION (X/Y/Z/D/P):$
+Q
+; GRF3SG:  ENTER OPTION #:$
+Q
+; THIN1: ENTER OPT. CODE:$
+Q

@@ -20,6 +20,7 @@ c
       yscale1 = 1.
       yscale2 = 1.
  
+      call ufheader("map2")
       call uinita(0)
  
       write(6,*)

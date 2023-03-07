@@ -30,6 +30,7 @@ C => LISMAK 12-APR-88  MOVED DATA STATEMENTS
 C => END DATA BLOCK
 C ====================
 C
+      call ufheader("ulook0")
       CALL UINITG("ULOOK0")
       call urdext('ifi')
       luntrm=lnout(0)

@@ -85,6 +85,7 @@ C for uread
 C-----------------------------------------------------------
       lun = 6
       stat = 0
+      call ufheader("mds_start")
       call uinita(0)
  
       mds_tree='TRANSP_NSTX'

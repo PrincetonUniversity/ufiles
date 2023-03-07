@@ -69,6 +69,7 @@ C => LISMAK 12-APR-88  MOVED DATA STATEMENTS
 C => END DATA BLOCK
 C ====================
 C
+      call ufheader("thin2")
       CALL UINITG("THIN2")
       LUNTRM=LNOUT(0)
       CALL UAHEAD

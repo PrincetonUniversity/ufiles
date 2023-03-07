@@ -15,6 +15,7 @@ C
 C----------------------------------------
 C
 CCC      CALL USET_TTY('none')  ! uncomment to suppress reverse video prompts
+      call ufheader("nulltron")
       CALL UINITA(0)
 C
       CALL URDEXT('ifi')  ! DEFAULT FILENAME .EXT

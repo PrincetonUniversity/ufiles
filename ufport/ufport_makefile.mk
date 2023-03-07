@@ -26,6 +26,11 @@ CDEF := $(CDEFS) -D__GETLINE_EDITOR
 CINC := $(CINCL) -I$(UFILES_HOME)/include
 CFLG := $(CFLAGS)
 
+# Set the version number, git hash, and build date
+VERSNUM := "'"$(shell git describe --tags)"'"
+GITHASH := "'"$(shell git rev-parse --short HEAD)"'"
+BUILDDATE := "'"$(shell date +%x)"'"
+
 
 .PHONY: clean realclean clobber check
 
@@ -46,6 +51,8 @@ endif
 include $(NAME)_depend.mk
 $(OBJDIR)/%.o: %.for
 	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
+$(OBJDIR)/ufheader.o: ufheader.f90
+	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) -DVERSION=$(VERSNUM) -DGIT_HASH=$(GITHASH) -DBUILD_DATE=$(BUILDDATE) $(FINC) $(MFLAG) $(PREFIX)/mod
 $(OBJDIR)/%.o: %.f90
 	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
 

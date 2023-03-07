@@ -91,6 +91,7 @@ C
       MAXD=JDSIZ
       MAXE=JPCMAX
 C
+      call ufheader("gsmoo1")
       call date_and_time(DATE=zdate)
       CALL UINITG("GSMOO1")
 CC	CALL USINIT

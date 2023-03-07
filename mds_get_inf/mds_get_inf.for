@@ -38,6 +38,8 @@ C---------------------------------------------------------------------------
       luntrm = 6
       opt = 0
  
+      call ufheader("mds_get_inf")
+
       print*,'mds_get_inf retrievs a text node from a TRANSP run'
       print*,'         and writes it into a file <runid>.<node_label>'
       print*,'         or uses TRANSP conventions:'

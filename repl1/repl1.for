@@ -37,6 +37,7 @@ c
  
       character   cmd*1
 	
+      call ufheader("repl1")
       call uinitg("REPL1")
  
 10    call ufnter(1,'INPUT:$ ')
