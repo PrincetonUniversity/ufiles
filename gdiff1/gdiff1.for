@@ -94,6 +94,7 @@ C
       MAXD=JDSIZ
       MAXE=JPCMAX
 C
+      call ufheader("gdiff1")
       call date_and_time(DATE=zdate)
       CALL UINITG("GDIFF1")
 C  ENABLE INLINE TYPE-AHEAD

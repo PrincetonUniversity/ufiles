@@ -25,6 +25,7 @@ C
 C
 C-----------------------------------------------------------------------------
 C
+      call ufheader("mdsmark")
       call uinita(0)
       luntrm=lnout(0)
 C

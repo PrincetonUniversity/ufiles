@@ -43,6 +43,7 @@ c
       logical no_time, t_flag, slice_x, sliced, interp_x
       integer islice, jslice, n_slice
 	
+      call ufheader("repl2")
       call uinitg("REPL2")
  
 10    call ufnter(1,'INPUT:$ ')

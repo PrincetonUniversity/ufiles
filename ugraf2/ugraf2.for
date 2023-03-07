@@ -33,6 +33,7 @@ C
 C
       NUMD=MAXTOT
 C
+      call ufheader("ugraf2")
       CALL UINITG("UGRAF2")
 CC	CALL USINIT
 CC	CALL UAHEAD

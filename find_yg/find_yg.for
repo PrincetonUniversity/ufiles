@@ -19,7 +19,8 @@ c
       integer nsc(2)
 	
       character*6   indicator
- 
+
+      call ufheader("find_yg")
  
       call uinita(0)
  

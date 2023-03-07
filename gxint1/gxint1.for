@@ -84,6 +84,7 @@ C
 C
       MAXD=JDSIZ
 C
+      call ufheader("gxint1")
       call date_and_time(DATE=zdate)
       CALL UINITG("GXINT1")
 CC	CALL USINIT

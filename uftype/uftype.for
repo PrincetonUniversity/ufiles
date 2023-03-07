@@ -27,6 +27,7 @@ C----------------
 C
 C  initialize
 C
+      call ufheader("uftype")
       call uinita(0)
 C
       call ufinit

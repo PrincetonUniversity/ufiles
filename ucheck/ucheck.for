@@ -12,6 +12,7 @@ C  L.U.N FOR DATA INPUT
 C
       DATA ILUN/21/
 C
+      call ufheader("ucheck")
       CALL UINITA(0)
 C
  10   CONTINUE

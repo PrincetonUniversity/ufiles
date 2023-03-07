@@ -52,6 +52,7 @@ C
 C	.Executable code:
 C  -------------------------------------------------------------------------
 C
+      call ufheader("ugraf3")
       CALL UINITG("UGRAF3")
       call urdext('ifi')
       luntrm=lnout(0)

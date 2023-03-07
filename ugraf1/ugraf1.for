@@ -31,6 +31,7 @@ C
 C
 CCC	CALL USINIT
 CCC	CALL UAHEAD
+      call ufheader("ugraf1")
       CALL UINITG("UGRAF1")
       call urdext('ifi')
       luntrm=lnout(0)

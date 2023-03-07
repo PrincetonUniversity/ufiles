@@ -31,6 +31,8 @@ c
  
       logical done
 
+      call ufheader("cmp_2d")
+
       call ufsetr(9,'C','RCA','my_ufiles:',' ')
  
       call uinita(0)

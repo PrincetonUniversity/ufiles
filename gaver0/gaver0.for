@@ -73,6 +73,7 @@ C
 C  MAX NUMBER OF SHOTS IN AVERAGE
       MAXSHO=JLSHO
 C
+      call ufheader("gaver0")
       call date_and_time(DATE=zdate)
       CALL UINITG("GAVER0")
       luntrm=lnout(0)
