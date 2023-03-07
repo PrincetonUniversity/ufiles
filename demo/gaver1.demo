@@ -1,0 +1,83 @@
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+*T ==> "gaver1" averages or sums 1d Ufiles f1(x), f2(x), f3(x), ...
+*T  labels and x axis are taken from first Ufile read; subsequent
+*T  Ufiles are interpolated to this x axis if necessary.  In general
+*T  "gaver1" computes "f(x) = 1/W*(w1*f1(x) + w2*f2(x) + ... + wn*fn(x))"
+*T  where "W = w1 + w2 + ... + wn".  Because the x axis is taken from
+*T  f1, the calculation "f(x) = 0.0*f1(x) + 1.0*f2(x)" actually yields
+*T  a remapping of f2 onto the x axis grid of f1.
+*T  ...the following demo sums 4 profiles with varying weight...
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+H ECE PR1 Q
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+H ECE AVG Q
+;GAVER1: ENTER OPCODE (A/D/L/P/R/S/W/X/Q):$
+A
+;GAVER1: ENTER 5 DIGIT INPUT SHOT # OR "X" TO EXIT INPUT LOOP:$
+W
+;GAVER1: ENTER 5 DIGIT INPUT SHOT # OR "X" TO EXIT INPUT LOOP:$
+37065
+;UFSCMP:  ENTER OPCODE (1/2////Q):$
+Q
+;GAVER1:  ENTER "P" TO PLOT INPUT DATA:$
+P
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+Q
+;GAVER1:  AVERAGE THIS SHOT? (Y/N):$
+Y
+;GAVER1:  SPECIFY WEIGHTING FACTOR FOR DATA:$
+1
+;GAVER1: ENTER 5 DIGIT INPUT SHOT # OR "X" TO EXIT INPUT LOOP:$
+F
+;GAVER1: ENTER 5 DIGIT INPUT SHOT # OR "X" TO EXIT INPUT LOOP:$
+37065
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+H ECE PR2 Q
+;UFSCMP:  ENTER OPCODE (1/2////Q):$
+Q
+;GAVER1:  ENTER "P" TO PLOT INPUT DATA:$
+P
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+Q
+;GAVER1:  AVERAGE THIS SHOT? (Y/N):$
+Y
+;GAVER1:  SPECIFY WEIGHTING FACTOR FOR DATA:$
+1
+;GAVER1: ENTER 5 DIGIT INPUT SHOT # OR "X" TO EXIT INPUT LOOP:$
+37065
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+H ECE PR3 Q
+;UFSCMP:  ENTER OPCODE (1/2////Q):$
+Q
+;GAVER1:  ENTER "P" TO PLOT INPUT DATA:$
+P
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+Q
+;GAVER1:  AVERAGE THIS SHOT? (Y/N):$
+Y
+;GAVER1:  SPECIFY WEIGHTING FACTOR FOR DATA:$
+2
+;GAVER1: ENTER 5 DIGIT INPUT SHOT # OR "X" TO EXIT INPUT LOOP:$
+37065
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+H ECE PR4 Q
+;UFSCMP:  ENTER OPCODE (1/2////Q):$
+Q
+;GAVER1:  ENTER "P" TO PLOT INPUT DATA:$
+P
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+Q
+;GAVER1:  AVERAGE THIS SHOT? (Y/N):$
+Y
+;GAVER1:  SPECIFY WEIGHTING FACTOR FOR DATA:$
+1
+;GAVER1: ENTER 5 DIGIT INPUT SHOT # OR "X" TO EXIT INPUT LOOP:$
+L
+;GAVER1: ENTER 5 DIGIT INPUT SHOT # OR "X" TO EXIT INPUT LOOP:$
+X
+;GAVER1: ENTER OPCODE (A/D/L/P/R/S/W/X/Q):$
+P
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;GAVER1: ENTER OPCODE (A/D/L/P/R/S/W/X/Q):$
+X

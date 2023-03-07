@@ -1,0 +1,64 @@
+;SAWTOO: PLEASE TYPE IN YOUR NAME:$
+*T ==> "sawtoo" sawtooth recognizer program
+*T     tool works by smoothing the input data and looking at the
+*T     residue R = f-fsmooth.  A correlation convolution, based on
+*T     an ideal sawtooth shape, is applied to the residue, resulting
+*T     in a correlation function.  The sawtooth times are identified
+*T     by picking off the peaks of the correlation function.
+*T     Successful use of this program requires some skill...
+*T     Missed sawteeth can be added by hand.
+MCCUNE
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+H SAW MAX Q
+;UFNTER:  ENTER OPCODE (D/E/F/P/S/Q... ):$
+H SAW TIMES Q
+;SAWTOO: ENTER 5 DIGIT SHOT #, "0" TO QUIT, "D" TO CHANGE NAMES$
+89586
+;SAWTOO:  ENTER OPTION CODE:$
+G N
+;SAWTOO:  ENTER OPTION CODE:$
+S
+; SUB:USMOO1 >> ENTER OPTION #:$
+3
+; SUB:PCIDEF >> ENTER OPTION #:$
+1 1.1 0
+; SUB:PCIDEF >> ENTER OPTION #:$
+1 1.15 .025
+; SUB:PCIDEF >> ENTER OPTION #:$
+1 2 .1
+; SUB:PCIDEF >> ENTER OPTION #:$
+5
+; SUB:USMOO1 >> ENTER OPTION #:$
+10
+; USMOO1:  ENTER "Y" TO PLOT DELTA(FINAL):$
+N
+; SUB:USMOO1 >> ENTER OPTION #:$
+11
+;SAWCOR:  ENTER MULTIPLICATIVE FACTOR FOR DELTA:$
+,
+;SAWCOR:  ENTER MINIMUM CORRELATION DELTA (seconds):$
+,
+;SAWCOR:  SPECIFY DATA/PLOT OPTION:$
+4
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+X 1.1 1.5
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+N
+;SAWCOR:  SPECIFY DATA/PLOT OPTION:$
+S
+; SUB:PCIDEF >> ENTER OPTION #:$
+1 1 .08
+; SUB:PCIDEF >> ENTER OPTION #:$
+5
+;SAWCOR:  ENTER MINIMUM EVENT SEPERATION FACTOR (* DELTA(SM)):$
+.1
+;SAWCOR:  SPECIFY DATA/PLOT OPTION:$
+P
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+X 1.1 1.4
+;GRAOPT:  ENTER ONE LETTER OPCODE (.C/A/S/X/Z/G/P/Q):$
+Q
+;SAWCOR:  SPECIFY DATA/PLOT OPTION:$
+R
+;SAWTOO:  ENTER OPTION CODE:$
+X
