@@ -2,7 +2,7 @@
 subroutine ufgood_exit
   call ufdatetime
   call flush(6)
-  stop  ! normal exit, stop, status = 0
+  stop  ! normal exit, status = 0
 end subroutine ufgood_exit
 
 ! abnormal exit from a ufile program
@@ -15,7 +15,7 @@ subroutine ufbad_exit(msg)
   end if
   call ufdatetime
   call flush(6)
-  stop
+  stop 1  ! abnormal exit, status = 1
 end subroutine ufbad_exit
 
 ! print out date and time
@@ -24,10 +24,7 @@ subroutine ufdatetime
   character(len=8) :: zzdate
   character(len=10) :: ztime
   character(len=5) :: zone
-
   call date_and_time(zzdate,ztime,zone,ivals)
   if(ivals(2).gt.12) write(6,1001) ivals(2)
 1001 format(' ufdatetime:  ?? month .gt. 12:  ',i10)
-
-  return
 end subroutine ufdatetime
