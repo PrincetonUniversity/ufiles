@@ -45,6 +45,8 @@ else
 	CXXFLAGS = $(CXXFLAGS_DBG)
 endif
 
+CPP = -cpp
+
 L_CLIBS = -L/usr/lib64 -lc -lstdc++
 
 

@@ -1,0 +1,26 @@
+module purge
+
+module load git
+
+module load pgi/19.10
+export FLIBROOT=$PGI/linux86-64-llvm/19.10/lib
+
+export FC=pgf90
+export CC=pgcc18
+export CX=pgc++
+
+export FTN_MAIN="$FLIBROOT/f90main.o"
+export FTN_TRAILER="-L$FLIBROOT -lpgf90 -lpgf90_rpm1 -lpgf902 -lpgf90rtl -lpgftnrtl -lm -lpgc"
+export CPP_TRAILER=" -L$FLIBROOT -lstdc++"
+
+export LOADER_TRAILER=" -L$LOCAL/other -lreadline -lhistory -ltermcap -ldl"
+
+module load netcdf-c
+module load netcdf-fortran
+export L_NETCDF=" -L$NETCDF_FORTRAN_HOME/lib -lnetcdff -L$NETCDF_C_HOME/lib -lnetcdf"
+
+module load mdsplus
+export L_MDSPLUS=" -L$MDSPLUS_DIR/lib -lMdsLib"
+export TRANSPGRID_SERVER=transpgrid.pppl.gov
+export MDS_TRANSP_SERVER=transpgrid.pppl.gov
+export MDS_TRANSP_RETRY=3
