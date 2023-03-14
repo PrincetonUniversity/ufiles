@@ -53,7 +53,7 @@ $(OBJDIR)/%.o: %.f90
 	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
 
 $(OBJDIR)/%.o: %.c
-	@$(CC) $(CFLG) $< -o $@ $(CDEF) $(CINC)
+	@$(CC) $(CPP) $(CFLG) $< -o $@ $(CDEF) $(CINC)
 
 clean: 
 	@rm -f $(OBJDIR)/*.o

@@ -45,6 +45,8 @@ else
 	CXXFLAGS = $(CXXFLAGS_DBG)
 endif
 
+CPP = -cpp
+
 L_CLIBS = -L$(FLIBROOT)/lib -lstdc++ -lgcc_s -lgcc
 
 
