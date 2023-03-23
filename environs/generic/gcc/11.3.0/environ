@@ -1,4 +1,4 @@
-export PREFIX=${UFILES_HOME}/gcc/11.3.0
+export PREFIX=${UFILES_HOME}/gcc/`gcc --version | grep ^gcc | sed 's/^.* //g'`
 
 export FC=gfortran
 export CC=gcc
