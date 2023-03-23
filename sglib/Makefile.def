@@ -327,10 +327,10 @@ endif
       CFLAGS = -c -O
       CXXFLAGS =  -c -O
     endif
-    ifdef GCC10
-       FFLAGS +=  -fallow-argument-mismatch -fallow-invalid-boz 
-       DFFLAGS +=  -fallow-argument-mismatch -fallow-invalid-boz 
-    endif  
+    ifeq ($(shell test $(GCCVERSION) -gt 9; echo $$?),0)
+       FFLAGS += -fallow-argument-mismatch -fallow-invalid-boz
+       DFFLAGS += -fallow-argument-mismatch -fallow-invalid-boz
+    endif
     ifndef FORTLIBS
       FORTLIBS=-L$(F90HOME)/lib${Bit} -L/lib${Bit} -L/usr/lib${Bit} -lgfortran -lm
     endif

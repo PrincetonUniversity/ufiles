@@ -143,7 +143,7 @@ else
 fi
 source $ENV_FILE
 
-# Reset compiler version variable so that PREFIX is set correctly for generic GCC 
+# Reset compiler version variable so that PREFIX is set correctly for generic GCC
 if [ $SITE_ENV = 'generic' ]; then
     COMPILER_VER=`gcc -dumpversion`
 fi
