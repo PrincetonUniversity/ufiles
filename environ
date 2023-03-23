@@ -145,7 +145,7 @@ source $ENV_FILE
 
 # Reset compiler version variable so that PREFIX is set correctly for generic GCC 
 if [ $SITE_ENV = 'generic' ]; then
-    COMPILER_VER=`gcc --version | grep ^gcc | sed 's/^.* //g'`
+    COMPILER_VER=`gcc -dumpversion`
 fi
 
 export PREFIX=${UFILES_HOME}/builds/${COMPILER_ENV}/${COMPILER_VER}
