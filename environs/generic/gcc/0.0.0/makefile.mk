@@ -20,8 +20,7 @@ AR = ar rcs
 # Fortran flags
 FFLAGS_OPT = -c -g -O2 -m64 -ffpe-trap=invalid,zero,overflow -fno-range-check -fdollar-ok $(FPIC)
 FFLAGS_DBG = -c -g -O0 -m64 -ffpe-trap=invalid,zero,overflow -fno-range-check -fdollar-ok $(FPIC)
-GCC10 = $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 10)
-ifeq "$(GCC10)" "1"
+ifeq ($(shell test $(GCCVERSION) -gt 9; echo $$?),0)
         FFLAGS_OPT += -fallow-argument-mismatch -fallow-invalid-boz
         FFLAGS_DBG += -fallow-argument-mismatch -fallow-invalid-boz
 endif

@@ -3,7 +3,7 @@ export PREFIX=${UFILES_HOME}/gcc/`gcc -dumpversion`
 export FC=gfortran
 export CC=gcc
 export CXX=g++
-export GCC10=1
+export GCCVERSION=`gcc -dumpversion | cut -f1 -d.`
 
 export FTN_MAIN=""
 export FTN_TRAILER=" -L$FLIBROOT -lgfortran"
