@@ -111,7 +111,7 @@ else
     version_map["iris,intel"]='2018'
     version_map["omega,gcc"]='8.3.1'
     version_map["psfc,gcc"]='7.5.0'
-    version_map["generic,gcc"]='11.3.0'
+    version_map["generic,gcc"]='0.0.0'
     version_map["yournewsite,somecompiler"]='versionthatfixesallthebugsinyourcode'
     # end array
 
@@ -143,8 +143,14 @@ else
 fi
 source $ENV_FILE
 
+# Reset compiler version variable so that PREFIX is set correctly for generic GCC
+if [ $SITE_ENV = 'generic' ]; then
+    COMPILER_VER=`gcc -dumpversion`
+fi
+
 export PREFIX=${UFILES_HOME}/builds/${COMPILER_ENV}/${COMPILER_VER}
 mkdir -p $PREFIX/{bin,include,lib,mod,obj}
+export PATH=${PREFIX}/bin:${PATH}
 echo "Using PREFIX=${PREFIX}"
 
 # for idempotence, unset the following:

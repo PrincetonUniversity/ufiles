@@ -1,4 +1,4 @@
-# Makefile include file for PPPL GCC 11.2.0
+# Makefile include file for generic GCC
 #
 
 ifndef MAKE_SO
@@ -18,8 +18,12 @@ endif
 AR = ar rcs
 
 # Fortran flags
-FFLAGS_OPT = -c -g -O2 -m64 -ffpe-trap=invalid,zero,overflow -fallow-argument-mismatch -fallow-invalid-boz -fno-range-check -fdollar-ok $(FPIC)
-FFLAGS_DBG = -c -g -O0 -m64 -ffpe-trap=invalid,zero,overflow -fallow-argument-mismatch -fallow-invalid-boz -fno-range-check -fdollar-ok $(FPIC)
+FFLAGS_OPT = -c -g -O2 -m64 -ffpe-trap=invalid,zero,overflow -fno-range-check -fdollar-ok $(FPIC)
+FFLAGS_DBG = -c -g -O0 -m64 -ffpe-trap=invalid,zero,overflow -fno-range-check -fdollar-ok $(FPIC)
+ifeq ($(shell test $(GCCVERSION) -gt 9; echo $$?),0)
+        FFLAGS_OPT += -fallow-argument-mismatch -fallow-invalid-boz
+        FFLAGS_DBG += -fallow-argument-mismatch -fallow-invalid-boz
+endif
 ifeq ($(DEBUG),0)
 	FFLAGS = $(FFLAGS_OPT)
 else
