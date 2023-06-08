@@ -26,7 +26,7 @@ jobs:
         make -j
         make install
     - name: ufiles
-      run: export PSPLINE_HOME=$HOME/pspline && source environ && make -f makefile.mk
+      run: export PSPLINE_HOME=$HOME/pspline && source environ && make
     - name: test1
       run: |
         echo "Need to add tests"
