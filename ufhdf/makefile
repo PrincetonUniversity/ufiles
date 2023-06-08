@@ -1,18 +1,16 @@
-# Makefile to build libtrgraf.a
+# Makefile to build libufhdf.a
 #
 
 # Include system dependent flags
 include $(COMPILER_FLAGS)
 
-NAME := trgraf
+NAME := ufhdf
 OBJDIR := $(PREFIX)/obj/$(NAME)
 LIBAR := $(PREFIX)/lib/lib$(NAME).a
 LIBSO := $(PREFIX)/lib/lib$(NAME).so
 
-MNMS := bottoms_up.mod trgraf_wname_save.mod gftic.mod mulfdr_blk.mod \
-	gscale_blk.mod intlab.mod gaxes_blk.mod plot1mmx.mod plot1mmxb.mod
-MODS := bottoms_up.o trgraf_wname_save.o gftic.o mulfdr_blk.o \
-	gscale_blk.o intlab.o gaxes_blk.o plot1mmx.o
+MNMS := ufiles.mod
+MODS := ufiles_mod.o
 SRCM := $(MODS:%.o=%.f90)
 SF90 := $(SRCM) $(filter-out $(SRCM), $(wildcard *.f90))
 SFOR := $(wildcard *.for)
@@ -21,7 +19,7 @@ OBJF := $(SRCF:%.f90=$(OBJDIR)/%.o)
 OBJF := $(OBJF:%.for=$(OBJDIR)/%.o)
 
 FDEF := $(FDEFS)
-FINC := $(FINCL)
+FINC := $(FINCL) -I`nf-config --includedir`
 FFLG := $(FFLAGS)
 
 
@@ -41,9 +39,9 @@ ifeq ($(MAKE_SO),1)
 	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
 endif
 
-include $(NAME)_depend.mk
+include make.depend
 $(OBJDIR)/%.o: %.for
-	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
+	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
 $(OBJDIR)/%.o: %.f90
 	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
 
@@ -57,5 +55,5 @@ realclean: clean
 clobber: realclean
 
 depend:
-	@makedepf90 -b OBJDIR $(SRCF) > $(NAME)_depend.mk
-	@sed -i 's/OBJDIR/\$$\(OBJDIR\)/g' $(NAME)_depend.mk
+	@makedepf90 -b OBJDIR $(SRCF) > make.depend
+	@sed -i 's/OBJDIR/\$$\(OBJDIR\)/g' make.depend

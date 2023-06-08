@@ -1,18 +1,17 @@
-# Makefile to build libsplice_sub.a
+# Makefile to build libr4smlib.a
 #
 
 # Include system dependent flags
 include $(COMPILER_FLAGS)
 
-NAME := splice_sub
+NAME := r4smlib
 OBJDIR := $(PREFIX)/obj/$(NAME)
 LIBAR := $(PREFIX)/lib/lib$(NAME).a
 LIBSO := $(PREFIX)/lib/lib$(NAME).so
 
-MNMS := splice_blk.mod splice2_blk.mod splice3_blk.mod
-MODS := splice_blk.o splice2_blk.o splice3_blk.o
-SRCF := $(SRCM) $(filter-out $(SRCM), $(wildcard *.f90))
+SRCF := $(wildcard *.f90) $(wildcard *.for)
 OBJF := $(SRCF:%.f90=$(OBJDIR)/%.o)
+OBJF := $(OBJF:%.for=$(OBJDIR)/%.o)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL)
@@ -29,19 +28,21 @@ check:
 
 $(NAME): $(OBJF)
 	@echo "Building $(NAME) static library"
-	@$(AR) $(LIBAR) $(OBJF)
+	@ar rcs $(LIBAR) $(OBJF)
 ifeq ($(MAKE_SO),1)
 	@echo "Building $(NAME) shared library"
 	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
 endif
 
-include $(NAME)_depend.mk
+include make.depend
+$(OBJDIR)/%.o: %.for
+	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
 $(OBJDIR)/%.o: %.f90
 	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
 
 clean:
 	@rm -f $(OBJDIR)/*.o
-	@cd $(PREFIX)/mod ; rm -f $(MNMS)
+	@cd $(PREFIX)/mod ; rm -f $(MODS)
 
 realclean: clean
 	@rm -f $(LIBAR) $(LIBSO)
@@ -49,5 +50,5 @@ realclean: clean
 clobber: realclean
 
 depend:
-	@makedepf90 -b OBJDIR $(SRCF) > $(NAME)_depend.mk
-	@sed -i 's/OBJDIR/\$$\(OBJDIR\)/g' $(NAME)_depend.mk
+	@makedepf90 -b OBJDIR $(SRCF) > make.depend
+	@sed -i 's/OBJDIR/\$$\(OBJDIR\)/g' make.depend

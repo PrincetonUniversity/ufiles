@@ -73,29 +73,29 @@ check:
 	@test -d $(PREFIX)/lib || mkdir -p $(PREFIX)/lib
 	@test -d $(PREFIX)/mod || mkdir -p $(PREFIX)/mod
 	@test -d $(PREFIX)/obj || mkdir -p $(PREFIX)/obj
-	@set -e; for l in $(LIBS); do cd $${l}; make -f $${l}_makefile.mk check; cd .. ; done
-	@set -e; for e in $(EXES); do cd $${e}; make -f $${e}_makefile.mk check; cd .. ; done
+	@set -e; for l in $(LIBS); do cd $${l}; make check; cd .. ; done
+	@set -e; for e in $(EXES); do cd $${e}; make check; cd .. ; done
 
 sglib:
-	@cd ufport; make -f ufport_makefile.mk -j $(NTASKS); cd ..
+	@cd ufport; make -j $(NTASKS); cd ..
 	@cd $(UFILES_HOME)/sglib ; make all ; cd $(UFILES_HOME)
 
 libs:
-	@set -e; for l in $(LIBS); do cd $${l}; make -f $${l}_makefile.mk -j $(NTASKS) $${l}; cd .. ; done
+	@set -e; for l in $(LIBS); do cd $${l}; make -j $(NTASKS) $${l}; cd .. ; done
 
 exes:
-	@set -e; for e in $(EXES); do cd $${e}; make -f $${e}_makefile.mk $${e}; cd .. ; done
+	@set -e; for e in $(EXES); do cd $${e}; make $${e}; cd .. ; done
 
 clean: 
-	@set -e; for l in $(LIBS); do cd $${l}; make -f $${l}_makefile.mk clean; cd .. ; done
-	@set -e; for e in $(EXES); do cd $${e}; make -f $${e}_makefile.mk clean; cd .. ; done
+	@set -e; for l in $(LIBS); do cd $${l}; make clean; cd .. ; done
+	@set -e; for e in $(EXES); do cd $${e}; make clean; cd .. ; done
 
 realclean:
-	@set -e; for l in $(LIBS); do cd $${l}; make -f $${l}_makefile.mk realclean; cd .. ; done
-	@set -e; for e in $(EXES); do cd $${e}; make -f $${e}_makefile.mk realclean; cd .. ; done
+	@set -e; for l in $(LIBS); do cd $${l}; make realclean; cd .. ; done
+	@set -e; for e in $(EXES); do cd $${e}; make realclean; cd .. ; done
 
 clobber:
 	@rm -rf $(PREFIX)
 
 depend:
-	@set -e; for l in $(LIBS); do cd $${l}; make -f $${l}_makefile.mk depend; cd .. ; done
+	@set -e; for l in $(LIBS); do cd $${l}; make depend; cd .. ; done

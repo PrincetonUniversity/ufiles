@@ -1,10 +1,10 @@
-# Makefile to build libufencod.a
+# Makefile to build libgdiff1sub.a
 #
 
 # Include system dependent flags
 include $(COMPILER_FLAGS)
 
-NAME := ufencod
+NAME := gdiff1sub
 OBJDIR := $(PREFIX)/obj/$(NAME)
 LIBAR := $(PREFIX)/lib/lib$(NAME).a
 LIBSO := $(PREFIX)/lib/lib$(NAME).so
@@ -33,13 +33,12 @@ ifeq ($(MAKE_SO),1)
 	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
 endif
 
-include $(NAME)_depend.mk
+include make.depend
 $(OBJDIR)/%.o: %.for
-	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
+	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
 
 clean:
 	@rm -f $(OBJDIR)/*.o
-	@cd $(PREFIX)/mod ; rm -f $(MODS)
 
 realclean: clean
 	@rm -f $(LIBAR) $(LIBSO)
@@ -47,5 +46,5 @@ realclean: clean
 clobber: realclean
 
 depend:
-	@makedepf90 -b OBJDIR $(SRCF) > $(NAME)_depend.mk
-	@sed -i 's/OBJDIR/\$$\(OBJDIR\)/g' $(NAME)_depend.mk
+	@makedepf90 -b OBJDIR $(SRCF) > make.depend
+	@sed -i 's/OBJDIR/\$$\(OBJDIR\)/g' make.depend

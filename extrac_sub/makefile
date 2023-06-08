@@ -1,16 +1,22 @@
-# Makefile to build libthinsub.a
+# Makefile to build libextrac_sub.a
 #
 
 # Include system dependent flags
 include $(COMPILER_FLAGS)
 
-NAME := thinsub
+NAME := extrac_sub
 OBJDIR := $(PREFIX)/obj/$(NAME)
 LIBAR := $(PREFIX)/lib/lib$(NAME).a
 LIBSO := $(PREFIX)/lib/lib$(NAME).so
 
-SRCF := $(wildcard *.for)
-OBJF := $(SRCF:%.for=$(OBJDIR)/%.o)
+MNMS := extrac.mod
+MODS := extrac_mod.o
+SRCM := $(MODS:%.o=%.f90)
+SF90 := $(SRCM) $(filter-out $(SRCM), $(wildcard *.f90))
+SFOR := $(wildcard *.for)
+SRCF := $(SF90) $(SFOR)
+OBJF := $(SRCF:%.f90=$(OBJDIR)/%.o)
+OBJF := $(OBJF:%.for=$(OBJDIR)/%.o)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL)
@@ -33,12 +39,15 @@ ifeq ($(MAKE_SO),1)
 	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
 endif
 
-include $(NAME)_depend.mk
+include make.depend
 $(OBJDIR)/%.o: %.for
+	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
+$(OBJDIR)/%.o: %.f90
 	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
 
 clean:
 	@rm -f $(OBJDIR)/*.o
+	@cd $(PREFIX)/mod ; rm -f $(MNMS)
 
 realclean: clean
 	@rm -f $(LIBAR) $(LIBSO)
@@ -46,5 +55,5 @@ realclean: clean
 clobber: realclean
 
 depend:
-	@makedepf90 -b OBJDIR $(SRCF) > $(NAME)_depend.mk
-	@sed -i 's/OBJDIR/\$$\(OBJDIR\)/g' $(NAME)_depend.mk
+	@makedepf90 -b OBJDIR $(SRCF) > make.depend
+	@sed -i 's/OBJDIR/\$$\(OBJDIR\)/g' make.depend

@@ -1,30 +1,32 @@
-# Makefile to build libuflib.a
+# Makefile to build libmdstransp.a
 #
+# This library is intentionally compiled without optimization
 
 # Include system dependent flags
 include $(COMPILER_FLAGS)
 
-NAME := uflib
+NAME := mdstransp
 OBJDIR := $(PREFIX)/obj/$(NAME)
 LIBAR := $(PREFIX)/lib/lib$(NAME).a
 LIBSO := $(PREFIX)/lib/lib$(NAME).so
 
-SRCF := $(wildcard *.for)
-OBJF := $(SRCF:%.for=$(OBJDIR)/%.o)
+SRCF := $(wildcard *.f90) $(wildcard *.for)
+OBJF := $(SRCF:%.f90=$(OBJDIR)/%.o)
+OBJF := $(OBJF:%.for=$(OBJDIR)/%.o)
 
 SRCC := $(wildcard *.c)
 OBJC := $(SRCC:%.c=$(OBJDIR)/%.o)
 
 FDEF := $(FDEFS)
-FINC := $(FINCL) -I`nf-config --includedir`
-ifdef MDSPLUS_DIR
-    FINC := $(FINC) -I$(MDSPLUS_DIR)/include
-endif
-FFLG := $(FFLAGS)
+FINC := $(FINCL)
+FFLG := $(FFLAGS_DBG)
 
 CDEF := $(CDEFS)
 CINC := $(CINCL) -I$(UFILES_HOME)/include
-CFLG := $(CFLAGS)
+ifdef MDSPLUS_DIR
+    CINC := $(CINC) -I$(MDSPLUS_DIR)/include
+endif
+CFLG := $(CFLAGS_DBG)
 
 
 .PHONY: clean realclean clobber check
@@ -36,6 +38,7 @@ check:
 	@test -d $(PREFIX)/obj/$(NAME) || mkdir -p $(PREFIX)/obj/$(NAME)
 
 $(NAME): $(OBJF) $(OBJC)
+	@echo "$(NAME) always compiled without optimization"
 	@echo "Building $(NAME) static library"
 	@$(AR) $(LIBAR) $(OBJF) $(OBJC)
 ifeq ($(MAKE_SO),1)
@@ -43,12 +46,14 @@ ifeq ($(MAKE_SO),1)
 	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF) $(OBJC)
 endif
 
-include $(NAME)_depend.mk
+include make.depend
 $(OBJDIR)/%.o: %.for
+	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
+$(OBJDIR)/%.o: %.f90
 	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
 
 $(OBJDIR)/%.o: %.c
-	@$(CC) $(CFLG) $< -o $@ $(CDEF) $(CINC)
+	@$(CC) $(CPP) $(CFLG) $< -o $@ $(CDEF) $(CINC)
 
 clean: 
 	@rm -f $(OBJDIR)/*.o
@@ -59,5 +64,5 @@ realclean: clean
 clobber: realclean
 
 depend:
-	@makedepf90 -b OBJDIR $(SRCF) > $(NAME)_depend.mk
-	@sed -i 's/OBJDIR/\$$\(OBJDIR\)/g' $(NAME)_depend.mk
+	@makedepf90 -b OBJDIR $(SRCF) > make.depend
+	@sed -i 's/OBJDIR/\$$\(OBJDIR\)/g' make.depend
