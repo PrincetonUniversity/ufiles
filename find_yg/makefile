@@ -9,7 +9,7 @@ LIBDIR := $(PREFIX)/lib
 OBJDIR := $(PREFIX)/obj/$(NAME)
 EXEDIR := $(PREFIX)/bin
 
-LIBS := uflib_userio uflib mds_sub ufhdf mdstransp ureadsub \
+LIBS := uflib_userio uflib mds_sub ufhdf mdstransp trgraf ureadsub \
 	tokid ufencod sg jc ufport
 
 L_UFILES := -L$(LIBDIR) $(addprefix -l, $(LIBS))

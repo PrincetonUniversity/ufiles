@@ -65,7 +65,7 @@ F = $(subst .F,.f, $(wildcard *.F))
 
 RLIBS=$(A)/libsg.a $(A)/libjc.a
 XLIBS:=$(XLIBS) $(XFLIB)
-LIBS=-L$(PREFIX)/lib -ljc -lsg -lufport
+LIBS=-L$(PREFIX)/lib -ljc -lsg -lufport -L/usr/lib64 -lreadline -lhistory -ltermcap
 
 define cmp_varg
   $(CC) $(CFLAGS) $(SGDEFS) -o $(O)/$% $<

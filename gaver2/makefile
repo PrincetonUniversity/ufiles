@@ -14,9 +14,9 @@ LIBS := uflib_userio uflib mds_sub mdstransp ufhdf trgraf ureadsub \
 
 L_UFILES := -L$(LIBDIR) $(addprefix -l, $(LIBS))
 
-L_LIBS := $(L_UFILES) $(L_NETCDF) $(L_MDSPLUS) $(L_EDIT)
+L_LIBS := $(L_UFILES) $(L_PSPLINE) $(L_NETCDF) $(L_MDSPLUS) $(L_EDIT)
 
-FDEF := $(FDEFS) -DVERSION=$(VERSNUM) -DGIT_HASH=$(GITHASH) -DBUILD_DATE=$(BUILDDATE)
+FDEF := $(FDEFS)
 FINC := $(FINCL) -I$(PREFIX)/mod
 FFLG := $(FFLAGS)
 
