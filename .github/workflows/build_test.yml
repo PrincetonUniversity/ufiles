@@ -6,7 +6,7 @@ jobs:
   build_and_test:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: configure
       run: |
         sudo apt-get update
@@ -25,8 +25,11 @@ jobs:
         cd pspline
         make -j
         make install
+        make clean
+        make shared
+        cp libpspline.so build/lib/
     - name: ufiles
-      run: export PSPLINE_HOME=$HOME/pspline/build && source environ && make
+      run: export PSPLINE_HOME=$HOME/pspline/build && export MAKE_SO=1 && source environ && make --no-print-directory
     - name: test1
       run: |
         echo "Need to add tests"
