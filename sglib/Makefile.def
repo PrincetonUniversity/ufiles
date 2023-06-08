@@ -327,7 +327,7 @@ endif
       CFLAGS = -c -O
       CXXFLAGS =  -c -O
     endif
-    ifeq ($(shell test $(GCCVERSION) -gt 9; echo $$?),0)
+    ifeq ($(shell test $(GCC10) -eq 1; echo $$?),0)
        FFLAGS += -fallow-argument-mismatch -fallow-invalid-boz
        DFFLAGS += -fallow-argument-mismatch -fallow-invalid-boz
     endif
