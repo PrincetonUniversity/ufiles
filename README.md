@@ -7,7 +7,16 @@ The legacy documentation is listed below. This is a legacy code through and thro
 ## Building
 
 If your platform is not included then following the examples in the `environ` script and the `environs/` directory.
+
+To build:
 ```
+source environ
+make
+```
+
+If you want to also build the shared libraries:
+```
+export MAKE_SO=1
 source environ
 make
 ```
