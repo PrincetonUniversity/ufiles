@@ -152,6 +152,7 @@ export PREFIX=${UFILES_HOME}/builds/${COMPILER_ENV}/${COMPILER_VER}
 mkdir -p $PREFIX/{bin,include,lib,mod,obj}
 export PATH=${PREFIX}/bin:${PATH}
 echo "Using PREFIX=${PREFIX}"
+export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
 
 # for idempotence, unset the following:
 unset SITE

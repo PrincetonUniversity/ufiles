@@ -6,14 +6,30 @@ jobs:
   build_and_test:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: configure
       run: |
         sudo apt-get update
         sudo apt-get -y install gfortran
         sudo apt-get -y install libnetcdf-dev libnetcdff-dev
-    - name: build
-      run: source environ && make -f makefile.mk
+    - name: pspline
+      env:
+        SSHK: ${{ secrets.PSPLINE_SECRET }}
+      run: |
+        mkdir -p $HOME/.ssh
+        echo "$SSHK" > $HOME/.ssh/ssh.key
+        chmod 600 $HOME/.ssh/ssh.key
+        export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/ssh.key"
+        cd $HOME
+        git clone --depth 1 --branch v2.0.1 git@github.com:PrincetonUniversity/pspline.git
+        cd pspline
+        make -j
+        make install
+        make clean
+        make shared
+        cp libpspline.so build/lib/
+    - name: ufiles
+      run: export PSPLINE_HOME=$HOME/pspline/build && export MAKE_SO=1 && source environ && make --no-print-directory
     - name: test1
       run: |
         echo "Need to add tests"

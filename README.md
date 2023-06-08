@@ -9,7 +9,7 @@ The legacy documentation is listed below. This is a legacy code through and thro
 If your platform is not included then following the examples in the `environ` script and the `environs/` directory.
 ```
 source environ
-make -f makefile.mk
+make
 ```
 
 ## Summary of Legacy Documentation

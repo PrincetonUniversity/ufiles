@@ -65,12 +65,12 @@ c------------------------------
 c
       allocate(epsarr(n),stat=stat_alloc)
       if(stat_alloc.ne.0) then
-         call errmsg_exit(' ?filtr90:  epsarr array allocation failed!')
+         call ufbad_exit(' ?filtr90:  epsarr array allocation failed!')
       endif
 c
       allocate(delarr(n),stat=stat_alloc)
       if(stat_alloc.ne.0) then
-         call errmsg_exit(' ?filtr90:  delarr array allocation failed!')
+         call ufbad_exit(' ?filtr90:  delarr array allocation failed!')
       endif
 c
       epslim= huge(0.0d0) !D1MACH_TR(2)                  ! a large number

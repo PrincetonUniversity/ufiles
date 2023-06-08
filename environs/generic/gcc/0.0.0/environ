@@ -11,5 +11,12 @@ export CPP_TRAILER=" -L$FLIBROOT -lstdc++ -lgcc_s -lgcc"
 
 export LOADER_TRAILER=" -L$LOCAL/other -lreadline -lhistory -ltermcap -ldl"
 
+# NETCDF
 export L_NETCDF=` nf-config --flibs`
 export NETCDF_FORTRAN_HOME=` nf-config --prefix`
+
+# PSPLINE
+if [[ -z "${PSPLINE_HOME}" ]]; then
+   echo "ERROR: PSPLINE_HOME not defined. Is it installed?"
+fi
+export L_PSPLINE=" -L$PSPLINE_HOME/lib -lpspline"
