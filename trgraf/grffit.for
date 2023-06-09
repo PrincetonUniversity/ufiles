@@ -64,7 +64,7 @@ C
         CALL GRAFXF(X,Y,N,XDPT,YDPT,NDPT,
      >      ZSHOT//' '//ZDATE//' '//ZLPROC,
      >      '['//ZSCVAL//'] '//XTRLAB(1)//XTRLAB(2)//' '//XTRLAB(3),
-     >      LBLY(1)//LBLY(2)//' VS. '//LBLX(1)//LBLX(2) )
+     >      LBLY(1)//LBLY(2)//' VS. '//LBLX(1)//LBLX(2), ' ', ' ' )
       ENDIF
 C
       RETURN
