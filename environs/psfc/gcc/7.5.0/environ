@@ -5,6 +5,7 @@ export FLIBROOT=/usr/lib/gcc/x86_64-linux-gnu/7.5.0
 export FC=gfortran
 export CC=gcc
 export CXX=g++
+export GCCVERSION=`gcc -dumpversion | cut -f1 -d.`
 
 export NETCDF_HOME=/usr
 export NETCDF_C_HOME=$NETCDF_HOME

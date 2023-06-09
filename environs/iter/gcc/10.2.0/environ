@@ -3,7 +3,7 @@ module purge
 module load IMAS/3.37.0-4.11.0-foss-2020b
 export FLIBROOT=$(echo $LD_LIBRARY_PATH | sed 's/:.*//')
 export F90HOME=$GCC_HOME
-export GCC10=1
+export GCCVERSION=`gcc -dumpversion | cut -f1 -d.`
 
 export FC=gfortran
 export CC=gcc
