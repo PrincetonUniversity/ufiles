@@ -19,6 +19,10 @@ C
       SUBROUTINE UFOPRD(ILUN,ISHOT,IER)
 C
       USE UFILES
+      implicit none
+      integer, intent(in)  :: ilun, ishot
+      integer, intent(out) :: ier
+
 C
       integer*1 ibhdr(12),ibref(12)
 c  dmc 21 June 1999:  moved from UFILES INCLUDE file -- no way
@@ -29,8 +33,10 @@ c
       common/ufilbyte/ uiobuf,uchbuf
 c
 C
-      CHARACTER*512 ZFILE
+      CHARACTER(len=512) ZFILE
       integer       ikludge
+      integer  :: ii, ichan, ios
+      integer, external :: UFIERFNOF
 C
       data ibref/0,127,0,127,0,127,0,127,0,0,0,2/
 C------------------------------------------------------------------

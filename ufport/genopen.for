@@ -5,11 +5,12 @@ C  mod dmc -- support new type, BLOCKD, for sequential access with
 C  fixed length records.
 C
       subroutine GENOPEN(lun,name,fstat,ftype,irecsz,ios)
+      implicit none
 C
       integer lun          ! logical unit number
-      character*(*) name   ! file name
-      character*(*) fstat  ! file status 'OLD' or 'NEW' or 'UNKNOWN'
-      character*(*) ftype  ! file type 'ASCII' 'BINARY' or 'DIRECT'
+      character(len=*) name   ! file name
+      character(len=*) fstat  ! file status 'OLD' or 'NEW' or 'UNKNOWN'
+      character(len=*) ftype  ! file type 'ASCII' 'BINARY' or 'DIRECT'
       integer irecsz       ! record size ('DIRECT' files only)
 C
 C       ** units of irecsz is (4 byte) WORDS on all systems **
@@ -24,7 +25,9 @@ C
 C--------------------------------------
 C  local declarations
 C
-      character*10 zstat,ztype
+      character(len=10) zstat,ztype
+      integer :: ier, iblkfac, iln, ilstat, iltype, irecl
+      integer, external :: ufnblkfac, ufiopen
 C
 C--------------------------------------
 C
@@ -85,7 +88,7 @@ C
  9902       format(
      >         ' ?GENOPEN:  fstat="',a,'" not valid for BLOCKD files.')
          endif
-         go to 1000  ! C code open, no fortran error handling.
+         return ! C code open, no fortran error handling.
       endif
 C
       ios=ufiopen(lun,name,zstat,ztype,irecl)
