@@ -6,6 +6,7 @@ export FLIBROOT=$LIBS_DIR
 export FC=gfortran
 export CC=gcc
 export CX=g++
+export GCCVERSION=`gcc -dumpversion | cut -f1 -d.`
 
 export FTN_MAIN=""
 export FTN_TRAILER=" -L$FLIBROOT -lgfortran"
