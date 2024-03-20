@@ -79,27 +79,31 @@ endef
 define f_comp
 $(FC) $(M9INC) $(FFLAGS) $(O)/$%  $<
 @$(AR) $@ $(O)/$%
-@rm $(O)/$%
+@if test -z "$(DEBUG)"; then \
+	rm -f $(O)/$%; fi
 endef
 
 # Function to compile pre-processed .F
 define f_proc
 $(FC) $(M9INC) -I./ -I$(O) $(FFLAGS) $(O)/$%  $<
 @$(AR) $@ $(O)/$%
-@rm $(O)/$%
+@if test -z "$(DEBUG)"; then \
+	rm -f $(O)/$%; fi
 endef
 
 define f90_comp
 $(FC) $(M9INC) $(FFLAGS) $(O)/$%  $<
 @$(AR) $@ $(O)/$%
-@rm $(O)/$%
+@if test -z "$(DEBUG)"; then \
+	rm -f $(O)/$%; fi
 endef
 
 # Function to compile pre-processed .F
 define f90_proc
 $(FC) $(M9INC) -I./ -I$(O)/ $(FFLAGS) $(O)/$%  $<
 @$(AR) $@ $(O)/$%
-@rm $(O)/$%
+@if test -z "$(DEBUG)"; then \
+	rm -f $(O)/$%; fi
 endef
 
 # Rules
@@ -158,10 +162,10 @@ $(A)/libjc.a:  $(JCOBJ)
 
 # sglib
 $(A)/libsg.a(sgiso.o): sgiso.f sgiso_inc
-	@$(f_comp)
+	$(f_comp)
 
 $(A)/libsg.a(sgnco.o): $(O)/sgnco.f sgnco_inc sgtcs_inc
-	@$(f_proc)
+	$(f_proc)
 
 $(A)/libsg.a(sgarea.o): sgarea.f sgarea_inc
 	@$(f_comp)
@@ -181,12 +185,14 @@ $(A)/libsg.a(sgiof.o): $(O)/sgiof.f sgiof_inc sgtcs_inc sgvgds_inc
 $(A)/libsg.a(sgsys.o): sgsys.c sgbuff.h
 	@$(cmp_sys)
 	@$(AR) $@ $(O)/$%
-	@rm $(O)/$%
+	@if test -z "$(DEBUG)"; then \
+		rm -f $(O)/$%; fi
 
 $(A)/libsg.a(sgvarg.o): sgvarg.c sgvarg_code.h 
 	@$(cmp_varg)
 	@$(AR) $@ $(O)/$%
-	@rm $(O)/$%
+	@if test -z "$(DEBUG)"; then \
+		rm -f $(O)/$%; fi
 
 $(A)/libsg.a(r8sgiso.o): r8sgiso.f 
 	@$(f90_comp)
@@ -221,7 +227,8 @@ $(A)/libjc.a(jcprompt.o): jcprompt.F jcticcom
 	@$(FPP) $(CPPFLAGS) $(SGDEFS) - < $< |grep -v '^$$' > $(O)/$*.f
 	@$(FC) -I./ $(FFLAGS) $(O)/$%  $(O)/$*.f
 	@$(AR) $@ $(O)/$%
-	@rm $(O)/$%
+	@if test -z "$(DEBUG)"; then \
+		rm -f $(O)/$%; fi
 
 $(A)/libjc.a(jcstring.o): jcstring.f
 	@$(f_comp)
