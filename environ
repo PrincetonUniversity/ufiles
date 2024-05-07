@@ -30,6 +30,9 @@ else
     elif [ $HOSTNAME = 'stellar-intel' ]; then
         SITE_ENV='stellar'
         echo "Found SITE ${SITE_ENV}"
+    elif [ $HOSTNAME = "traverse" ]; then
+        SITE_ENV='traverse'
+        echo "Found SITE ${SITE_ENV}"
     elif [ $DNSDOMAIN = 'ornl.gov' ]; then
         SITE_ENV='ornl'
         echo "Found SITE ${SITE_ENV}"
@@ -71,6 +74,8 @@ else
         COMPILER='GCC'
     elif [ $SITE_ENV = 'docker' ]; then
         COMPILER='GCC'
+    elif [ $SITE_ENV = 'traverse' ]; then
+        COMPILER='PGC'
     else
         COMPILER='GCC'
     fi
@@ -108,6 +113,7 @@ else
     version_map["iter,gcc"]='10.2.0'
     version_map["pppl,intel"]='2019'
     version_map["stellar,intel"]='2021'
+    version_map["traverse,pgi"]='20.4'
     version_map["iris,intel"]='2018'
     version_map["omega,gcc"]='8.3.1'
     version_map["psfc,gcc"]='7.5.0'
