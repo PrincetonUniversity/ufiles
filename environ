@@ -42,6 +42,9 @@ else
     elif [[ $HOSTNAME == "iris"* ]]; then
         SITE_ENV='iris'
         echo "Found SITE ${SITE_ENV}"
+    elif [[ $HOSTNAME == "flux"* ]]; then
+        SITE_ENV='flux'
+        echo "Found SITE ${SITE_ENV}"
     elif [[ $HOSTNAME == "omega"* ]]; then
         SITE_ENV='omega'
         echo "Found SITE ${SITE_ENV}"
@@ -64,6 +67,8 @@ else
     elif [ $SITE_ENV = 'stellar' ]; then
         COMPILER='ICC'
     elif [ $SITE_ENV = 'iris' ]; then
+        COMPILER='ICC'
+    elif [ $SITE_ENV = 'flux' ]; then
         COMPILER='ICC'
     elif [ $SITE_ENV = 'omega' ]; then
         COMPILER='GCC'
