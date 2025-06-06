@@ -4,14 +4,7 @@
 #
 
 export UFILES_HOME=`pwd`
-
-# General Environment
-export TERM=xterm
-export TERMINAL_TYPE=XTERM
-export GETLINE_EDITOR=TRUE
-export _64=TRUE
-
-
+export MPI_ENABLE=1
 #--- Site
 if [ -n "$SITE" ]; then
     echo "Provided \$SITE=${SITE}"
@@ -25,7 +18,11 @@ else
         DNSDOMAIN="NA"
     fi
     if [ $DNSDOMAIN = 'pppl.gov' ]; then
-        SITE_ENV='pppl'
+        if [[ $HOSTNAME == "flux"* ]]; then
+            SITE_ENV='ppplflux'
+        else
+            SITE_ENV='pppl'
+	fi        
         echo "Found SITE ${SITE_ENV}"
     elif [ $HOSTNAME = 'stellar-intel' ]; then
         SITE_ENV='stellar'
@@ -36,8 +33,8 @@ else
     elif [ $DNSDOMAIN = 'iter.org' ]; then
         SITE_ENV='iter'
         echo "Found SITE ${SITE_ENV}"
-    elif [ $DNSDOMAIN = 'nersc.gov' ]; then
-        SITE_ENV='nersc'
+    elif [[ $LMOD_SITE_NAME == "NERSC"* ]]; then
+        SITE_ENV='perlmutter'
         echo "Found SITE ${SITE_ENV}"
     elif [[ $HOSTNAME == "iris"* ]]; then
         SITE_ENV='iris'
@@ -64,6 +61,10 @@ else
     # When compiler not provided, assume a default
     if [ $SITE_ENV = 'pppl' ]; then
         COMPILER='ICC'
+    elif [ $SITE_ENV = 'ppplflux' ]; then
+        COMPILER='ICC'
+    elif [ $SITE_ENV = 'perlmutter' ]; then
+        COMPILER='NVIDIA'
     elif [ $SITE_ENV = 'stellar' ]; then
         COMPILER='ICC'
     elif [ $SITE_ENV = 'iris' ]; then
@@ -74,22 +75,22 @@ else
         COMPILER='GCC'
     elif [ $SITE_ENV = 'psfc' ]; then
         COMPILER='GCC'
-    elif [ $SITE_ENV = 'docker' ]; then
-        COMPILER='GCC'
     else
         COMPILER='GCC'
     fi
     echo "\$COMPILER not provided, assuming default ${COMPILER} for \$SITE=${SITE_ENV}"
-    export COMPILER
 fi
+export COMPILER
 
 # Determine compiler family
-if [ $COMPILER = 'PGC' ]; then
+if [ $COMPILER = 'PGC' -o $COMPILER = 'PGI' -o $COMPILER = 'Portland' ]; then
     COMPILER_ENV='pgi'
 elif [ $COMPILER = 'GCC' ]; then
     COMPILER_ENV='gcc'
 elif [ $COMPILER = 'ICC' ]; then
     COMPILER_ENV='intel'
+elif [ $COMPILER = 'NVIDIA' ]; then
+    COMPILER_ENV='nvidia'
 else
     echo "ERROR: $COMPILER compiler not supported"
     return 1
@@ -107,11 +108,15 @@ else
     ### This will not work in current osx (bashv3).
     ###   We do not need it there so it will just complain about these lines.
 
-    # declare an associative array
+    # decalre an associative array
     declare -A version_map
     version_map["pppl,gcc"]='9.3.0'
+    version_map["pppl,pgi"]='19.10'
     version_map["iter,gcc"]='10.2.0'
     version_map["pppl,intel"]='2019'
+    version_map["ppplflux,intel"]='2023'
+    version_map["ppplflux,gcc"]='13.2.0'   
+    version_map["perlmutter,nvidia"]='22.7'
     version_map["stellar,intel"]='2021'
     version_map["iris,intel"]='2018'
     version_map["omega,gcc"]='8.3.1'
@@ -148,16 +153,16 @@ else
 fi
 source $ENV_FILE
 
-# Reset compiler version variable so that PREFIX is set correctly for generic GCC
+# Reset compiler version variable so that LOCAL is set correctly for generic GCC
 if [ $SITE_ENV = 'generic' ]; then
     COMPILER_VER=`gcc -dumpversion`
 fi
 
 export PREFIX=${UFILES_HOME}/builds/${COMPILER_ENV}/${COMPILER_VER}
-mkdir -p $PREFIX/{bin,include,lib,mod,obj}
+mkdir -p $PREFIX/{bin,include,lib,mod,mpi_mod,obj}
 export PATH=${PREFIX}/bin:${PATH}
 echo "Using PREFIX=${PREFIX}"
-export LD_LIBRARY_PATH=${PREFIX}/lib:$LD_LIBRARY_PATH
+export OBJDIR=$PREFIX/obj
 
 # for idempotence, unset the following:
 unset SITE
