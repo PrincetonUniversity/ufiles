@@ -46,6 +46,10 @@ c
 C
  500  continue
       ilnb=index(fullname,' ')-1
+      if (ilnb < 0) then
+         ilnb = len_trim(fullname) ! fallback: last non-blank character
+      endif
+
       if(fullname(ilnb:ilnb).ne.'/') then
         ilnb=ilnb+1
         fullname(ilnb:ilnb)='/'

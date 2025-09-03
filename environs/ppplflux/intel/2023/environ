@@ -3,33 +3,28 @@ module purge
 module load git
 
 module load intel/2023.2.0
-module load openmpi/4.1.6-intel-2023.2.0
+module load openmpi/4.1.6-intel-2023.2.0-f6nrfjk
 export FLIBROOT=/opt/hpc/compiler/intel/2023.2.0/compiler/2023.2.0/linux/compiler/lib/intel64_lin
 
 export FC=ifort
 export CC=icc
 export CX=icpc
 
-#export FTN_MAIN==/opt/hpc/compiler/intel/2023.2.0/compiler/2023.2.0/linux/compiler/lib/intel64_lin/for_main.o
-#export FTN_TRAILER="-L$FLIBROOT -lifport -lintlc -limf -lifcore -ldl  -lirc -lsvml"
 GCC_PATH=$(gcc -print-file-name=libstdc++.a)
 GCC_DIR=$(dirname $GCC_PATH)
 export CPP_TRAILER=" -L$GCC_DIR -lstdc++"
 
-#export LOADER_TRAILER=" -L/usr/lib64 -lreadline -lhistory -ltermcap -ldl"
 
-module load openmpi-4.1.6/intel-2023.2.0/hdf5/1.14.3-4nzzy
-module load openmpi-4.1.6/intel-2023.2.0/netcdf-c/main-nzscm      
-module load openmpi-4.1.6/intel-2023.2.0/netcdf-cxx4/4.3.1-gqm7t
-module load openmpi-4.1.6/intel-2023.2.0/netcdf-fortran/4.6.1-cepgo
+module load openmpi-4.1.6/intel-2023.2.0/hdf5/1.14.6-c77my
+module load openmpi-4.1.6/intel-2023.2.0/netcdf-c/4.9.2-qpqoj     
+module load openmpi-4.1.6/intel-2023.2.0/netcdf-cxx4/4.3.1-k3jqv
+module load openmpi-4.1.6/intel-2023.2.0/netcdf-fortran/4.6.1-bfskx
 module load libszip/2.1.1-intel-2023.2.0-bo3cg
 
-# export NETCDF_C_HOME=/opt/pppl/software/spack/linux-rocky9-zen/intel-2023.2.0/netcdf-c-main-nzscmrx7nix7i72zs5y2gsoxqzxtwhd6
-# export NETCDF_F_HOME=/opt/pppl/software/spack/linux-rocky9-zen/intel-2023.2.0/netcdf-fortran-4.6.1-cepgoinrjitqdehlejpd7lrpn3l3pqwd
+export L_NETCDF=" -L$NETCDF_F_HOME/lib -lnetcdff -L$NETCDF_C_HOME/lib64 -lnetcdf"
 
-export L_NETCDF=" -L/opt/pppl/software/spack/linux-rocky9-zen/intel-2023.2.0/netcdf-fortran-4.6.1-cepgoinrjitqdehlejpd7lrpn3l3pqwd/lib -lnetcdff -L/opt/pppl/software/spack/linux-rocky9-zen/intel-2023.2.0/netcdf-c-main-nzscmrx7nix7i72zs5y2gsoxqzxtwhd6/lib64 -lnetcdf"
 
-module load pspline/2.0.1-intel-2023.2.0
+module load pspline/2.0.1-build-20250811-intel-2023.2.0
 export L_PSPLINE=" -L$PSPLINE_HOME/lib -lpspline"
 
 module load mdsplus/7.132.0-intel-2023.2.0
