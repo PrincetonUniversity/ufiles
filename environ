@@ -64,7 +64,7 @@ else
     elif [ $SITE_ENV = 'ppplflux' ]; then
         COMPILER='ICC'
     elif [ $SITE_ENV = 'perlmutter' ]; then
-        COMPILER='NVIDIA'
+        COMPILER='GCC'
     elif [ $SITE_ENV = 'stellar' ]; then
         COMPILER='ICC'
     elif [ $SITE_ENV = 'iris' ]; then
@@ -117,6 +117,7 @@ else
     version_map["ppplflux,intel"]='2023'
     version_map["ppplflux,gcc"]='13.2.0'   
     version_map["perlmutter,nvidia"]='22.7'
+    version_map["perlmutter,gcc"]='13.2'
     version_map["stellar,intel"]='2021'
     version_map["iris,intel"]='2018'
     version_map["omega,gcc"]='8.3.1'
