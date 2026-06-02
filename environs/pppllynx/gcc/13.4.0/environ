@@ -1,0 +1,133 @@
+#
+# Lynx GCC 13.4.0 build environment
+#
+# NOTE:
+# UFILES is a serial library and is compiled using GNU compilers
+# (gfortran, gcc, g++).
+#
+# However, on Lynx the HDF5 and NetCDF packages are provided through
+# the OpenMPI software hierarchy. Therefore the OpenMPI module must
+# be loaded before the HDF5 and NetCDF modules can be accessed.
+#
+# Loading OpenMPI does NOT imply that UFILES uses MPI.
+# It is required only to satisfy module dependencies.
+
+module purge
+
+#
+# GCC runtime
+#
+module load gcc-runtime/13.4.0
+
+export FLIBROOT="${GCC_RUNTIME_ROOT}/lib"
+export LD_LIBRARY_PATH="${FLIBROOT}:${LD_LIBRARY_PATH}"
+
+#
+# OpenMPI (required by HDF5/NetCDF module hierarchy)
+#
+module load openmpi/5.0.10-gcc-13.4.0
+
+export F90HOME="${OPENMPI_HOME}"
+
+#
+# Compiler selection (serial build)
+#
+export FC=gfortran
+export CC=gcc
+export CXX=g++
+
+export FORTRAN_COMMAND=${MPIF90}
+export CC_COMMAND=${MPICC}
+export CX_COMMAND=${MPICXX}
+
+export MPI_CMD="$(dirname ${MPIF90})/mpiexec --bind-to none"
+
+export GCC10=1
+
+#
+# Compiler trailers
+#
+export FTN_MAIN=""
+
+export FTN_TRAILER="\
+-Wl,-rpath,${FLIBROOT} \
+-L${FLIBROOT} \
+-lgfortran"
+
+export CPP_TRAILER="\
+-Wl,-rpath,${FLIBROOT} \
+-L${FLIBROOT} \
+-lstdc++ \
+-lgcc_s \
+-lgcc"
+
+export LOADER_TRAILER="\
+-L/usr/lib64 \
+-lreadline \
+-lhistory \
+-ltermcap \
+-ldl"
+
+#
+# HDF5 / NetCDF
+#
+module load hdf5/1.14.6-gcc-13.4.0
+module load netcdf-c/4.9.3-gcc-13.4.0
+module load netcdf-fortran/4.6.2-gcc-13.4.0
+module load netcdf-cxx4/4.3.1-gcc-13.4.0
+
+export LD_LIBRARY_PATH="${HDF5_HOME}/lib:${LD_LIBRARY_PATH}"
+
+export L_NETCDF="\
+-L${NETCDF_F_HOME}/lib -lnetcdff \
+-L${NETCDF_C_HOME}/lib64 -lnetcdf \
+-Wl,-rpath,${HDF5_HOME}/lib \
+-L${HDF5_HOME}/lib \
+-lhdf5_fortran \
+-lhdf5_hl \
+-lhdf5"
+
+#
+# PSPLINE
+#
+module load pspline/2.0.1-gcc-13.4.0
+
+export L_PSPLINE="\
+-L${PSPLINE_HOME}/lib \
+-lpspline"
+
+#
+# BLAS / LAPACK
+#
+module load netlib-lapack/3.12.1-gcc-13.4.0
+
+export L_BLAS="\
+-L${NETLIB_LAPACK_HOME}/lib64 \
+-lblas"
+
+export L_LAPACK="\
+-L${NETLIB_LAPACK_HOME}/lib64 \
+-llapack"
+
+export LMPI_SCALAPACK="${L_LAPACK}"
+
+#
+# IDL, needed by mdsplus
+#
+module load idl
+
+#
+# MDSplus
+#
+module load mdsplus/7.153.3
+
+export L_MDSPLUS="\
+-L${MDSPLUS_DIR}/lib \
+-lMdsLib"
+
+#
+# TRANSP servers
+#
+export TRANSPGRID_SERVER=transpgrid.pppl.gov
+export MDS_TRANSP_SERVER=transpgrid.pppl.gov
+export MDS_TRANSP_RETRY=3

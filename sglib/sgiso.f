@@ -422,7 +422,7 @@ c map z(i,j) to ix(i,j),iy(i,j)
 	if(lcont) then
 	  do j=1,ny
 	    do i=1,nx
-	      call agicau(x(i),y(j),z(i,j),m(1,i,j),m(2,i,j))
+	      call agicau(x(i),y(j),z(i,j),int(m(1,i,j)),int(m(2,i,j)))
 	    enddo
 	  enddo
 	endif
@@ -583,7 +583,7 @@ c draw constant x lines (for each x, draw y vs z from j to jdraw)
 	      endif
 	      call agidvs(ix1,iy1,ix2,iy2,ih,im)
 	      if(dcont) then
-		call agidzc(z,nxdim,nx,ny,m,i,jj-1,cont,ncont)
+		call agidzc(z,nxdim,nx,ny,int(m),i,jj-1,cont,ncont)
 	      endif
 	      ix1=ix2
 	      iy1=iy2

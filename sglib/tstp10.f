@@ -177,7 +177,7 @@ c
 	call initt(240)
 	call term(2,4096)
 	call binitt
-	call agtmhs(200,760,'DUAL: DUAL SCALES  4096 RESOLUTION',0)
+c	call agtmhs(200,760,'DUAL: DUAL SCALES  4096 RESOLUTION',0)
 	call slimx(200,800)
 	call check(xdual,y1dual)
 	call dsplay(xdual,y1dual)
