@@ -20,6 +20,8 @@ else
     if [ $DNSDOMAIN = 'pppl.gov' ]; then
         if [[ $HOSTNAME == "flux"* ]]; then
             SITE_ENV='ppplflux'
+        elif [[ $HOSTNAME == "lynx"* ]]; then
+            SITE_ENV='pppllynx'
         else
             SITE_ENV='pppl'
 	fi        
@@ -42,6 +44,9 @@ else
     elif [[ $HOSTNAME == "flux"* ]]; then
         SITE_ENV='flux'
         echo "Found SITE ${SITE_ENV}"
+    elif [[ $HOSTNAME == "lynx"* ]]; then
+        SITE_ENV='lynx'
+        echo "Found SITE ${SITE_ENV}"
     elif [[ $HOSTNAME == "omega"* ]]; then
         SITE_ENV='omega'
         echo "Found SITE ${SITE_ENV}"
@@ -63,6 +68,8 @@ else
         COMPILER='ICC'
     elif [ $SITE_ENV = 'ppplflux' ]; then
         COMPILER='ICC'
+    elif [ $SITE_ENV = 'pppllynx' ]; then
+        COMPILER='GCC'
     elif [ $SITE_ENV = 'perlmutter' ]; then
         COMPILER='GCC'
     elif [ $SITE_ENV = 'stellar' ]; then
@@ -116,6 +123,7 @@ else
     version_map["pppl,intel"]='2019'
     version_map["ppplflux,intel"]='2023'
     version_map["ppplflux,gcc"]='13.2.0'   
+    version_map["pppllynx,gcc"]='13.4.0'   
     version_map["perlmutter,nvidia"]='22.7'
     version_map["perlmutter,gcc"]='13.2'
     version_map["stellar,intel"]='2021'
