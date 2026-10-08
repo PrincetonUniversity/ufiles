@@ -28,11 +28,15 @@ export SZIP_HOME=/opt/pppl/software/spack/linux-rocky9-zen4/gcc-11.4.0/libszip-2
 
 export L_NETCDF=" -L$NETCDF_F_HOME/lib -lnetcdff -L$NETCDF_C_HOME/lib64 -lnetcdf"
 
-module load pspline/2.0.1-gcc-13.2.0
+export PSPLINE_HOME="/p/pshare/transp/opt/pspline/2.1.0/gcc/13.2.0"
+export LD_LIBRARY_PATH="${PSPLINE_HOME}/lib:${LD_LIBRARY_PATH:-}"
+#module load pspline/2.0.1-gcc-13.2.0
+
 export L_PSPLINE=" -L$PSPLINE_HOME/lib -lpspline"
 
+
 module load mdsplus/7.132.0-gcc-13.2.0  
-export L_MDSPLUS=" -L$MDSPLUS_DIR/lib -lMdsLib"
+export L_MDSPLUS=" -L$MDSPLUS_DIR/lib -lMdsLib -lMdsIpShr -lMdsShr "
 export TRANSPGRID_SERVER=transpgrid.pppl.gov
 export MDS_TRANSP_SERVER=transpgrid.pppl.gov
 export MDS_TRANSP_RETRY=3

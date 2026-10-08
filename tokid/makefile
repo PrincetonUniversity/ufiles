@@ -14,7 +14,13 @@ OBJF := $(SRCF:%.f90=$(OBJDIR)/%.o)
 
 FDEF := $(FDEFS)
 FINC := $(FINCL)
-FFLG := $(FFLAGS)
+ifeq ($(MAKE_SO),1)
+	FPIC := -fPIC
+else
+	FPIC :=
+endif
+
+FFLG := $(FFLAGS) $(FPIC)
 
 
 .PHONY: clean realclean clobber check

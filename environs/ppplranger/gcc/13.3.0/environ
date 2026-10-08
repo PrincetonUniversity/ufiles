@@ -1,0 +1,180 @@
+#
+# Ranger UFILES environment
+#
+# Source after:
+#   scl enable gcc-toolset-13 bash
+#
+
+#
+# GCC toolset 13.x
+#
+export GCC_ROOT=/opt/rh/gcc-toolset-13/root/usr
+export PATH=${GCC_ROOT}/bin:${PATH}
+
+export GCC_RUNTIME_ROOT=${GCC_ROOT}
+export FLIBROOT=$(dirname "$(gcc -print-file-name=libgfortran.so)")
+
+# GCC toolset libraries must be first.
+# Otherwise gcc-toolset ld may pick /usr/lib64/libctf.so.0 and fail.
+export LD_LIBRARY_PATH=${GCC_ROOT}/lib64:${GCC_ROOT}/lib:${FLIBROOT}:${LD_LIBRARY_PATH}
+export LIBRARY_PATH=${GCC_ROOT}/lib64:${GCC_ROOT}/lib:${FLIBROOT}:${LIBRARY_PATH}
+
+export GCC10=1
+
+#
+# Compiler selection
+# UFILES is serial, so use GNU compilers directly.
+#
+export FC=gfortran
+export CC=gcc
+export CXX=g++
+
+#
+# OpenMPI wrapper variables
+# UFILES itself is serial, but some TRANSP makefiles expect these variables.
+#
+export OPENMPI_HOME=/usr/lib64/openmpi
+export PATH=${OPENMPI_HOME}/bin:${PATH}
+
+export MPIF90=${OPENMPI_HOME}/bin/mpif90
+export MPICC=${OPENMPI_HOME}/bin/mpicc
+export MPICXX=${OPENMPI_HOME}/bin/mpicxx
+
+export FORTRAN_COMMAND=${MPIF90}
+export CC_COMMAND=${MPICC}
+export CX_COMMAND=${MPICXX}
+export MPI_CMD="${OPENMPI_HOME}/bin/mpiexec --bind-to none"
+
+export F90HOME=${OPENMPI_HOME}
+
+#
+# Compiler trailers
+#
+export FTN_MAIN=""
+
+export FTN_TRAILER="\
+-Wl,-rpath,${FLIBROOT} \
+-L${FLIBROOT} \
+-lgfortran"
+
+export CPP_TRAILER="\
+-Wl,-rpath,${FLIBROOT} \
+-L${FLIBROOT} \
+-lstdc++ \
+-lgcc_s \
+-lgcc"
+
+export LOADER_TRAILER="\
+-L/usr/lib64 \
+-lreadline \
+-lhistory \
+-ltermcap \
+-ldl"
+
+#
+# HDF5 / NetCDF from Ranger RPM installation
+#
+export HDF5_HOME=/usr
+export NETCDF_C_HOME=/usr
+export NETCDF_F_HOME=/usr
+export NETCDF_FORTRAN_HOME=/usr
+
+export NETCDF_MODDIR=/usr/lib64/gfortran/modules
+
+export L_NETCDF="\
+-L${NETCDF_F_HOME}/lib64 -lnetcdff \
+-L${NETCDF_C_HOME}/lib64 -lnetcdf \
+-L${HDF5_HOME}/lib64 \
+-lhdf5_fortran \
+-lhdf5hl_fortran \
+-lhdf5_hl \
+-lhdf5"
+
+#
+# PSPLINE
+# Adjust this path after building/installing pspline on Ranger.
+#
+export PSPLINE_HOME=/u/mgorelen/transp_external/opt/pspline/2.0.1/gcc/13.3.0
+
+export L_PSPLINE="\
+-L${PSPLINE_HOME}/lib \
+-lpspline"
+
+#
+# BLAS / LAPACK from Ranger RPM installation
+#
+export NETLIB_LAPACK_HOME=/usr
+
+export L_BLAS="\
+-L${NETLIB_LAPACK_HOME}/lib64 \
+-lblas"
+
+export L_LAPACK="\
+-L${NETLIB_LAPACK_HOME}/lib64 \
+-llapack"
+
+export LMPI_SCALAPACK="${L_LAPACK}"
+
+#
+# MDSplus from Ranger installation
+#
+export MDSPLUS_HOME=/usr/local/mdsplus
+export MDSPLUS_ROOT=${MDSPLUS_HOME}
+export L_MDSPLUS=" -L$MDSPLUS_HOME/lib64 -lMdsLib -lMdsIpShr -lMdsShr "
+export MDSPLUS=${MDSPLUS_HOME}
+export MDSPLUS_DIR=/u/mgorelen/transp_external/mds_include
+#/usr/local/mdsplus_git
+#
+
+export PATH=${MDSPLUS_HOME}/bin:${PATH}
+
+export L_MDSPLUS="\
+-Wl,-rpath,${MDSPLUS_HOME}/lib64 \
+-Wl,-rpath-link,${MDSPLUS_HOME}/lib64 \
+-L${MDSPLUS_HOME}/lib64 \
+-lMdsLib"
+
+#
+# Runtime library path
+# Keep GCC toolset paths first.
+#
+export LD_LIBRARY_PATH=\
+${GCC_ROOT}/lib64:\
+${GCC_ROOT}/lib:\
+${FLIBROOT}:\
+${OPENMPI_HOME}/lib:\
+${HDF5_HOME}/lib64:\
+${NETCDF_C_HOME}/lib64:\
+${NETCDF_F_HOME}/lib64:\
+${MDSPLUS_HOME}/lib64:\
+${MDSPLUS_HOME}/lib:\
+${PSPLINE_HOME}/lib:\
+${LD_LIBRARY_PATH}:\
+/usr/lib64
+
+export LIBRARY_PATH=\
+${GCC_ROOT}/lib64:\
+${GCC_ROOT}/lib:\
+${FLIBROOT}:\
+${OPENMPI_HOME}/lib:\
+${HDF5_HOME}/lib64:\
+${NETCDF_C_HOME}/lib64:\
+${NETCDF_F_HOME}/lib64:\
+${MDSPLUS_HOME}/lib64:\
+${MDSPLUS_HOME}/lib:\
+${PSPLINE_HOME}/lib:\
+${LIBRARY_PATH}:\
+/usr/lib64
+
+export CPATH=\
+/usr/include/openmpi-x86_64:\
+/usr/include:\
+${NETCDF_MODDIR}:\
+${CPATH}
+
+#
+# TRANSP servers
+#
+export TRANSPGRID_SERVER=transpgrid.pppl.gov
+export MDS_TRANSP_SERVER=transpgrid.pppl.gov
+export MDS_TRANSP_RETRY=3
