@@ -21,7 +21,7 @@ jobs:
         chmod 600 $HOME/.ssh/ssh.key
         export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/ssh.key"
         cd $HOME
-        git clone --depth 1 --branch v2.1.0 git@github.com:PrincetonUniversity/pspline.git
+        git clone --depth 1 --branch v2.2.0 git@github.com:PrincetonUniversity/pspline.git
         cd pspline
         make -j
         make install
