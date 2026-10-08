@@ -1,6 +1,96 @@
 # ---------------------------------------------------------------------------
 # Makefile to build all UFILES libraries and executables
+#
+# Supports:
+#   - Static libraries
+#   - Shared libraries (MAKE_SO=1)
+#   - Sequential library dependency builds
+#   - Parallel compilation within individual libraries
+#
+# IMPORTANT:
+#
+#   PREFIX is converted to an absolute path and exported to all
+#   recursive Make processes.
+#
+#   This ensures that ufport, sglib, and all remaining libraries
+#   use the same build directory.
+#
+# Build order:
+#
+#       check
+#         |
+#       ufport
+#         |
+#       verify_ufport
+#         |
+#       sglib
+#         |
+#       remaining libraries
+#         |
+#       executables
 # ---------------------------------------------------------------------------
+
+SHELL := /bin/bash
+
+.DEFAULT_GOAL := all
+
+
+# ---------------------------------------------------------------------------
+# Build configuration
+# ---------------------------------------------------------------------------
+
+NTASKS ?= 1
+
+MAKE_SO ?= 0
+
+
+# ---------------------------------------------------------------------------
+# Absolute source and build directories
+#
+# PREFIX may be defined by the sourced environ script as:
+#
+#     builds/gcc/13.2.0
+#
+# Relative paths cause recursive Make processes to create build
+# directories inside individual source directories.
+#
+# Convert PREFIX to an absolute path relative to the top-level
+# UFILES directory before invoking recursive Make processes.
+#
+# The override directive also handles PREFIX supplied on the
+# make command line.
+# ---------------------------------------------------------------------------
+
+override UFILES_HOME := $(abspath $(CURDIR))
+
+ifeq ($(strip $(PREFIX)),)
+
+override PREFIX := $(UFILES_HOME)/builds
+
+else
+
+override PREFIX := $(abspath $(PREFIX))
+
+endif
+
+export UFILES_HOME
+export PREFIX
+export MAKE_SO
+
+
+# ---------------------------------------------------------------------------
+# Build directories
+# ---------------------------------------------------------------------------
+
+BINDIR := $(PREFIX)/bin
+INCDIR := $(PREFIX)/include
+LIBDIR := $(PREFIX)/lib
+MODDIR := $(PREFIX)/mod
+MPIMODDIR := $(PREFIX)/mpi_mod
+OBJDIR := $(PREFIX)/obj
+
+UFPORT_SO := $(LIBDIR)/libufport.so
+UFPORT_AR := $(LIBDIR)/libufport.a
 
 
 # ---------------------------------------------------------------------------
@@ -8,13 +98,14 @@
 #
 # IMPORTANT:
 #
-#   ufport is built separately before sglib because sglib depends on it.
+#   ufport is built separately before sglib.
 #
-#   sglib is also built separately because libsg/libjc have a special
-#   circular shared-library dependency handled inside the sglib Makefile.
+#   sglib is also built separately because libsg/libjc have a
+#   special circular shared-library dependency handled inside
+#   the sglib Makefile.
 #
-#   Libraries below are ordered so that every shared-library dependency
-#   is built before the library that uses it.
+#   Libraries below are ordered so that every shared-library
+#   dependency is built before the library that uses it.
 # ---------------------------------------------------------------------------
 
 LIBS := \
@@ -91,7 +182,9 @@ EXES := \
 .PHONY: \
 	all \
 	check \
+	show-config \
 	ufport_lib \
+	verify_ufport \
 	sglib \
 	libs \
 	exes \
@@ -103,109 +196,148 @@ EXES := \
 
 # ---------------------------------------------------------------------------
 # Main build
-#
-# Explicit dependency chain:
-#
-#       check
-#         |
-#       ufport
-#         |
-#       sglib
-#         |
-#       remaining libraries
-#         |
-#       executables
-#
-# This prevents top-level "gmake -j" from building dependent libraries
-# simultaneously.
 # ---------------------------------------------------------------------------
 
 all: exes
 
 
 # ---------------------------------------------------------------------------
+# Show build configuration
+# ---------------------------------------------------------------------------
+
+show-config:
+	@echo "============================================================"
+	@echo "UFILES build configuration"
+	@echo "============================================================"
+	@echo "UFILES_HOME = $(UFILES_HOME)"
+	@echo "PREFIX      = $(PREFIX)"
+	@echo "MAKE_SO     = $(MAKE_SO)"
+	@echo "NTASKS      = $(NTASKS)"
+	@echo "LIBDIR      = $(LIBDIR)"
+	@echo "OBJDIR      = $(OBJDIR)"
+	@echo "============================================================"
+
+
+# ---------------------------------------------------------------------------
 # Create build directories
+#
+# All directories are created under the absolute PREFIX.
 # ---------------------------------------------------------------------------
 
 check:
-	@mkdir -p $(PREFIX)/bin
-	@mkdir -p $(PREFIX)/include
-	@mkdir -p $(PREFIX)/lib
-	@mkdir -p $(PREFIX)/mod
-	@mkdir -p $(PREFIX)/mpi_mod
-	@mkdir -p $(PREFIX)/obj
+	@mkdir -p "$(BINDIR)"
+	@mkdir -p "$(INCDIR)"
+	@mkdir -p "$(LIBDIR)"
+	@mkdir -p "$(MODDIR)"
+	@mkdir -p "$(MPIMODDIR)"
+	@mkdir -p "$(OBJDIR)"
 
-	@mkdir -p $(PREFIX)/obj/ufport
-	@mkdir -p $(PREFIX)/obj/sglib
-	@mkdir -p $(PREFIX)/obj/sglib_pic
+	@mkdir -p "$(OBJDIR)/ufport"
+	@mkdir -p "$(OBJDIR)/sglib"
+	@mkdir -p "$(OBJDIR)/sglib_pic"
 
 	@set -e; \
 	for l in $(LIBS); do \
-		mkdir -p $(PREFIX)/obj/$${l}; \
+		mkdir -p "$(OBJDIR)/$${l}"; \
 	done
 
 	@set -e; \
 	for e in $(EXES); do \
-		mkdir -p $(PREFIX)/obj/$${e}; \
+		mkdir -p "$(OBJDIR)/$${e}"; \
 	done
 
-	@cd ufport && $(MAKE) check
+	@$(MAKE) -C ufport check
 
 	@set -e; \
 	for l in $(LIBS); do \
-		cd $${l}; \
-		$(MAKE) check; \
-		cd ..; \
+		$(MAKE) -C "$${l}" check; \
 	done
 
 	@set -e; \
 	for e in $(EXES); do \
-		cd $${e}; \
-		$(MAKE) check; \
-		cd ..; \
+		$(MAKE) -C "$${e}" check; \
 	done
 
 
 # ---------------------------------------------------------------------------
-# UFPORT
+# Build UFPORT
 #
-# Must be completely built before SGLIB starts.
+# UFPORT must be completely built before SGLIB.
 #
-# MAKE_SO=1 is propagated automatically by $(MAKE).
+# MAKE_SO=1 is propagated automatically.
 # ---------------------------------------------------------------------------
 
 ufport_lib: check
 	@echo "============================================================"
 	@echo "Building ufport"
 	@echo "============================================================"
-	@cd ufport && $(MAKE) -j $(NTASKS) ufport
+
+	@$(MAKE) -C ufport -j $(NTASKS) ufport
 
 
 # ---------------------------------------------------------------------------
-# SGLIB
+# Verify UFPORT
 #
-# SGLIB requires libufport.
+# Confirm that the required library exists in the common build
+# directory before SGLIB starts.
 #
-# Its Makefile handles the special libsg/libjc circular shared-library
-# relationship and supports:
-#
-#       MAKE_SO=1
+# For MAKE_SO=1, require libufport.so.
 # ---------------------------------------------------------------------------
 
-sglib: ufport_lib
+verify_ufport: ufport_lib
+	@echo "============================================================"
+	@echo "Checking UFPORT libraries"
+	@echo "============================================================"
+
+	@echo "PREFIX  = $(PREFIX)"
+	@echo "MAKE_SO = $(MAKE_SO)"
+
+	@ls -l "$(LIBDIR)"/libufport.* 2>/dev/null || true
+
+ifeq ($(MAKE_SO),1)
+
+	@test -f "$(UFPORT_SO)" || { \
+		echo "ERROR: Shared-library build requested."; \
+		echo "Missing library: $(UFPORT_SO)"; \
+		echo "Check ufport Makefile and PREFIX configuration."; \
+		exit 1; \
+	}
+
+else
+
+	@test -f "$(UFPORT_AR)" -o -f "$(UFPORT_SO)" || { \
+		echo "ERROR: Neither libufport.a nor libufport.so was found."; \
+		echo "Expected directory: $(LIBDIR)"; \
+		exit 1; \
+	}
+
+endif
+
+
+# ---------------------------------------------------------------------------
+# Build SGLIB
+#
+# SGLIB depends on UFPORT.
+#
+# Its Makefile handles the circular shared-library dependency
+# between libsg and libjc.
+# ---------------------------------------------------------------------------
+
+sglib: verify_ufport
 	@echo "============================================================"
 	@echo "Building sglib"
 	@echo "============================================================"
-	@cd $(UFILES_HOME)/sglib && $(MAKE) -j $(NTASKS) libs
+
+	@$(MAKE) -C sglib -j $(NTASKS) libs
 
 
 # ---------------------------------------------------------------------------
-# Remaining libraries
+# Build remaining libraries
 #
-# The loop itself is intentionally sequential because shared libraries
+# The loop is intentionally sequential because shared libraries
 # depend on libraries appearing earlier in LIBS.
 #
-# Parallelism is allowed only inside an individual library.
+# Parallel compilation is allowed only inside each library.
 # ---------------------------------------------------------------------------
 
 libs: sglib
@@ -214,14 +346,12 @@ libs: sglib
 		echo "============================================================"; \
 		echo "Building $${l}"; \
 		echo "============================================================"; \
-		cd $${l}; \
-		$(MAKE) -j $(NTASKS) $${l}; \
-		cd ..; \
+		$(MAKE) -C "$${l}" -j $(NTASKS) "$${l}"; \
 	done
 
 
 # ---------------------------------------------------------------------------
-# Executables
+# Build executables
 #
 # Executables are built only after all libraries have completed.
 # ---------------------------------------------------------------------------
@@ -232,9 +362,7 @@ exes: libs
 		echo "============================================================"; \
 		echo "Building $${e}"; \
 		echo "============================================================"; \
-		cd $${e}; \
-		$(MAKE) $${e}; \
-		cd ..; \
+		$(MAKE) -C "$${e}" "$${e}"; \
 	done
 
 
@@ -243,64 +371,61 @@ exes: libs
 # ---------------------------------------------------------------------------
 
 clean:
-	@cd ufport && $(MAKE) clean
-	@cd $(UFILES_HOME)/sglib && $(MAKE) clean
+	@$(MAKE) -C ufport clean
+	@$(MAKE) -C sglib clean
 
 	@set -e; \
 	for l in $(LIBS); do \
-		cd $${l}; \
-		$(MAKE) clean; \
-		cd ..; \
+		$(MAKE) -C "$${l}" clean; \
 	done
 
 	@set -e; \
 	for e in $(EXES); do \
-		cd $${e}; \
-		$(MAKE) clean; \
-		cd ..; \
+		$(MAKE) -C "$${e}" clean; \
 	done
 
 
 # ---------------------------------------------------------------------------
 # Real clean
 #
-# Remove objects and built libraries/executables.
+# Remove objects, libraries, and executables.
 #
-# SGLIB uses "clobber" here because its "clean" target removes only
-# intermediate objects.  clobber also removes:
-#
-#       libsg.a
-#       libjc.a
-#       libsg.so
-#       libjc.so
+# SGLIB uses clobber because its clean target may remove only
+# intermediate objects.
 # ---------------------------------------------------------------------------
 
 realclean:
-	@cd ufport && $(MAKE) realclean
-	@cd $(UFILES_HOME)/sglib && $(MAKE) clobber
+	@$(MAKE) -C ufport realclean
+	@$(MAKE) -C sglib clobber
 
 	@set -e; \
 	for l in $(LIBS); do \
-		cd $${l}; \
-		$(MAKE) realclean; \
-		cd ..; \
+		$(MAKE) -C "$${l}" realclean; \
 	done
 
 	@set -e; \
 	for e in $(EXES); do \
-		cd $${e}; \
-		$(MAKE) realclean; \
-		cd ..; \
+		$(MAKE) -C "$${e}" realclean; \
 	done
 
 
 # ---------------------------------------------------------------------------
-# Complete removal of build tree
+# Remove entire build tree
+#
+# Safety checks prevent accidental deletion when PREFIX is empty
+# or resolves to the root directory.
 # ---------------------------------------------------------------------------
 
 clobber:
-	@echo "Removing $(PREFIX)"
-	@rm -rf $(PREFIX)
+	@echo "============================================================"
+	@echo "Removing UFILES build directory"
+	@echo "PREFIX = $(PREFIX)"
+	@echo "============================================================"
+
+	@test -n "$(strip $(PREFIX))"
+	@test "$(PREFIX)" != "/"
+	@test "$(PREFIX)" != "$(UFILES_HOME)"
+	@rm -rf -- "$(PREFIX)"
 
 
 # ---------------------------------------------------------------------------
@@ -308,11 +433,9 @@ clobber:
 # ---------------------------------------------------------------------------
 
 depend: check
-	@cd ufport && $(MAKE) depend
+	@$(MAKE) -C ufport depend
 
 	@set -e; \
 	for l in $(LIBS); do \
-		cd $${l}; \
-		$(MAKE) depend; \
-		cd ..; \
+		$(MAKE) -C "$${l}" depend; \
 	done
