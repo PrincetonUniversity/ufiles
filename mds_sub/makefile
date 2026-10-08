@@ -1,61 +1,199 @@
-# Makefile to build libmds_sub.a
+# ---------------------------------------------------------------------------
+# Makefile: mds_sub
 #
+# Builds:
+#   libmds_sub.a
+#   libmds_sub.so   when MAKE_SO=1
+#
+# Shared-library dependencies:
+#   libureadsub
+#   libufencod
+#   libufport
+#   libtokid
+#   libmds_dummy
+# ---------------------------------------------------------------------------
 
-# Include system dependent flags
+# Include system/compiler dependent flags
 include $(COMPILER_FLAGS)
 
 NAME := mds_sub
-OBJDIR := $(PREFIX)/obj/$(NAME)
-LIBAR := $(PREFIX)/lib/lib$(NAME).a
-LIBSO := $(PREFIX)/lib/lib$(NAME).so
 
-MNMS := mmds_access.mod mds_readnode.mod
-MODS := mds_access.o mds_readnode.o
-SRCM := mds_access.for mds_readnode.f90
-SF90 := $(SRCM) $(filter-out $(SRCM), $(wildcard *.f90))
-SFOR := $(filter-out $(SRCM), $(wildcard *.for))
+OBJDIR := $(PREFIX)/obj/$(NAME)
+MODDIR := $(PREFIX)/mod
+LIBDIR := $(PREFIX)/lib
+
+LIBAR := $(LIBDIR)/lib$(NAME).a
+LIBSO := $(LIBDIR)/lib$(NAME).so
+
+
+# ---------------------------------------------------------------------------
+# Fortran modules and sources
+# ---------------------------------------------------------------------------
+
+MNMS := \
+	mmds_access.mod \
+	mds_readnode.mod
+
+MODS := \
+	mds_access.o \
+	mds_readnode.o
+
+SRCM := \
+	mds_access.for \
+	mds_readnode.f90
+
+SF90 := $(filter %.f90,$(SRCM)) \
+	$(filter-out $(filter %.f90,$(SRCM)),$(wildcard *.f90))
+
+SFOR := $(filter %.for,$(SRCM)) \
+	$(filter-out $(filter %.for,$(SRCM)),$(wildcard *.for))
+
 SRCF := $(SF90) $(SFOR)
-OBJF := $(SRCF:%.f90=$(OBJDIR)/%.o)
-OBJF := $(OBJF:%.for=$(OBJDIR)/%.o)
+
+OBJF := $(SF90:%.f90=$(OBJDIR)/%.o)
+OBJF += $(SFOR:%.for=$(OBJDIR)/%.o)
+
+
+# ---------------------------------------------------------------------------
+# Compiler flags
+# ---------------------------------------------------------------------------
 
 FDEF := $(FDEFS)
-FINC := $(FINCL)
+
+FINC := $(FINCL) \
+	-I$(MODDIR)
+
 ifdef MDSPLUS_DIR
-    FINC := $(FINC) -I$(MDSPLUS_DIR)/include
+FINC += -I$(MDSPLUS_DIR)/include
 endif
-FFLG := $(FFLAGS)
+
+ifeq ($(MAKE_SO),1)
+FPIC := -fPIC
+else
+FPIC :=
+endif
+
+FFLG := $(FFLAGS) $(FPIC)
 
 
-.PHONY: clean realclean clobber check
+# ---------------------------------------------------------------------------
+# Shared-library dependencies
+#
+# mds_sub directly uses:
+#
+#   libureadsub
+#       uinita, lnout, uermsg, ureadi, ureadw,
+#       lxout, uread, lchar
+#
+#   libufport
+#       uupper, get_arg, sget_user, sget_env,
+#       ufbad_exit, c9date, ulower, get_arg_count
+#
+#   libufencod
+#       ilnurd
+#
+#   libtokid
+#       checkid, mkbeastid
+#
+#   libmds_dummy
+#       descr, idescr_*, mds_*, mdsvalue,
+#       mdsput, mdsfconnect, etc.
+# ---------------------------------------------------------------------------
 
-all:	check $(NAME)
+L_UFILES_DEP := \
+	-L$(LIBDIR) \
+	-lureadsub \
+	-lufencod \
+	-lufport \
+	-ltokid \
+	-lmds_dummy
+
+SHARED_RPATH := -Wl,-rpath,'$$ORIGIN'
+
+
+# ---------------------------------------------------------------------------
+# Targets
+# ---------------------------------------------------------------------------
+
+.PHONY: all check clean realclean clobber depend
+
+all: check $(NAME)
+
+
+# ---------------------------------------------------------------------------
+# Create output directories
+# ---------------------------------------------------------------------------
 
 check:
-	@test -d $(PREFIX)/lib || mkdir -p $(PREFIX)/lib
-	@test -d $(PREFIX)/obj/$(NAME) || mkdir -p $(PREFIX)/obj/$(NAME)
+	@mkdir -p $(LIBDIR)
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(MODDIR)
+
+
+# ---------------------------------------------------------------------------
+# Libraries
+# ---------------------------------------------------------------------------
 
 $(NAME): $(OBJF)
+
 	@echo "Building $(NAME) static library"
-	@$(AR) $(LIBAR) $(OBJF)
+	@rm -f $(LIBAR)
+	$(AR) $(LIBAR) $(OBJF)
+
 ifeq ($(MAKE_SO),1)
 	@echo "Building $(NAME) shared library"
-	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
+	@rm -f $(LIBSO)
+	$(FC) -shared $(LDFLAGS) \
+		-o $(LIBSO) \
+		$(OBJF) \
+		$(L_UFILES_DEP) \
+		$(SHARED_RPATH)
 endif
 
+
+# ---------------------------------------------------------------------------
+# Dependencies
+# ---------------------------------------------------------------------------
+
 include make.depend
-$(OBJDIR)/%.o: %.for
-	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
-$(OBJDIR)/%.o: %.f90
-	@$(FC) $(FPP) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
+
+
+# ---------------------------------------------------------------------------
+# Compilation rules
+# ---------------------------------------------------------------------------
+
+$(OBJDIR)/%.o: %.for | check
+	$(FC) $(FPP) $(FFLG) -c $< -o $@ \
+		$(FDEF) $(FINC) \
+		$(MFLAG) $(MODDIR)
+
+
+$(OBJDIR)/%.o: %.f90 | check
+	$(FC) $(FPP) $(FFLG) -c $< -o $@ \
+		$(FDEF) $(FINC) \
+		$(MFLAG) $(MODDIR)
+
+
+# ---------------------------------------------------------------------------
+# Cleanup
+# ---------------------------------------------------------------------------
 
 clean:
 	@rm -f $(OBJDIR)/*.o
-	@cd $(PREFIX)/mod ; rm -f $(MNMS)
+	@rm -f $(addprefix $(MODDIR)/,$(MNMS))
+
 
 realclean: clean
-	@rm -f $(LIBAR) $(LIBSO)
+	@rm -f $(LIBAR)
+	@rm -f $(LIBSO)
+
 
 clobber: realclean
+
+
+# ---------------------------------------------------------------------------
+# Generate Fortran dependencies
+# ---------------------------------------------------------------------------
 
 depend:
 	@makedepf90 -b OBJDIR $(SRCF) > make.depend

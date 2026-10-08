@@ -1,58 +1,182 @@
-# Makefile to build libr4smlib_userio.a
+# ---------------------------------------------------------------------------
+# Makefile: r4smlib_userio
 #
+# Builds:
+#   libr4smlib_userio.a
+#   libr4smlib_userio.so   when MAKE_SO=1
+#
+# Shared-library dependencies:
+#   libtrgraf
+#   libureadsub
+#   libuflib
+#   libuflib_userio
+#   libsg
+#   libsgdummy
+#   libr4smlib
+# ---------------------------------------------------------------------------
 
-# Include system dependent flags
+# Include system/compiler dependent flags
 include $(COMPILER_FLAGS)
 
 NAME := r4smlib_userio
+
 OBJDIR := $(PREFIX)/obj/$(NAME)
-LIBAR := $(PREFIX)/lib/lib$(NAME).a
-LIBSO := $(PREFIX)/lib/lib$(NAME).so
+MODDIR := $(PREFIX)/mod
+LIBDIR := $(PREFIX)/lib
+
+LIBAR := $(LIBDIR)/lib$(NAME).a
+LIBSO := $(LIBDIR)/lib$(NAME).so
+
+
+# ---------------------------------------------------------------------------
+# Fortran modules and sources
+# ---------------------------------------------------------------------------
 
 MNMS := usmoo.mod
 MODS := usmoo_mod.o
+
 SRCM := $(MODS:%.o=%.f90)
-SF90 := $(SRCM) $(filter-out $(SRCM), $(wildcard *.f90))
+
+SF90 := $(SRCM) $(filter-out $(SRCM),$(wildcard *.f90))
 SFOR := $(wildcard *.for)
+
 SRCF := $(SF90) $(SFOR)
-OBJF := $(SRCF:%.f90=$(OBJDIR)/%.o)
-OBJF := $(OBJF:%.for=$(OBJDIR)/%.o)
+
+OBJF := $(SF90:%.f90=$(OBJDIR)/%.o)
+OBJF += $(SFOR:%.for=$(OBJDIR)/%.o)
+
+
+# ---------------------------------------------------------------------------
+# Fortran flags
+# ---------------------------------------------------------------------------
 
 FDEF := $(FDEFS)
-FINC := $(FINCL)
-FFLG := $(FFLAGS)
 
+FINC := $(FINCL) \
+	-I$(MODDIR)
 
-.PHONY: clean realclean clobber check
-
-all:	check $(NAME)
-
-check:
-	@test -d $(PREFIX)/lib || mkdir -p $(PREFIX)/lib
-	@test -d $(PREFIX)/obj/$(NAME) || mkdir -p $(PREFIX)/obj/$(NAME)
-
-$(NAME): $(OBJF)
-	@echo "Building $(NAME) static library"
-	@ar rcs $(LIBAR) $(OBJF)
 ifeq ($(MAKE_SO),1)
-	@echo "Building $(NAME) shared library"
-	@$(FC) -shared $(LDFLAGS) -o $(LIBSO) $(OBJF)
+FPIC := -fPIC
+else
+FPIC :=
 endif
 
+FFLG := $(FFLAGS) $(FPIC)
+
+
+# ---------------------------------------------------------------------------
+# Shared-library dependencies
+#
+# r4smlib_userio directly uses routines from:
+#
+#   libtrgraf
+#   libureadsub
+#   libuflib
+#   libuflib_userio
+#   libsg
+#   libsgdummy
+#   libr4smlib
+#
+# Each direct dependency is explicitly linked so that it is recorded
+# in the DT_NEEDED entries of libr4smlib_userio.so.
+# ---------------------------------------------------------------------------
+
+L_UFILES_DEP := \
+	-L$(LIBDIR) \
+	-ltrgraf \
+	-lureadsub \
+	-luflib \
+	-luflib_userio \
+	-lsg \
+	-lsgdummy \
+	-lr4smlib
+
+SHARED_RPATH := -Wl,-rpath,'$$ORIGIN'
+
+
+# ---------------------------------------------------------------------------
+# Targets
+# ---------------------------------------------------------------------------
+
+.PHONY: all clean realclean clobber check depend
+
+all: check $(NAME)
+
+
+# ---------------------------------------------------------------------------
+# Create output directories
+# ---------------------------------------------------------------------------
+
+check:
+	@mkdir -p $(LIBDIR)
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(MODDIR)
+
+
+# ---------------------------------------------------------------------------
+# Libraries
+# ---------------------------------------------------------------------------
+
+$(NAME): $(OBJF)
+
+	@echo "Building $(NAME) static library"
+	@rm -f $(LIBAR)
+	$(AR) $(LIBAR) $(OBJF)
+
+ifeq ($(MAKE_SO),1)
+	@echo "Building $(NAME) shared library"
+	@rm -f $(LIBSO)
+	$(FC) -shared $(LDFLAGS) \
+		-o $(LIBSO) \
+		$(OBJF) \
+		$(L_UFILES_DEP) \
+		$(SHARED_RPATH)
+endif
+
+
+# ---------------------------------------------------------------------------
+# Dependencies
+# ---------------------------------------------------------------------------
+
 include make.depend
-$(OBJDIR)/%.o: %.for
-	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
-$(OBJDIR)/%.o: %.f90
-	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC) $(MFLAG) $(PREFIX)/mod
+
+
+# ---------------------------------------------------------------------------
+# Fortran compilation
+# ---------------------------------------------------------------------------
+
+$(OBJDIR)/%.o: %.for | check
+	$(FC) $(FPP) $(FFLG) -c $< -o $@ \
+		$(FDEF) $(FINC) \
+		$(MFLAG) $(MODDIR)
+
+
+$(OBJDIR)/%.o: %.f90 | check
+	$(FC) $(FPP) $(FFLG) -c $< -o $@ \
+		$(FDEF) $(FINC) \
+		$(MFLAG) $(MODDIR)
+
+
+# ---------------------------------------------------------------------------
+# Clean
+# ---------------------------------------------------------------------------
 
 clean:
 	@rm -f $(OBJDIR)/*.o
-	@cd $(PREFIX)/mod ; rm -f $(MNMS)
+	@rm -f $(addprefix $(MODDIR)/,$(MNMS))
+
 
 realclean: clean
-	@rm -f $(LIBAR) $(LIBSO)
+	@rm -f $(LIBAR)
+	@rm -f $(LIBSO)
+
 
 clobber: realclean
+
+
+# ---------------------------------------------------------------------------
+# Generate Fortran dependencies
+# ---------------------------------------------------------------------------
 
 depend:
 	@makedepf90 -b OBJDIR $(SRCF) > make.depend
