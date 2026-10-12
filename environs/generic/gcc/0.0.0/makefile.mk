@@ -19,11 +19,7 @@ endif
 # Shared library flags
 # ======================================================================
 
-FPIC :=
-
-ifneq ($(filter 1 TRUE true YES yes,$(MAKE_SO)),)
-    FPIC := -fPIC
-endif
+FPIC := -fPIC
 
 # ======================================================================
 # Archive tools
