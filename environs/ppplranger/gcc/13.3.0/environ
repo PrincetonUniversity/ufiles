@@ -94,7 +94,7 @@ export L_NETCDF="\
 # PSPLINE
 # Adjust this path after building/installing pspline on Ranger.
 #
-export PSPLINE_HOME=/u/mgorelen/transp_external/opt/pspline/2.0.1/gcc/13.3.0
+export PSPLINE_HOME=/u/mgorelen/transp_external/opt/pspline/2.2.0/gcc/13.3.1
 
 export L_PSPLINE="\
 -L${PSPLINE_HOME}/lib \

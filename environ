@@ -217,7 +217,7 @@ export COMPILER_FLAGS="${UFILES_HOME}/environs/${SITE_ENV}/${COMPILER_ENV}/${COM
 # Load compiler/site-specific environment
 # ----------------------------------------------------------------------
 
-ENV_FILE="${UFILES_HOME}/environs/${SITE_ENV}/${COMPILER_ENV}/${COMPILER_VER}/environ"
+export ENV_FILE="${UFILES_HOME}/environs/${SITE_ENV}/${COMPILER_ENV}/${COMPILER_VER}/environ"
 
 if [ -f "$ENV_FILE" ]; then
     echo "Using ENV_FILE=${ENV_FILE}"
@@ -254,7 +254,6 @@ export OBJDIR="${PREFIX}/obj"
 # ----------------------------------------------------------------------
 # Clean temporary environment-selection variables for idempotence
 # ----------------------------------------------------------------------
-
 unset SITE
 unset COMPILER
 unset COMPILER_ENV
