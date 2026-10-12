@@ -39,6 +39,7 @@ GCC_MAJOR := $(shell $(FC) -dumpversion 2>/dev/null | cut -d. -f1)
 # ======================================================================
 
 FFLAGS_OPT = \
+    -c \
     -g \
     -O2 \
     -m64 \
@@ -48,6 +49,7 @@ FFLAGS_OPT = \
     $(FPIC)
 
 FFLAGS_DBG = \
+    -c \
     -g \
     -O0 \
     -m64 \
@@ -88,8 +90,8 @@ L_FLIBS = -L$(FLIBROOT)/lib -lgfortran -lm
 # C compiler flags
 # ======================================================================
 
-CFLAGS_OPT = -g -O2 -m64 $(FPIC)
-CFLAGS_DBG = -g -O0 -m64 $(FPIC)
+CFLAGS_OPT = -c -g -O2 -m64 $(FPIC)
+CFLAGS_DBG = -c -g -O0 -m64 $(FPIC)
 
 ifeq ($(DEBUG),0)
     CFLAGS = $(CFLAGS_OPT)
