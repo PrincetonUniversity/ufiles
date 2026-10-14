@@ -1,85 +1,170 @@
-/* entries for sg routines with variable length argument lists 
-   the length of a character string is passed by value at the end of
-   the argument list
-*/
-/* note: if((len = va_arg(alist, int))==0) to test for the existence of
-   the last argument doesn't always work on the DECstation, so instead
-   assume that a string is always less that 256 characters
-*/
+
+/*
+ * sgvarg.c
+ *
+ * Variable-length character argument wrappers for SGLIB.
+ *
+ * Modernized for:
+ *   Intel oneAPI 2023 (icx)
+ *   GCC 13.2.0 / 13.3.0
+ *
+ * C standard: C11
+ *
+ * Fortran character string lengths are passed by value
+ * at the end of the argument list.
+ *
+ * The original sgvarg_code.h is retained to preserve
+ * the legacy argument-length extraction mechanism.
+ */
+
 #include <stdlib.h>
 #include <stdarg.h>
 
-static int zero=0;
+/*
+ * Used by the legacy sgvarg_code.h implementation.
+ */
+static int zero = 0;
+
+/*
+ * Explicit declarations of the underlying SGLIB routines.
+ *
+ * These functions are assumed to be Fortran subroutines
+ * with no return value.
+ *
+ * The final two arguments are the length pointer and
+ * extracted string length, respectively.
+ */
+
+extern void agtchsl_(char *str, int *lenp, int len);
+
+extern void agtcgtl_(int *iy, char *str,
+                     int *lenp, int len);
+
+extern void agtmhsl_(int *ix, int *iy, char *str,
+                     int *lenp, int len);
+
+extern void agthsl_(char *str, int *lenp, int len);
+
+extern void agtcvsl_(char *str, int *lenp, int len);
+
+extern void agtmvsl_(int *ix, int *iy, char *str,
+                     int *lenp, int len);
+
+extern void agtvsl_(char *str, int *lenp, int len);
+
+extern void agtmrsl_(int *ix, int *iy, int *irot,
+                     char *str, int *lenp, int len);
+
+extern void agtrsl_(int *irot, char *str,
+                    int *lenp, int len);
 
 
-agtchs_(char *str, ...)
+/* ------------------------------------------------------------
+ * AGTCHS
+ * ------------------------------------------------------------ */
+
+void agtchs_(char *str, ...)
 {
-
 #include "sgvarg_code.h"
 
-  agtchsl_(str, lenp, len);
+    agtchsl_(str, lenp, len);
 }
 
-agtcgt_(int *iy, char *str, ...)
+
+/* ------------------------------------------------------------
+ * AGTCGT
+ * ------------------------------------------------------------ */
+
+void agtcgt_(int *iy, char *str, ...)
 {
 #include "sgvarg_code.h"
 
-  agtcgtl_(iy, str, lenp, len);
+    agtcgtl_(iy, str, lenp, len);
 }
 
 
-agtmhs_(int* ix, int* iy, char *str, ...)
-{
+/* ------------------------------------------------------------
+ * AGTMHS
+ * ------------------------------------------------------------ */
 
+void agtmhs_(int *ix, int *iy, char *str, ...)
+{
 #include "sgvarg_code.h"
 
-  agtmhsl_(ix,iy, str, lenp, len);
+    agtmhsl_(ix, iy, str, lenp, len);
 }
 
-agths_(char *str, ...)
-{
 
+/* ------------------------------------------------------------
+ * AGTHS
+ * ------------------------------------------------------------ */
+
+void agths_(char *str, ...)
+{
 #include "sgvarg_code.h"
 
-  agthsl_(str, lenp, len);
+    agthsl_(str, lenp, len);
 }
 
-agtcvs_(char *str, ...)
-{
 
+/* ------------------------------------------------------------
+ * AGTCVS
+ * ------------------------------------------------------------ */
+
+void agtcvs_(char *str, ...)
+{
 #include "sgvarg_code.h"
 
-  agtcvsl_(str, lenp, len);
+    agtcvsl_(str, lenp, len);
 }
 
-agtmvs_(int* ix, int* iy, char *str, ...)
-{
 
+/* ------------------------------------------------------------
+ * AGTMVS
+ * ------------------------------------------------------------ */
+
+void agtmvs_(int *ix, int *iy, char *str, ...)
+{
 #include "sgvarg_code.h"
 
-  agtmvsl_(ix,iy, str, lenp, len);
+    agtmvsl_(ix, iy, str, lenp, len);
 }
 
-agtvs_(char *str, ...)
-{
 
+/* ------------------------------------------------------------
+ * AGTVS
+ * ------------------------------------------------------------ */
+
+void agtvs_(char *str, ...)
+{
 #include "sgvarg_code.h"
 
-  agtvsl_(str, lenp, len);
+    agtvsl_(str, lenp, len);
 }
 
-agtmrs_(int* ix, int* iy, int* irot, char *str, ...)
-{
 
+/* ------------------------------------------------------------
+ * AGTMRS
+ * ------------------------------------------------------------ */
+
+void agtmrs_(int *ix, int *iy, int *irot,
+             char *str, ...)
+{
 #include "sgvarg_code.h"
 
-  agtmrsl_(ix,iy, irot, str, lenp, len);
+    agtmrsl_(ix, iy, irot, str, lenp, len);
 }
 
-agtrs_(int* irot, char *str, ...)
-{
 
+/* ------------------------------------------------------------
+ * AGTRS
+ * ------------------------------------------------------------ */
+
+void agtrs_(int *irot, char *str, ...)
+{
 #include "sgvarg_code.h"
 
-  agtrsl_(irot, str, lenp, len);
+    agtrsl_(irot, str, lenp, len);
 }
+
+/* End of sgvarg.c */

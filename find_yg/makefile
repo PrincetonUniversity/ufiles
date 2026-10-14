@@ -44,7 +44,7 @@ $(NAME): $(OBJDIR)/find_yg.o
 	@$(FC) $(LDFLAGS) $< -o $(EXEDIR)/$@ $(L_LIBS)
 
 $(OBJDIR)/%.o: %.for
-	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC)
+	@$(FC) $(FFLG) -c $< -o $@ $(FDEF) $(FINC)
 
 clean:
 	@rm -f $(OBJDIR)/*.o

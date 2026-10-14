@@ -1,3 +1,4 @@
+
 # ---------------------------------------------------------------------------
 # Makefile to build all UFILES libraries and executables
 #
@@ -189,6 +190,7 @@ EXES := \
 	libs \
 	exes \
 	clean \
+	clean_sglib_mod \
 	realclean \
 	clobber \
 	depend
@@ -367,12 +369,32 @@ exes: libs
 
 
 # ---------------------------------------------------------------------------
-# Clean object files
+# Remove stale SGLIB source-directory Fortran modules
+#
+# GCC searches the current source directory for .mod files.
+# A stale or incompatible module can cause errors such as:
+#
+#   f951: Fatal Error: Reading module 'sgnco_mod.mod':
+#         Unexpected EOF
+#
+# Generated modules should be stored in $(MODDIR).
+#
+# This target removes only source-directory .mod files.
+# ---------------------------------------------------------------------------
+
+clean_sglib_mod:
+	@echo "Removing stale SGLIB Fortran module files"
+	@rm -f -- "$(UFILES_HOME)"/sglib/*.mod
+
+
+# ---------------------------------------------------------------------------
+# Clean object files and generated Fortran modules
 # ---------------------------------------------------------------------------
 
 clean:
 	@$(MAKE) -C ufport clean
 	@$(MAKE) -C sglib clean
+	@$(MAKE) clean_sglib_mod
 
 	@set -e; \
 	for l in $(LIBS); do \
@@ -397,6 +419,7 @@ clean:
 realclean:
 	@$(MAKE) -C ufport realclean
 	@$(MAKE) -C sglib clobber
+	@$(MAKE) clean_sglib_mod
 
 	@set -e; \
 	for l in $(LIBS); do \
@@ -414,6 +437,8 @@ realclean:
 #
 # Safety checks prevent accidental deletion when PREFIX is empty
 # or resolves to the root directory.
+#
+# Also remove stale SGLIB source-directory modules.
 # ---------------------------------------------------------------------------
 
 clobber:
@@ -425,6 +450,8 @@ clobber:
 	@test -n "$(strip $(PREFIX))"
 	@test "$(PREFIX)" != "/"
 	@test "$(PREFIX)" != "$(UFILES_HOME)"
+
+	@$(MAKE) clean_sglib_mod
 	@rm -rf -- "$(PREFIX)"
 
 

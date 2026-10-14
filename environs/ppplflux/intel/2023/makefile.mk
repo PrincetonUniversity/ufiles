@@ -1,65 +1,326 @@
-# Makefile include file for PPPL Intel 2019
+
+# ---------------------------------------------------------------------------
+# Makefile include file
 #
+# PPPL Flux
+# Intel oneAPI 2023.2.0
+# OpenMPI 4.1.6
+#
+# Compilers:
+#   FC  = ifort
+#   CC  = icx
+#   CXX = icpx
+#
+# Intended for UFILES and TRANSP static/shared-library builds.
+# ---------------------------------------------------------------------------
 
-ifndef MAKE_SO
-	MAKE_SO = 0
-endif
-ifndef DEBUG
-	DEBUG = 0
+
+# ---------------------------------------------------------------------------
+# Build options
+#
+# Command-line values such as:
+#
+#   make MAKE_SO=1 DEBUG=0
+#
+# take precedence over these defaults.
+# ---------------------------------------------------------------------------
+
+MAKE_SO ?= 0
+DEBUG   ?= 0
+
+
+# ---------------------------------------------------------------------------
+# Compilers
+#
+# GNU Make has built-in defaults for FC, CC, and CXX.
+# Override built-in defaults, but preserve explicit environment
+# and command-line compiler selections.
+# ---------------------------------------------------------------------------
+
+ifeq ($(origin FC),default)
+    FC = ifort
 endif
 
-ifeq ($(MAKE_SO),1)
-	FPIC := -fPIC
+ifeq ($(origin FC),undefined)
+    FC = ifort
 endif
-ifeq ($(MAKE_SO),TRUE)
-	FPIC := -fPIC
+
+ifeq ($(origin CC),default)
+    CC = icx
 endif
-FLUX_FLG = -axCORE-AVX512 -fp-model precise
 
-AR = ar rcs
+ifeq ($(origin CC),undefined)
+    CC = icx
+endif
 
-# Fortran flags
-FFLAGS_OPT = -c -O -nowarn -ftz -traceback -align dcommons -heap-arrays 20 $(FPIC) $(FLUX_FLG)
-FFLAGS_DBG = -c -g -w -check bounds -check pointer -check uninit -fpe0 -traceback -align dcommons -heap-arrays 20 $(FPIC)
-ifeq ($(DEBUG),0)
-	FFLAGS = $(FFLAGS_OPT)
+ifeq ($(origin CXX),default)
+    CXX = icpx
+endif
+
+ifeq ($(origin CXX),undefined)
+    CXX = icpx
+endif
+
+
+# ---------------------------------------------------------------------------
+# Position-independent code
+#
+# Required for shared libraries.
+#
+# Using -fPIC for both static and shared objects is safe.
+# ---------------------------------------------------------------------------
+
+ifeq ($(filter 1 TRUE true YES yes,$(MAKE_SO)),)
+    FPIC :=
 else
-	FFLAGS = $(FFLAGS_DBG)
+    FPIC := -fPIC
 endif
 
-FPP = -fpp
-MFLAG = -module
 
-# C/C++ flags
-CFLAGS_OPT = -c -g -O2 -w -mp $(FPIC) $(FLUX_FLG)
-CFLAGS_DBG = -c -g -O0 -w -mp $(FPIC)
-CXXFLAGS_OPT = -c -g -O2 -w -mp $(FPIC) $(FLUX_FLG)
-CXXFLAGS_DBG = -c -g -O0 -w -mp $(FPIC)
+# ---------------------------------------------------------------------------
+# Floating-point behavior
+#
+# Intel oneAPI 2023:
+#   -fp-model precise
+#
+# Avoid Intel architecture-specific optimization flags
+# because Flux uses AMD processors.
+# ---------------------------------------------------------------------------
+
+override FLUX_FLG := -fp-model precise
+
+
+# ---------------------------------------------------------------------------
+# Archive utility
+#
+# Preserve legacy UFILES usage:
+#
+#   $(AR) libname.a objects...
+#
+# Do not change this to AR=ar unless every library
+# Makefile explicitly supplies 'rcs'.
+# ---------------------------------------------------------------------------
+
+override AR := ar rcs
+
+
+# ---------------------------------------------------------------------------
+# Intel Fortran optimization flags
+#
+# Do not include -c here.
+# The compilation rule must supply -c.
+# ---------------------------------------------------------------------------
+
+override FFLAGS_OPT := \
+    -c \
+    -g \
+    -O2 \
+    -traceback \
+    -align dcommons \
+    $(FPIC) \
+    $(FLUX_FLG)
+
+
+# ---------------------------------------------------------------------------
+# Intel Fortran debug flags
+# ---------------------------------------------------------------------------
+
+override FFLAGS_DBG := \
+    -c \
+    -g \
+    -O0 \
+    -traceback \
+    -check bounds \
+    -check pointers \
+    -check uninit \
+    -fpe0 \
+    -align dcommons \
+    $(FPIC)
+
+
+# ---------------------------------------------------------------------------
+# Select Fortran flags
+# ---------------------------------------------------------------------------
+
 ifeq ($(DEBUG),0)
-	CFLAGS = $(CFLAGS_OPT)
-	CXXFLAGS = $(CXXFLAGS_OPT)
+    override FFLAGS := $(FFLAGS_OPT)
 else
-	CFLAGS = $(CFLAGS_DBG)
-	CXXFLAGS = $(CXXFLAGS_DBG)
+    override FFLAGS := $(FFLAGS_DBG)
 endif
 
-CPP = -cpp
 
-L_CLIBS = -L/usr/lib64 -lc -lstdc++
+# ---------------------------------------------------------------------------
+# Fortran preprocessing and module output
+# ---------------------------------------------------------------------------
+
+override FPP := -fpp
+
+override MFLAG := -module
 
 
-# For readline etc
-L_EDIT = -L$(FLIBROOT) -lifport -limf -lifcore -lirc -L/usr/lib64 -lreadline -lhistory -ltermcap
+# ---------------------------------------------------------------------------
+# Intel C optimization flags
+#
+# icx uses the LLVM-based Intel compiler.
+#
+# Do not include -c here.
+# ---------------------------------------------------------------------------
+
+override CFLAGS_OPT := \
+    -g \
+    -O2 \
+    $(FPIC) \
+    $(FLUX_FLG)
 
 
+# ---------------------------------------------------------------------------
+# Intel C debug flags
+# ---------------------------------------------------------------------------
+
+override CFLAGS_DBG := \
+    -g \
+    -O0 \
+    -Wall \
+    -Wextra \
+    $(FPIC)
+
+
+# ---------------------------------------------------------------------------
+# Intel C++ optimization flags
+# ---------------------------------------------------------------------------
+
+override CXXFLAGS_OPT := \
+    -g \
+    -O2 \
+    $(FPIC) \
+    $(FLUX_FLG)
+
+
+# ---------------------------------------------------------------------------
+# Intel C++ debug flags
+# ---------------------------------------------------------------------------
+
+override CXXFLAGS_DBG := \
+    -g \
+    -O0 \
+    -Wall \
+    -Wextra \
+    $(FPIC)
+
+
+# ---------------------------------------------------------------------------
+# Select C/C++ flags
+# ---------------------------------------------------------------------------
+
+ifeq ($(DEBUG),0)
+
+    override CFLAGS   := $(CFLAGS_OPT)
+    override CXXFLAGS := $(CXXFLAGS_OPT)
+
+else
+
+    override CFLAGS   := $(CFLAGS_DBG)
+    override CXXFLAGS := $(CXXFLAGS_DBG)
+
+endif
+
+
+# ---------------------------------------------------------------------------
+# Preprocessor
+#
+# Preserve the legacy UFILES convention:
+#   $(CPP) as a compiler flag.
+#
+# Note: Some Makefiles may instead expect CPP to be
+# an executable command. Those recipes should be checked.
+# ---------------------------------------------------------------------------
+
+override CPP := -E
+
+
+# ---------------------------------------------------------------------------
+# Intel Fortran runtime
+#
+# FLIBROOT must be supplied by the Intel environment.
+# ---------------------------------------------------------------------------
+
+override L_FLIBS := \
+    -L$(FLIBROOT) \
+    -lifcore \
+    -lifport \
+    -limf \
+    -lsvml \
+    -lintlc \
+    -lm
+
+
+# ---------------------------------------------------------------------------
+# C/C++ runtime libraries
+# ---------------------------------------------------------------------------
+
+override L_CLIBS := \
+    -lstdc++ \
+    -lm
+
+
+# ---------------------------------------------------------------------------
+# Readline and history
+#
+# Rocky Linux 9 uses ncurses/tinfo.
+# ---------------------------------------------------------------------------
+
+override L_EDIT := \
+    -L$(FLIBROOT) \
+    -lifport \
+    -limf \
+    -lifcore \
+    -L/usr/lib64 \
+    -lreadline \
+    -lhistory \
+    -ltinfo
+
+
+# ---------------------------------------------------------------------------
 # Default include directories
-FINCL :=
-CINCL :=
+#
+# Preserve include directories already supplied by the
+# environment or parent Makefile.
+# ---------------------------------------------------------------------------
+
+ifeq ($(strip $(FINCL)),)
+    FINCL :=
+endif
+
+ifeq ($(strip $(CINCL)),)
+    CINCL :=
+endif
 
 
-# Default definitions
-FDEFS := -D__LINUX -D__UNIX -D__F90
-CDEFS := -D__LINUX
+# ---------------------------------------------------------------------------
+# Default preprocessor definitions
+#
+# These are compiler-configuration settings.
+# ---------------------------------------------------------------------------
 
-#FDEFS := $(FDEFS) -D__NOMDSPLUS
-#CDEFS := $(CDEFS) -D__NOMDSPLUS
+override FDEFS := \
+    -D__LINUX \
+    -D__UNIX \
+    -D__F90
+
+override CDEFS := \
+    -D__LINUX
+
+
+# ---------------------------------------------------------------------------
+# Optional MDSplus disable flags
+#
+# Uncomment if MDSplus support is disabled.
+# ---------------------------------------------------------------------------
+
+# override FDEFS += -D__NOMDSPLUS
+# override CDEFS += -D__NOMDSPLUS
+
+
+# ---------------------------------------------------------------------------
+# End of Intel oneAPI 2023 makefile.mk
+# ---------------------------------------------------------------------------

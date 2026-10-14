@@ -1,7 +1,12 @@
+
 # ======================================================================
 # Makefile for SGLIB / JCLIB
 #
-# UFILES - Generic GNU/Linux
+# UFILES 0.10.0 - PPPL Flux
+#
+# Supported compilers:
+#     GCC 13.2.0 / 13.3.0
+#     Intel oneAPI 2023.2.0 (ifort / icx)
 #
 # Compiler configuration:
 #     $(dir $(ENV_FILE))makefile.mk
@@ -33,16 +38,15 @@ SHELL := /bin/bash
 MAKEFLAGS += -r
 .SUFFIXES:
 
-# Serialize builds because Fortran module dependencies are not
-# fully represented by individual .mod prerequisites.
+# Fortran module dependencies are not fully represented.
 .NOTPARALLEL:
+
 
 # ======================================================================
 # Compiler configuration
 # ======================================================================
 
 # ENV_FILE must be exported by the UFILES environment.
-# Do not reconstruct it from SITE, COMPILER_ENV or COMPILER_VER.
 
 ifeq ($(strip $(ENV_FILE)),)
 $(error ENV_FILE is not defined. Source the UFILES environment first.)
@@ -56,6 +60,7 @@ endif
 
 include $(COMPILER_MK)
 
+
 # ======================================================================
 # Build configuration
 # ======================================================================
@@ -64,7 +69,7 @@ MAKE_SO ?= 0
 DEBUG   ?= 0
 
 # SHARED is a compatibility option.
-# An explicit command-line MAKE_SO takes precedence.
+# Explicit command-line MAKE_SO takes precedence.
 
 ifneq ($(filter 1 y Y yes YES true TRUE,$(SHARED)),)
 ifneq ($(origin MAKE_SO),command line)
@@ -72,12 +77,12 @@ MAKE_SO := 1
 endif
 endif
 
-# ======================================================================
-# Compiler and archive commands
-# ======================================================================
+BUILD_SHARED := $(if $(filter 1 y Y yes YES true TRUE,$(MAKE_SO)),1,0)
 
-# FC, CC, FFLAGS, CFLAGS, FDEFS, CDEFS, FINCL, CINCL,
-# LDFLAGS and AR are supplied by makefile.mk.
+
+# ======================================================================
+# Compiler validation
+# ======================================================================
 
 ifeq ($(strip $(FC)),)
 $(error FC is not defined in $(COMPILER_MK))
@@ -87,26 +92,43 @@ ifeq ($(strip $(CC)),)
 $(error CC is not defined in $(COMPILER_MK))
 endif
 
-# The generic GCC configuration defines:
-#
-#     AR = ar rcs
-#
-# Therefore archive recipes must use:
-#
-#     $(AR) archive.a objects...
-#
-# Do not append another "rcs".
 
-RANLIB ?= ranlib
+# ======================================================================
+# Directories
+# ======================================================================
+
+LIBDIR := $(PREFIX)/lib
+OBJDIR := $(PREFIX)/obj/sglib
+MODDIR := $(PREFIX)/mod
+
+
+# ======================================================================
+# Compiler-specific Fortran module output
+#
+# Intel:
+#     ifort -module directory
+#
+# GNU:
+#     gfortran -Jdirectory
+#
+# Detect the underlying compiler from FC.
+# ======================================================================
+
+FC_NAME := $(notdir $(firstword $(FC)))
+
+ifneq (,$(filter ifort ifx,$(FC_NAME)))
+    SG_MODOUT := -module $(MODDIR)
+else
+    SG_MODOUT := -J$(MODDIR)
+endif
+
 
 # ======================================================================
 # Compiler flags
-# ======================================================================
-
-# Use the flags selected by makefile.mk.
 #
 # The compiler configuration already handles DEBUG and MAKE_SO.
-# In particular, MAKE_SO=1 adds -fPIC through FPIC.
+# In particular, MAKE_SO=1 should enable -fPIC.
+# ======================================================================
 
 SG_FFLAGS := $(FFLAGS)
 SG_CFLAGS := $(CFLAGS)
@@ -117,36 +139,55 @@ SG_CDEFS := $(CDEFS)
 SG_FINCL := $(FINCL)
 SG_CINCL := $(CINCL)
 
-# Additional include directories required by SGLIB.
-
-SG_FINCL += -I. -I$(PREFIX)/mod -I$(PREFIX)/obj/sglib
+SG_FINCL += -I. -I$(MODDIR) -I$(OBJDIR)
 SG_CINCL += -I.
+
+# Ensure PIC is enabled for shared-library objects.
+# Do not add -fPIC if it is already present.
+
+ifeq ($(BUILD_SHARED),1)
+ifeq ($(filter -fPIC,$(SG_FFLAGS)),)
+SG_FFLAGS += -fPIC
+endif
+ifeq ($(filter -fPIC,$(SG_CFLAGS)),)
+SG_CFLAGS += -fPIC
+endif
+endif
+
 
 # ======================================================================
 # Preprocessing
+#
+# Legacy .F sources require traditional preprocessing to preserve
+# fixed-form Fortran indentation and continuation formatting.
+#
+# Intel icx does not support -traditional.
+# Use GNU gcc as the preprocessing driver for both toolchains.
+#
+# This does NOT change the Fortran or C compilation compiler.
 # ======================================================================
 
-# FPP in the compiler configuration is a Fortran flag (-cpp),
-# not a standalone preprocessing executable.
-#
-# Use the configured C compiler to preprocess legacy .F files.
+SG_FPP_CMD ?= gcc
 
-SG_FPP_CMD := $(CC)
+SG_FPPFLAGS := -E -P -x c -traditional-cpp
 
-SG_FPPFLAGS := -E -P -x c -traditional
-
-# Preserve the platform definitions from makefile.mk.
-# __f90 is retained for compatibility with the legacy .F sources.
+# Preserve platform definitions and legacy __f90 macro.
 
 SG_FPPDEFS := $(FDEFS) -D__f90
 
+
 # ======================================================================
-# Directories
+# Archive utilities
+#
+# Use explicit archive flags so the Makefile works even when
+# GNU Make supplies its built-in AR=ar.
 # ======================================================================
 
-LIBDIR := $(PREFIX)/lib
-OBJDIR := $(PREFIX)/obj/sglib
-MODDIR := $(PREFIX)/mod
+AR_CMD ?= ar
+AR_OPTS ?= rcs
+
+RANLIB ?= ranlib
+
 
 # ======================================================================
 # Libraries
@@ -158,6 +199,7 @@ JCLIB_A := $(LIBDIR)/libjc.a
 SGLIB_SO := $(LIBDIR)/libsg.so
 JCLIB_SO := $(LIBDIR)/libjc.so
 
+
 # ======================================================================
 # SGLIB sources
 #
@@ -165,7 +207,6 @@ JCLIB_SO := $(LIBDIR)/libjc.so
 #
 # Linux uses sgsys.c.
 # The legacy sgsys.f must not be compiled.
-#
 # ======================================================================
 
 SG_F_SRC := \
@@ -200,6 +241,7 @@ SG_MOD_SRC := \
     sglib_mod.f \
     sgnco_mod.f
 
+
 # ======================================================================
 # JCLIB sources
 # ======================================================================
@@ -212,6 +254,7 @@ JC_F_SRC := \
 JC_FPP_SRC := \
     jcprompt.F \
     jcsys.F
+
 
 # ======================================================================
 # Object lists
@@ -245,6 +288,7 @@ JC_OBJ := \
     $(JC_F_OBJ) \
     $(JC_FPP_OBJ)
 
+
 # ======================================================================
 # Combined SGLIB / JCLIB objects
 #
@@ -252,6 +296,7 @@ JC_OBJ := \
 # ======================================================================
 
 ALL_SG_OBJ := $(SG_OBJ) $(JC_OBJ)
+
 
 # ======================================================================
 # Targets
@@ -271,7 +316,7 @@ ALL_SG_OBJ := $(SG_OBJ) $(JC_OBJ)
 
 all: libs
 
-ifeq ($(MAKE_SO),1)
+ifeq ($(BUILD_SHARED),1)
 libs: static shared
 else
 libs: static
@@ -280,6 +325,7 @@ endif
 static: $(SGLIB_A) $(JCLIB_A)
 
 shared: $(SGLIB_SO) $(JCLIB_SO)
+
 
 # ======================================================================
 # Directories
@@ -290,6 +336,7 @@ $(LIBDIR) $(OBJDIR) $(MODDIR):
 
 dirs: $(LIBDIR) $(OBJDIR) $(MODDIR)
 
+
 # ======================================================================
 # Fortran module compilation
 # ======================================================================
@@ -297,35 +344,40 @@ dirs: $(LIBDIR) $(OBJDIR) $(MODDIR)
 $(OBJDIR)/%_mod.o: %_mod.f | $(OBJDIR) $(MODDIR)
 	@echo "Compiling Fortran module $<"
 	$(FC) $(SG_FFLAGS) $(SG_FDEFS) $(SG_FINCL) \
-	    -J$(MODDIR) \
+	    $(SG_MODOUT) \
 	    -c $< -o $@
+
 
 # ======================================================================
 # Ordinary Fortran compilation
+#
+# Ensure modules are built before ordinary Fortran objects.
 # ======================================================================
-
-# Ensure modules are built before other Fortran objects.
 
 $(SG_F_OBJ) $(JC_F_OBJ): $(SG_MOD_OBJ)
 
 $(OBJDIR)/%.o: %.f | $(OBJDIR) $(MODDIR)
 	@echo "Compiling Fortran $<"
 	$(FC) $(SG_FFLAGS) $(SG_FDEFS) $(SG_FINCL) \
-	    -J$(MODDIR) \
+	    $(SG_MODOUT) \
 	    -c $< -o $@
+
 
 # ======================================================================
 # Preprocessing .F sources
-# ======================================================================
-
+#
 # Preprocessed .f files are generated in OBJDIR.
 # This avoids overwriting source files.
+#
+# gcc -traditional-cpp preserves legacy fixed-form formatting.
+# ======================================================================
 
 $(OBJDIR)/%.f: %.F | $(OBJDIR)
 	@echo "Preprocessing $<"
 	$(SG_FPP_CMD) $(SG_FPPFLAGS) \
 	    $(CPPFLAGS) $(SG_FPPDEFS) \
 	    -I. $< > $@
+
 
 # ======================================================================
 # Compile preprocessed Fortran
@@ -336,19 +388,20 @@ $(SG_FPP_OBJ) $(JC_FPP_OBJ): $(SG_MOD_OBJ)
 $(OBJDIR)/%.o: $(OBJDIR)/%.f | $(OBJDIR) $(MODDIR)
 	@echo "Compiling preprocessed Fortran $<"
 	$(FC) $(SG_FFLAGS) $(SG_FDEFS) $(SG_FINCL) \
-	    -J$(MODDIR) \
+	    $(SG_MODOUT) \
 	    -c $< -o $@
+
 
 # ======================================================================
 # C compilation
+#
+# Use Linux sgsys.c, never sgsys.f.
 # ======================================================================
-
-# Explicit Linux SGSYS implementation.
-# This prevents selection of sgsys.f.
 
 $(OBJDIR)/sgsys.o: sgsys.c sgbuff.h | $(OBJDIR)
 	@echo "Compiling Linux SGSYS: sgsys.c"
-	$(CC) $(SG_CFLAGS) $(SG_CDEFS) $(SG_CINCL) \
+	$(CC) $(SG_CFLAGS) -std=c11 \
+	    $(SG_CDEFS) $(SG_CINCL) \
 	    -c $< -o $@
 
 $(OBJDIR)/sgvarg.o: sgvarg.c sgvarg_code.h | $(OBJDIR)
@@ -356,12 +409,11 @@ $(OBJDIR)/sgvarg.o: sgvarg.c sgvarg_code.h | $(OBJDIR)
 	$(CC) $(SG_CFLAGS) $(SG_CDEFS) $(SG_CINCL) \
 	    -c $< -o $@
 
-# Generic C rule.
-
 $(OBJDIR)/%.o: %.c | $(OBJDIR)
 	@echo "Compiling C $<"
 	$(CC) $(SG_CFLAGS) $(SG_CDEFS) $(SG_CINCL) \
 	    -c $< -o $@
+
 
 # ======================================================================
 # Static libraries
@@ -376,7 +428,7 @@ $(SGLIB_A): $(ALL_SG_OBJ) | $(LIBDIR)
 	@echo "Building combined $(SGLIB_A)"
 	@echo "=================================================="
 	@rm -f $@
-	$(AR) $@ $(ALL_SG_OBJ)
+	$(AR_CMD) $(AR_OPTS) $@ $(ALL_SG_OBJ)
 	$(RANLIB) $@
 
 $(JCLIB_A): $(SGLIB_A) | $(LIBDIR)
@@ -385,13 +437,14 @@ $(JCLIB_A): $(SGLIB_A) | $(LIBDIR)
 	@echo "=================================================="
 	cp -f $(SGLIB_A) $(JCLIB_A)
 
+
 # ======================================================================
 # Shared libraries
 #
 # libsg.so contains all SGLIB and JCLIB objects.
 # libjc.so is an actual copy of libsg.so.
 #
-# No circular dependencies.
+# Preserve original library structure and SONAME.
 # ======================================================================
 
 SOFLAGS ?= -shared
@@ -416,6 +469,7 @@ $(JCLIB_SO): $(SGLIB_SO) | $(LIBDIR)
 	@echo "=================================================="
 	cp -f $(SGLIB_SO) $(JCLIB_SO)
 
+
 # ======================================================================
 # Diagnostics
 # ======================================================================
@@ -429,7 +483,10 @@ check:
 	@echo "PREFIX        = $(PREFIX)"
 	@echo "FC            = $(FC)"
 	@echo "CC            = $(CC)"
-	@echo "AR            = $(AR)"
+	@echo "FC_NAME       = $(FC_NAME)"
+	@echo "SG_MODOUT     = $(SG_MODOUT)"
+	@echo "AR_CMD        = $(AR_CMD)"
+	@echo "AR_OPTS       = $(AR_OPTS)"
 	@echo "RANLIB        = $(RANLIB)"
 	@echo "FFLAGS        = $(FFLAGS)"
 	@echo "CFLAGS        = $(CFLAGS)"
@@ -440,12 +497,16 @@ check:
 	@echo "LDFLAGS       = $(LDFLAGS)"
 	@echo "SG_FFLAGS     = $(SG_FFLAGS)"
 	@echo "SG_CFLAGS     = $(SG_CFLAGS)"
+	@echo "SG_FPP_CMD    = $(SG_FPP_CMD)"
+	@echo "SG_FPPFLAGS   = $(SG_FPPFLAGS)"
 	@echo "MAKE_SO       = $(MAKE_SO)"
+	@echo "BUILD_SHARED  = $(BUILD_SHARED)"
 	@echo "DEBUG         = $(DEBUG)"
 	@echo "LIBDIR        = $(LIBDIR)"
 	@echo "OBJDIR        = $(OBJDIR)"
 	@echo "MODDIR        = $(MODDIR)"
 	@echo "=================================================="
+
 
 # ======================================================================
 # Clean
@@ -469,6 +530,7 @@ cleanshared:
 	@rm -f $(SGLIB_SO) $(JCLIB_SO)
 
 clobber: clean cleanlib cleanshared
+
 
 # ======================================================================
 # End
