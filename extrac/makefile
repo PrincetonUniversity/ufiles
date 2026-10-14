@@ -1,55 +1,162 @@
+
 # Makefile to build extrac executable
 #
+# Supports:
+#   Intel oneAPI 2023 (ifort)
+#   GNU GCC 13.x (gfortran)
+#
+# Required:
+#   PREFIX
+#   COMPILER_FLAGS
+#
+# Output:
+#   $(PREFIX)/bin/extrac
+#
 
-# Include system dependent flags
+# ------------------------------------------------------------
+# Include system-dependent compiler and linker flags
+# ------------------------------------------------------------
+
 include $(COMPILER_FLAGS)
 
-NAME := extrac
+NAME   := extrac
 LIBDIR := $(PREFIX)/lib
 OBJDIR := $(PREFIX)/obj/$(NAME)
 EXEDIR := $(PREFIX)/bin
+MODDIR := $(PREFIX)/mod
 
-LIBS := extrac_sub interp_sub rngsel_sub r4smlib_userio uflib_userio \
-	uflib mds_sub mdstransp ufhdf trgraf ureadsub r4smlib tokid \
-	ufencod sg jc ufport
+EXE := $(EXEDIR)/$(NAME)
+OBJ := $(OBJDIR)/$(NAME).o
 
-L_UFILES := -L$(LIBDIR) $(addprefix -l, $(LIBS))
+# ------------------------------------------------------------
+# UFILES libraries
+# ------------------------------------------------------------
 
-L_LIBS := $(L_UFILES) $(L_PSPLINE) $(L_NETCDF) $(L_MDSPLUS) $(L_EDIT)
+LIBS := \
+    extrac_sub \
+    interp_sub \
+    rngsel_sub \
+    r4smlib_userio \
+    uflib_userio \
+    uflib \
+    mds_sub \
+    mdstransp \
+    ufhdf \
+    trgraf \
+    ureadsub \
+    r4smlib \
+    tokid \
+    ufencod \
+    sg \
+    jc \
+    ufport
+
+L_UFILES := -L$(LIBDIR) $(addprefix -l,$(LIBS))
+
+# ------------------------------------------------------------
+# External libraries
+# ------------------------------------------------------------
+
+L_LIBS := \
+    $(L_UFILES) \
+    $(L_PSPLINE) \
+    $(L_NETCDF) \
+    $(L_MDSPLUS) \
+    $(L_EDIT)
+
+# ------------------------------------------------------------
+# Compiler flags
+# ------------------------------------------------------------
 
 FDEF := $(FDEFS)
-FINC := $(FINCL) -I$(PREFIX)/mod
+FINC := $(FINCL) -I$(MODDIR)
 FFLG := $(FFLAGS)
 
+# ------------------------------------------------------------
+# Runtime library search paths
+# ------------------------------------------------------------
 
-.PHONY: clean realclean clobber check libs force build rebuild
+RPATH_EXTRAC := -Wl,-rpath,'$$ORIGIN/../lib'
 
-all:	check $(NAME)
+ifneq ($(strip $(PSPLINE_HOME)),)
+    RPATH_EXTRAC += -Wl,-rpath,$(PSPLINE_HOME)/lib
+endif
 
-libs:	check build $(NAME)
+# ------------------------------------------------------------
+# Targets
+# ------------------------------------------------------------
 
-force:	check rebuild $(NAME)
+.PHONY: all check libs force build rebuild \
+        clean realclean clobber
+
+all: $(EXE)
+
+$(NAME): $(EXE)
+
+libs: build $(EXE)
+
+force: rebuild $(EXE)
+
+# ------------------------------------------------------------
+# Create directories
+# ------------------------------------------------------------
+
+check: | $(EXEDIR) $(OBJDIR)
+
+$(EXEDIR) $(OBJDIR):
+	@mkdir -p $@
+
+# ------------------------------------------------------------
+# Build dependent libraries
+# ------------------------------------------------------------
 
 build:
-	@set -e; for l in $(LIBS); do cd ../$${l}; make -f $${l}_makefile.mk -j; done
+	@set -e; \
+	for l in $(LIBS); do \
+	    echo "Building $$l"; \
+	    $(MAKE) -C ../$$l; \
+	done
 
 rebuild:
-	@set -e; for l in $(LIBS); do cd ../$${l}; make -f $${l}_makefile.mk clobber; make -f $${l}_makefile.mk -j; done
+	@set -e; \
+	for l in $(LIBS); do \
+	    echo "Rebuilding $$l"; \
+	    $(MAKE) -C ../$$l clobber; \
+	    $(MAKE) -C ../$$l; \
+	done
 
-check:
-	@test -d $(EXEDIR) || mkdir -p $(EXEDIR)
-	@test -d $(OBJDIR) || mkdir -p $(OBJDIR)
+# ------------------------------------------------------------
+# Compile fixed-form Fortran
+#
+# IMPORTANT:
+#   -c prevents ifort from linking during compilation.
+# ------------------------------------------------------------
 
-$(NAME): $(OBJDIR)/extrac.o
-	@echo "Building $(NAME) executable"
-	@$(FC) $(LDFLAGS) $< -o $(EXEDIR)/$@ $(L_LIBS)
+$(OBJDIR)/%.o: %.for | $(OBJDIR)
+	@echo "Compiling $<"
+	$(FC) $(FFLG) $(FDEF) $(FINC) \
+	    -c $< -o $@
 
-$(OBJDIR)/%.o: %.for
-	@$(FC) $(FFLG) $< -o $@ $(FDEF) $(FINC)
+# ------------------------------------------------------------
+# Link executable
+# ------------------------------------------------------------
+
+$(EXE): $(OBJ) | $(EXEDIR)
+	@echo "Building $(EXE)"
+	$(FC) $(LDFLAGS) \
+	    -o $@ \
+	    $(OBJ) \
+	    $(L_LIBS) \
+	    $(RPATH_EXTRAC)
+
+# ------------------------------------------------------------
+# Clean
+# ------------------------------------------------------------
 
 clean:
+	@echo "Cleaning $(NAME)"
 	@rm -f $(OBJDIR)/*.o
-	@rm -f $(EXEDIR)/$(NAME)
+	@rm -f $(EXE)
 
 realclean: clean
 
