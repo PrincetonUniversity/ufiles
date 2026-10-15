@@ -179,7 +179,7 @@ fi
 # ============================================================================
 
 #module load pspline/2.0.1-build-20250811-intel-2023.2.0
-export PSPLINE_HOME="/p/pshare/transp/opt/pspline/2.2.0/icc/2023"
+export PSPLINE_HOME="/p/pshare/transp/opt/pspline/2.4.0/icc/2023"
 export L_PSPLINE="\
 -Wl,-rpath,${PSPLINE_HOME}/lib \
 -L${PSPLINE_HOME}/lib \
