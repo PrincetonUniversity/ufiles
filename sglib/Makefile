@@ -1,4 +1,3 @@
-
 # ======================================================================
 # Makefile for SGLIB / JCLIB
 #
@@ -128,13 +127,28 @@ endif
 #
 # The compiler configuration already handles DEBUG and MAKE_SO.
 # In particular, MAKE_SO=1 should enable -fPIC.
+#
+# IMPORTANT:
+#   The __f90 macro must be defined consistently in Fortran and C.
+#
+#   Without __f90, sgbuff.h declares:
+#
+#       char *tbufa;
+#       char *dbufa;
+#
+#   With __f90, sgbuff.h declares:
+#
+#       char tbufa[2048];
+#       char dbufa[512];
+#
+#   The latter matches the Fortran COMMON-block layout.
 # ======================================================================
 
 SG_FFLAGS := $(FFLAGS)
 SG_CFLAGS := $(CFLAGS)
 
-SG_FDEFS := $(FDEFS)
-SG_CDEFS := $(CDEFS)
+SG_FDEFS := $(FDEFS) -D__f90
+SG_CDEFS := $(CDEFS) -D__f90
 
 SG_FINCL := $(FINCL)
 SG_CINCL := $(CINCL)
@@ -171,9 +185,9 @@ SG_FPP_CMD ?= gcc
 
 SG_FPPFLAGS := -E -P -x c -traditional-cpp
 
-# Preserve platform definitions and legacy __f90 macro.
+# Use the same definitions as Fortran compilation.
 
-SG_FPPDEFS := $(FDEFS) -D__f90
+SG_FPPDEFS := $(SG_FDEFS)
 
 
 # ======================================================================
@@ -396,6 +410,10 @@ $(OBJDIR)/%.o: $(OBJDIR)/%.f | $(OBJDIR) $(MODDIR)
 # C compilation
 #
 # Use Linux sgsys.c, never sgsys.f.
+#
+# IMPORTANT:
+# SG_CDEFS includes -D__f90 so sgsys.c uses the correct
+# COMMON-block structure.
 # ======================================================================
 
 $(OBJDIR)/sgsys.o: sgsys.c sgbuff.h | $(OBJDIR)
@@ -492,6 +510,9 @@ check:
 	@echo "CFLAGS        = $(CFLAGS)"
 	@echo "FDEFS         = $(FDEFS)"
 	@echo "CDEFS         = $(CDEFS)"
+	@echo "SG_FDEFS      = $(SG_FDEFS)"
+	@echo "SG_CDEFS      = $(SG_CDEFS)"
+	@echo "SG_FPPDEFS    = $(SG_FPPDEFS)"
 	@echo "FINCL         = $(FINCL)"
 	@echo "CINCL         = $(CINCL)"
 	@echo "LDFLAGS       = $(LDFLAGS)"
