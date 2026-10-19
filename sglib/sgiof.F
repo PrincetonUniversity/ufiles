@@ -182,6 +182,7 @@ c
 	  call agfoff
 	  call alfmod		!set alpha mode
 	  call toutpt(07)	!bell
+	  call tsend_term
 	  call tinput(ich)	!get a character
 	  iin = iand(ich,hexdf)		!take upper case
 	  if(char(iin).eq.'C') call hdcopy
